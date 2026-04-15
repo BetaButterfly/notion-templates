@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Lean Canvas - Інтерактивний Шаблон</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+			background: #f5f5f5;
+			padding: 20px;
+			min-height: 100vh;
+		}
+
+		.container {
+			max-width: 1400px;
+			margin: 0 auto;
+			background: white;
+			padding: 40px;
+			border-radius: 12px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		}
+
+		.header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.header h1 {
+			font-size: 2.5rem;
+			font-weight: 700;
+			color: #1a1a1a;
+			margin-bottom: 20px;
+			letter-spacing: -0.5px;
+		}
+
+		.meta-info {
+			display: flex;
+			justify-content: center;
+			gap: 30px;
+			flex-wrap: wrap;
+			font-size: 14px;
+			color: #666;
+		}
+
+		.meta-field {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.meta-field input {
+			border: none;
+			border-bottom: 2px solid #ddd;
+			padding: 4px 8px;
+			font-size: 14px;
+			background: transparent;
+			min-width: 150px;
+			transition: border-color 0.3s;
+		}
+
+		.meta-field input:focus {
+			outline: none;
+			border-bottom-color: #0066cc;
+		}
+
+		.canvas-grid {
+			display: grid;
+			grid-template-columns: repeat(5, 1fr);
+			grid-template-rows: auto auto auto;
+			gap: 2px;
+			background: #e0e0e0;
+			border: 2px solid #e0e0e0;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+
+		.canvas-block {
+			background: white;
+			padding: 20px;
+			min-height: 180px;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		.canvas-block:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+			z-index: 10;
+		}
+
+		/* Кольорові категорії за типом значення */
+
+		/* Проблема - червоний/рожевий */
+		.block-problem {
+			background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+			border-left: 4px solid #e53e3e;
+		}
+
+		/* Рішення - зелений/м'ятний */
+		.block-solution {
+			background: linear-gradient(135deg, #f0fff4 0%, #e0ffe4 100%);
+			border-left: 4px solid #38a169;
+		}
+
+		/* Унікальна ціннісна пропозиція - жовтий/золотий */
+		.block-uvp {
+			background: linear-gradient(135deg, #fffff0 0%, #fff8dc 100%);
+			border-left: 4px solid #d69e2e;
+			grid-row: span 2;
+		}
+
+		/* Прихована перевага - фіолетовий */
+		.block-advantage {
+			background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+			border-left: 4px solid #805ad5;
+		}
+
+		/* Клієнтські сегменти - синій */
+		.block-segments {
+			background: linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%);
+			border-left: 4px solid #3182ce;
+		}
+
+		/* Ключові метрики - оранжевий */
+		.block-metrics {
+			background: linear-gradient(135deg, #fffaf0 0%, #fff5e0 100%);
+			border-left: 4px solid #dd6b20;
+		}
+
+		/* Канали - індиго */
+		.block-channels {
+			background: linear-gradient(135deg, #f5f7ff 0%, #e8ecff 100%);
+			border-left: 4px solid #5a67d8;
+		}
+
+		/* Структура витрат - рожевий/кораловий */
+		.block-costs {
+			background: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 100%);
+			border-left: 4px solid #d53f8c;
+			grid-column: span 2;
+		}
+
+		/* Потоки доходів - зелений/бірюзовий */
+		.block-revenue {
+			background: linear-gradient(135deg, #f0fff7 0%, #e0f7f0 100%);
+			border-left: 4px solid #0d9488;
+		}
+
+		/* Потоки доходів деталі - морський */
+		.block-revenue-detail {
+			background: linear-gradient(135deg, #f0fdfa 0%, #e0f8f5 100%);
+			border-left: 4px solid #14b8a6;
+			grid-column: span 2;
+		}
+
+		.block-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 12px;
+		}
+
+		.block-icon {
+			width: 24px;
+			height: 24px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 16px;
+		}
+
+		.block-title {
+			font-size: 16px;
+			font-weight: 700;
+			color: #2d3748;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.block-subtitle {
+			font-size: 12px;
+			color: #718096;
+			margin-bottom: 12px;
+			font-style: italic;
+			line-height: 1.4;
+		}
+
+		.editable-area {
+			width: 100%;
+			min-height: 80px;
+			border: 1px solid transparent;
+			border-radius: 6px;
+			padding: 8px;
+			font-size: 14px;
+			line-height: 1.6;
+			color: #2d3748;
+			background: rgba(255, 255, 255, 0.6);
+			resize: vertical;
+			transition: all 0.3s;
+		}
+
+		.editable-area:focus {
+			outline: none;
+			background: white;
+			border-color: #cbd5e0;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+		}
+
+		.editable-area:empty:before {
+			content: attr(data-placeholder);
+			color: #a0aec0;
+			font-style: italic;
+		}
+
+		.numbered-list {
+			counter-reset: item;
+		}
+
+		.numbered-item {
+			position: relative;
+			padding-left: 24px;
+			margin-bottom: 8px;
+			font-size: 14px;
+			color: #4a5568;
+		}
+
+		.numbered-item:before {
+			counter-increment: item;
+			content: counter(item) ".";
+			position: absolute;
+			left: 0;
+			color: #a0aec0;
+			font-weight: 600;
+		}
+
+		.footer {
+			text-align: center;
+			margin-top: 30px;
+			font-size: 12px;
+			color: #a0aec0;
+			font-style: italic;
+		}
+
+		/* Адаптивність */
+		@media (max-width: 1200px) {
+			.canvas-grid {
+				grid-template-columns: repeat(3, 1fr);
+			}
+
+			.block-uvp {
+				grid-row: span 1;
+			}
+
+			.block-costs,
+			.block-revenue-detail {
+				grid-column: span 1;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.canvas-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.container {
+				padding: 20px;
+			}
+
+			.header h1 {
+				font-size: 1.8rem;
+			}
+		}
+
+		/* Кнопка збереження */
+		.save-btn {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			background: #0066cc;
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 50px;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+			transition: all 0.3s;
+		}
+
+		.save-btn:hover {
+			background: #0052a3;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+		}
+
+		.save-notification {
+			position: fixed;
+			bottom: 80px;
+			right: 30px;
+			background: #38a169;
+			color: white;
+			padding: 12px 20px;
+			border-radius: 8px;
+			font-size: 14px;
+			opacity: 0;
+			transform: translateY(10px);
+			transition: all 0.3s;
+		}
+
+		.save-notification.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>LEAN CANVAS</h1>
+			<div class="meta-info">
+				<div class="meta-field">
+					<span>Назва продукту:</span>
+					<input type="text" placeholder="Введіть назву..." id="productName">
+				</div>
+				<div class="meta-field">
+					<span>Дата:</span>
+					<input type="text" placeholder="дд/мм/рррр" id="date">
+				</div>
+				<div class="meta-field">
+					<span>Ітерація №:</span>
+					<input type="text" placeholder="1" id="iteration">
+				</div>
+			</div>
+		</div>
+
+		<div class="canvas-grid">
+			<!-- Проблема -->
+			<div class="canvas-block block-problem">
+				<div class="block-header">
+					<div class="block-icon">🌐</div>
+					<div class="block-title">Проблема</div>
+				</div>
+				<div class="block-subtitle">Топ-3 проблеми клієнтів</div>
+				<div class="editable-area" contenteditable="true"
+					data-placeholder="1. Проблема 1&#10;2. Проблема 2&#10;3. Проблема 3"></div>
+			</div>
+
+			<!-- Рішення -->
+			<div class="canvas-block block-solution">
+				<div class="block-header">
+					<div class="block-icon">☑️</div>
+					<div class="block-title">Рішення</div>
+				</div>
+				<div class="block-subtitle">Топ-3 можливості</div>
+				<div class="editable-area" contenteditable="true"
+					data-placeholder="1. Рішення 1&#10;2. Рішення 2&#10;3. Рішення 3"></div>
+			</div>
+
+			<!-- Унікальна ціннісна пропозиція -->
+			<div class="canvas-block block-uvp">
+				<div class="block-header">
+					<div class="block-icon">⭐</div>
+					<div class="block-title">Унікальна ціннісна пропозиція</div>
+				</div>
+				<div class="block-subtitle">Чітке, переконливе повідомлення про вас</div>
+				<div class="editable-area" contenteditable="true"
+					data-placeholder="Напишіть тут свою UVP...&#10;&#10;Підзаголовок:" style="min-height: 200px;"></div>
+			</div>
+
+			<!-- Прихована перевага -->
+			<div class="canvas-block block-advantage">
+				<div class="block-header">
+					<div class="block-icon">🏆</div>
+					<div class="block-title">Прихована перевага</div>
+				</div>
+				<div class="block-subtitle">Те, що не можна скопіювати або купити</div>
+				<div class="editable-area" contenteditable="true" data-placeholder="Опишіть вашу неповторну перевагу..."></div>
+			</div>
+
+			<!-- Клієнтські сегменти -->
+			<div class="canvas-block block-segments">
+				<div class="block-header">
+					<div class="block-icon">👥</div>
+					<div class="block-title">Клієнтські сегменти</div>
+				</div>
+				<div class="block-subtitle">Цільові клієнти та користувачі</div>
+				<div class="editable-area" contenteditable="true"
+					data-placeholder="1. Сегмент 1&#10;2. Сегмент 2&#10;3. Сегмент 3&#10;&#10;Ранні послідовники:"></div>
+			</div>
+
+			<!-- Ключові метрики -->
+			<div class="canvas-block block-metrics">
+				<div class="block-header">
+					<div class="block-icon">📊</div>
+					<div class="block-title">Ключові метрики</div>
+				</div>
+				<div class="block-subtitle">Ключові показники активності</div>
+				<div class="editable-area" contenteditable="true"
+					data-placeholder="1. Метрика 1&#10;2. Метрика 2&#10;3. Метрика 3"></div>
+			</div>
+
+			<!-- Канали -->
+			<div class="canvas-block block-channels">
+				<div class="block-header">
+					<div class="block-icon">📢</div>
+					<div class="block-title">Канали</div>
+				</div>
+				<div class="block-subtitle">Шляхи до клієнтів</div>
+				<div class="editable-area" contenteditable="true" data-placeholder="1. Канал 1&#10;2. Канал 2&#10;3. Канал 3">
+				</div>
+			</div>
+
+			<!-- Структура витрат -->
+			<div class="canvas-block block-costs">
+				<div class="block-header">
+					<div class="block-icon">💎</div>
+					<div class="block-title">Структура витрат</div>
+				</div>
+				<div class="block-subtitle">Витрати на залучення клієнтів (CAC), витрати на дистрибуцію, хостинг, команда тощо
+				</div>
+				<div class="editable-area" contenteditable="true"
+					data-placeholder="1. Витрата 1&#10;2. Витрата 2&#10;3. Витрата 3"></div>
+			</div>
+
+			<!-- Потоки доходів -->
+			<div class="canvas-block block-revenue">
+				<div class="block-header">
+					<div class="block-icon">💰</div>
+					<div class="block-title">Потоки доходів</div>
+				</div>
+				<div class="block-subtitle">Дохід від моделі, цінова стратегія, LTV</div>
+				<div class="editable-area" contenteditable="true" data-placeholder="1. Потік 1&#10;2. Потік 2"></div>
+			</div>
+
+			<!-- Потоки доходів деталі -->
+			<div class="canvas-block block-revenue-detail">
+				<div class="block-header">
+					<div class="block-icon">🧮</div>
+					<div class="block-title">Потоки доходів (деталі)</div>
+				</div>
+				<div class="block-subtitle">Ціна × Кількість клієнтів, MRR, ARR</div>
+				<div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+					<div style="flex: 1; min-width: 120px;">
+						<small style="color: #718096; font-size: 11px;">Модель:</small>
+						<input type="text"
+							style="width: 100%; border: none; border-bottom: 1px solid #cbd5e0; background: transparent; padding: 4px 0; font-size: 13px;"
+							placeholder="...">
+					</div>
+					<div style="flex: 1; min-width: 120px;">
+						<small style="color: #718096; font-size: 11px;">Ціна:</small>
+						<input type="text"
+							style="width: 100%; border: none; border-bottom: 1px solid #cbd5e0; background: transparent; padding: 4px 0; font-size: 13px;"
+							placeholder="...">
+					</div>
+					<div style="flex: 1; min-width: 120px;">
+						<small style="color: #718096; font-size: 11px;">LTV:</small>
+						<input type="text"
+							style="width: 100%; border: none; border-bottom: 1px solid #cbd5e0; background: transparent; padding: 4px 0; font-size: 13px;"
+							placeholder="...">
+					</div>
+				</div>
+				<div class="editable-area" contenteditable="true" data-placeholder="Додаткові деталі..."
+					style="min-height: 60px;"></div>
+			</div>
+		</div>
+
+		<div class="footer">
+			Lean Canvas — адаптовано з Business Model Canvas | leanstack.com
+		</div>
+	</div>
+
+	<button class="save-btn" onclick="saveData()">💾 Зберегти зміни</button>
+	<div class="save-notification" id="notification">✓ Збережено!</div>
+
+	<script>
+		// Автоматичне збереження в localStorage
+		function saveData() {
+			const data = {
+				productName: document.getElementById('productName').value,
+				date: document.getElementById('date').value,
+				iteration: document.getElementById('iteration').value,
+				blocks: Array.from(document.querySelectorAll('.editable-area')).map(el => el.innerHTML)
+			};
+			localStorage.setItem('leanCanvasData', JSON.stringify(data));
+
+			// Показати сповіщення
+			const notif = document.getElementById('notification');
+			notif.classList.add('show');
+			setTimeout(() => notif.classList.remove('show'), 2000);
+		}
+
+		// Завантаження даних
+		window.onload = function () {
+			const saved = localStorage.getItem('leanCanvasData');
+			if (saved) {
+				const data = JSON.parse(saved);
+				document.getElementById('productName').value = data.productName || '';
+				document.getElementById('date').value = data.date || '';
+				document.getElementById('iteration').value = data.iteration || '';
+
+				const blocks = document.querySelectorAll('.editable-area');
+				data.blocks.forEach((content, index) => {
+					if (blocks[index]) blocks[index].innerHTML = content;
+				});
+			}
+		};
+
+		// Автозбереження при зміні
+		document.querySelectorAll('input, .editable-area').forEach(el => {
+			el.addEventListener('blur', saveData);
+		});
+	</script>
+</body>
+
+</html>
