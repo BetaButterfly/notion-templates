@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWOT-Аналіз та Матриця TOWS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .meta-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-field input {
+            border: none;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 6px 10px;
+            font-size: 14px;
+            background: transparent;
+            min-width: 180px;
+            transition: all 0.3s;
+            color: #2d3748;
+        }
+
+        .meta-field input:focus {
+            outline: none;
+            border-bottom-color: #3182ce;
+            background: #f7fafc;
+        }
+
+        /* SWOT Grid */
+        .swot-section {
+            margin-bottom: 40px;
+        }
+
+        .environment-labels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+            margin-bottom: 3px;
+        }
+
+        .env-label {
+            background: #edf2f7;
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .swot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 3px;
+            background: #e2e8f0;
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+        }
+
+        .swot-block {
+            padding: 24px;
+            min-height: 320px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .swot-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        /* Strengths - Зелений */
+        .block-strengths {
+            background: linear-gradient(145deg, #f0fff4 0%, #e6fffa 50%, #f0fff4 100%);
+            border-top: 4px solid #38a169;
+        }
+
+        .block-strengths .block-title {
+            color: #276749;
+        }
+
+        /* Weaknesses - Червоний/Рожевий */
+        .block-weaknesses {
+            background: linear-gradient(145deg, #fff5f5 0%, #fff0f0 50%, #fff5f5 100%);
+            border-top: 4px solid #e53e3e;
+        }
+
+        .block-weaknesses .block-title {
+            color: #c53030;
+        }
+
+        /* Opportunities - Синій */
+        .block-opportunities {
+            background: linear-gradient(145deg, #ebf8ff 0%, #e6fffa 50%, #ebf8ff 100%);
+            border-top: 4px solid #3182ce;
+        }
+
+        .block-opportunities .block-title {
+            color: #2c5282;
+        }
+
+        /* Threats - Оранжевий/Жовтий */
+        .block-threats {
+            background: linear-gradient(145deg, #fffaf0 0%, #fff5e6 50%, #fffaf0 100%);
+            border-top: 4px solid #dd6b20;
+        }
+
+        .block-threats .block-title {
+            color: #c05621;
+        }
+
+        .block-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .block-icon {
+            font-size: 22px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .block-title {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .block-subtitle {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.5;
+            padding-left: 34px;
+        }
+
+        .subsection {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 8px;
+            border-left: 3px solid rgba(0,0,0,0.1);
+        }
+
+        .subsection-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-icon {
+            font-size: 16px;
+        }
+
+        .subsection-desc {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .editable-list {
+            list-style: none;
+        }
+
+        .editable-item {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #4a5568;
+            min-height: 24px;
+        }
+
+        .editable-item:before {
+            content: attr(data-num) ".";
+            position: absolute;
+            left: 0;
+            color: #a0aec0;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .editable-item:focus {
+            outline: none;
+            background: rgba(255,255,255,0.8);
+            border-radius: 4px;
+            padding: 2px 2px 2px 28px;
+        }
+
+        .questions-block {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .questions-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-item {
+            font-size: 13px;
+            color: #4a5568;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .question-item:before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            color: #a0aec0;
+            font-size: 10px;
+        }
+
+        /* TOWS Matrix */
+        .tows-section {
+            margin-top: 50px;
+        }
+
+        .tows-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+
+        .tows-icon {
+            font-size: 24px;
+        }
+
+        .tows-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a202c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tows-subtitle {
+            text-align: center;
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .tows-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tows-block {
+            padding: 20px;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .tows-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            z-index: 10;
+        }
+
+        /* SO - Зростання (зелений) */
+        .tows-so {
+            background: linear-gradient(145deg, #f0fff4 0%, #e0ffe4 100%);
+            border-top: 4px solid #38a169;
+        }
+
+        .tows-so .tows-strategy-title {
+            color: #276749;
+        }
+
+        /* WO - Розвиток (синій) */
+        .tows-wo {
+            background: linear-gradient(145deg, #ebf8ff 0%, #e0f7ff 100%);
+            border-top: 4px solid #3182ce;
+        }
+
+        .tows-wo .tows-strategy-title {
+            color: #2c5282;
+        }
+
+        /* ST - Захист (жовтий/оранжевий) */
+        .tows-st {
+            background: linear-gradient(145deg, #fffaf0 0%, #fff5e0 100%);
+            border-top: 4px solid #d69e2e;
+        }
+
+        .tows-st .tows-strategy-title {
+            color: #b7791f;
+        }
+
+        /* WT - Виживання (червоний) */
+        .tows-wt {
+            background: linear-gradient(145deg, #fff5f5 0%, #ffe0e0 100%);
+            border-top: 4px solid #e53e3e;
+        }
+
+        .tows-wt .tows-strategy-title {
+            color: #c53030;
+        }
+
+        .tows-strategy-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tows-strategy-subtitle {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 16px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .tows-list {
+            list-style: none;
+        }
+
+        .tows-item {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #4a5568;
+            min-height: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 6px;
+        }
+
+        .tows-item:before {
+            content: attr(data-num) ".";
+            position: absolute;
+            left: 0;
+            color: #a0aec0;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .tows-item:focus {
+            outline: none;
+            background: rgba(255,255,255,0.8);
+            border-radius: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        /* Адаптивність */
+        @media (max-width: 1024px) {
+            .tows-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .swot-grid {
+                grid-template-columns: 1fr;
+            }
+            .tows-grid {
+                grid-template-columns: 1fr;
+            }
+            .environment-labels {
+                display: none;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Кнопка збереження */
+        .save-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .save-notification {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            background: #38a169;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+            z-index: 1000;
+        }
+
+        .save-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Декоративні елементи */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+            margin: 30px 0;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>SWOT-Аналіз</h1>
+            <div class="meta-info">
+                <div class="meta-field">
+                    <span>Компанія / Продукт:</span>
+                    <input type="text" placeholder="Введіть назву..." id="companyName">
+                </div>
+                <div class="meta-field">
+                    <span>Дата:</span>
+                    <input type="text" placeholder="дд/мм/рррр" id="date">
+                </div>
+                <div class="meta-field">
+                    <span>Автор:</span>
+                    <input type="text" placeholder="Ваше ім'я" id="author">
+                </div>
+            </div>
+        </div>
+
+        <!-- SWOT Analysis -->
+        <div class="swot-section">
+            <div class="environment-labels">
+                <div class="env-label">▲ Внутрішнє середовище</div>
+                <div class="env-label">▲ Зовнішнє середовище</div>
+            </div>
+
+            <div class="swot-grid">
+                <!-- Strengths -->
+                <div class="swot-block block-strengths">
+                    <div class="block-header">
+                        <div class="block-icon">💪</div>
+                        <div class="block-title">Сильні сторони (Strengths)</div>
+                    </div>
+                    <div class="block-subtitle">Внутрішні переваги — те, що ви робите добре</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🏆</span>
+                            Конкурентні переваги
+                        </div>
+                        <div class="subsection-desc">Що відрізняє вас від конкурентів?</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                            <li class="editable-item" contenteditable="true" data-num="3"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🔧</span>
+                            Ресурси та можливості
+                        </div>
+                        <div class="subsection-desc">Унікальні технології / патенти / бренд / команда</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">📊</span>
+                            Ринкова позиція
+                        </div>
+                        <div class="subsection-desc">Частка ринку, лояльність клієнтів, репутація</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">💰</span>
+                            Фінансові показники
+                        </div>
+                        <div class="subsection-desc">Рентабельність, стабільний грошовий потік, рейтинг</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">⚡</span>
+                            Операційна ефективність
+                        </div>
+                        <div class="subsection-desc">Процеси, швидкість доставки, якість продукту/сервісу</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="questions-block">
+                        <div class="questions-title">Питання для роздумів:</div>
+                        <div class="question-item">Що ви вмієте краще за інших?</div>
+                        <div class="question-item">Які ресурси є унікальними для вас?</div>
+                        <div class="question-item">Чому клієнти обирають вас?</div>
+                    </div>
+                </div>
+
+                <!-- Weaknesses -->
+                <div class="swot-block block-weaknesses">
+                    <div class="block-header">
+                        <div class="block-icon">⚠️</div>
+                        <div class="block-title">Слабкі сторони (Weaknesses)</div>
+                    </div>
+                    <div class="block-subtitle">Внутрішні недоліки — що потребує покращення</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🔒</span>
+                            Обмеження ресурсів
+                        </div>
+                        <div class="subsection-desc">Брак фінансування, кадрів, технологій</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">⚙️</span>
+                            Операційні проблеми
+                        </div>
+                        <div class="subsection-desc">Неефективні процеси, висока собівартість, якість</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🎯</span>
+                            Прогалини в компетенціях
+                        </div>
+                        <div class="subsection-desc">Відсутні навички, досвід, знання ринку</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🔗</span>
+                            Залежності та ризики
+                        </div>
+                        <div class="subsection-desc">Залежність від ключових постачальників / клієнтів</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">📢</span>
+                            Слабкий маркетинг / бренд
+                        </div>
+                        <div class="subsection-desc">Низька впізнаваність, погана репутація, відгуки</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="questions-block">
+                        <div class="questions-title">Питання для роздумів:</div>
+                        <div class="question-item">Що можна покращити у продукті/команді?</div>
+                        <div class="question-item">Яких ресурсів чи навичок не вистачає?</div>
+                        <div class="question-item">Що клієнти вважають недоліком?</div>
+                    </div>
+                </div>
+
+                <!-- Opportunities -->
+                <div class="swot-block block-opportunities">
+                    <div class="block-header">
+                        <div class="block-icon">🚀</div>
+                        <div class="block-title">Можливості (Opportunities)</div>
+                    </div>
+                    <div class="block-subtitle">Зовнішні фактори, які можна використати на свою користь</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">📈</span>
+                            Ринкові тренди
+                        </div>
+                        <div class="subsection-desc">Зростаючі сегменти, нові споживчі потреби</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🌍</span>
+                            Нові ринки / географія
+                        </div>
+                        <div class="subsection-desc">Регіони, країни, демографічні групи для розширення</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🤝</span>
+                            Партнерства та альянси
+                        </div>
+                        <div class="subsection-desc">Стратегічні партнери, дистриб'ютори, інвестори</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">⚡</span>
+                            Технологічні інновації
+                        </div>
+                        <div class="subsection-desc">Нові технології, автоматизація, AI, платформи</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">📋</span>
+                            Регуляторні зміни
+                        </div>
+                        <div class="subsection-desc">Нові закони, субсидії, зміни у конкуренції</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="questions-block">
+                        <div class="questions-title">Питання для роздумів:</div>
+                        <div class="question-item">Які тренди можна використати?</div>
+                        <div class="question-item">Які можливості пропускають конкуренти?</div>
+                        <div class="question-item">Чи є незадоволений попит на ринку?</div>
+                    </div>
+                </div>
+
+                <!-- Threats -->
+                <div class="swot-block block-threats">
+                    <div class="block-header">
+                        <div class="block-icon">🔥</div>
+                        <div class="block-title">Загрози (Threats)</div>
+                    </div>
+                    <div class="block-subtitle">Зовнішні фактори, що можуть зашкодити бізнесу</div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">⚔️</span>
+                            Конкурентний тиск
+                        </div>
+                        <div class="subsection-desc">Нові гравці, агресивне ціноутворення, замінники</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🏢</span>
+                            Ринкові ризики
+                        </div>
+                        <div class="subsection-desc">Зменшення попиту, зміна смаків споживачів</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                            <li class="editable-item" contenteditable="true" data-num="2"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">💱</span>
+                            Економічні фактори
+                        </div>
+                        <div class="subsection-desc">Інфляція, курс валют, рецесія, зміна витрат</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">📄</span>
+                            Регуляторні ризики
+                        </div>
+                        <div class="subsection-desc">Нові обмеження, штрафи, зміна законодавства</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="subsection">
+                        <div class="subsection-title">
+                            <span class="subsection-icon">🔒</span>
+                            Технологічні загрози
+                        </div>
+                        <div class="subsection-desc">Кібератаки, застаріння технологій, дизраптори</div>
+                        <ul class="editable-list">
+                            <li class="editable-item" contenteditable="true" data-num="1"></li>
+                        </ul>
+                    </div>
+
+                    <div class="questions-block">
+                        <div class="questions-title">Питання для роздумів:</div>
+                        <div class="question-item">Що роблять конкуренти, що загрожує вам?</div>
+                        <div class="question-item">Які зовнішні зміни можуть зашкодити?</div>
+                        <div class="question-item">Які ваші слабкості найбільш вразливі?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- TOWS Matrix -->
+        <div class="tows-section">
+            <div class="tows-header">
+                <div class="tows-icon">🎯</div>
+                <div class="tows-title">Матриця стратегій (TOWS)</div>
+            </div>
+            <div class="tows-subtitle">На основі SWOT сформулюйте стратегічні дії:</div>
+
+            <div class="tows-grid">
+                <!-- SO - Зростання -->
+                <div class="tows-block tows-so">
+                    <div class="tows-strategy-title">SO — Зростання</div>
+                    <div class="tows-strategy-subtitle">Сила + Можливості → атакуй</div>
+                    <ul class="tows-list">
+                        <li class="tows-item" contenteditable="true" data-num="1"></li>
+                        <li class="tows-item" contenteditable="true" data-num="2"></li>
+                        <li class="tows-item" contenteditable="true" data-num="3"></li>
+                    </ul>
+                </div>
+
+                <!-- WO - Розвиток -->
+                <div class="tows-block tows-wo">
+                    <div class="tows-strategy-title">WO — Розвиток</div>
+                    <div class="tows-strategy-subtitle">Слабкість + Можливості → усунь прогалини</div>
+                    <ul class="tows-list">
+                        <li class="tows-item" contenteditable="true" data-num="1"></li>
+                        <li class="tows-item" contenteditable="true" data-num="2"></li>
+                        <li class="tows-item" contenteditable="true" data-num="3"></li>
+                    </ul>
+                </div>
+
+                <!-- ST - Захист -->
+                <div class="tows-block tows-st">
+                    <div class="tows-strategy-title">ST — Захист</div>
+                    <div class="tows-strategy-subtitle">Сила + Загрози → захищайся</div>
+                    <ul class="tows-list">
+                        <li class="tows-item" contenteditable="true" data-num="1"></li>
+                        <li class="tows-item" contenteditable="true" data-num="2"></li>
+                        <li class="tows-item" contenteditable="true" data-num="3"></li>
+                    </ul>
+                </div>
+
+                <!-- WT - Виживання -->
+                <div class="tows-block tows-wt">
+                    <div class="tows-strategy-title">WT — Виживання</div>
+                    <div class="tows-strategy-subtitle">Слабкість + Загрози → мінімізуй ризики</div>
+                    <ul class="tows-list">
+                        <li class="tows-item" contenteditable="true" data-num="1"></li>
+                        <li class="tows-item" contenteditable="true" data-num="2"></li>
+                        <li class="tows-item" contenteditable="true" data-num="3"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            SWOT-аналіз | Заповнюється командою у форматі воркшопу
+        </div>
+    </div>
+
+    <button class="save-btn" onclick="saveData()">💾 Зберегти зміни</button>
+    <div class="save-notification" id="notification">✓ Збережено в браузері!</div>
+
+    <script>
+        // Автоматичне збереження в localStorage
+        function saveData() {
+            const data = {
+                meta: {
+                    company: document.getElementById('companyName').value,
+                    date: document.getElementById('date').value,
+                    author: document.getElementById('author').value
+                },
+                swot: Array.from(document.querySelectorAll('.swot-block .editable-item')).map(el => el.innerText),
+                tows: Array.from(document.querySelectorAll('.tows-item')).map(el => el.innerText)
+            };
+            
+            localStorage.setItem('swotAnalysisData', JSON.stringify(data));
+            
+            // Показати сповіщення
+            const notif = document.getElementById('notification');
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 2500);
+        }
+
+        // Завантаження даних
+        window.onload = function() {
+            const saved = localStorage.getItem('swotAnalysisData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                // Відновити мета-дані
+                document.getElementById('companyName').value = data.meta?.company || '';
+                document.getElementById('date').value = data.meta?.date || '';
+                document.getElementById('author').value = data.meta?.author || '';
+                
+                // Відновити SWOT
+                const swotItems = document.querySelectorAll('.swot-block .editable-item');
+                data.swot?.forEach((text, index) => {
+                    if (swotItems[index]) swotItems[index].innerText = text;
+                });
+                
+                // Відновити TOWS
+                const towsItems = document.querySelectorAll('.tows-item');
+                data.tows?.forEach((text, index) => {
+                    if (towsItems[index]) towsItems[index].innerText = text;
+                });
+            }
+        };
+
+        // Автозбереження при втраті фокусу
+        document.querySelectorAll('[contenteditable="true"], input').forEach(el => {
+            el.addEventListener('blur', saveData);
+        });
+
+        // Запобігти виходу без збереження (опціонально)
+        window.addEventListener('beforeunload', function(e) {
+            saveData();
+        });
+    </script>
+</body>
+</html>
