@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kaizen-лист — Щоденний лист безперервного покращення</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+			background: #f5f7fa;
+			padding: 20px;
+			min-height: 100vh;
+			color: #2d3748;
+		}
+
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			background: white;
+			padding: 40px;
+			border-radius: 16px;
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+		}
+
+		/* Header */
+		.header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.header-top {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			margin-bottom: 8px;
+		}
+
+		.japanese-char {
+			font-size: 2.5rem;
+			font-weight: 300;
+			color: #4a5568;
+			font-family: 'Noto Sans JP', sans-serif;
+		}
+
+		.header h1 {
+			font-size: 2.2rem;
+			font-weight: 800;
+			color: #1a202c;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		.header-subtitle {
+			font-size: 15px;
+			color: #718096;
+			font-style: italic;
+		}
+
+		/* Meta Info */
+		.meta-section {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			overflow: hidden;
+			margin-bottom: 30px;
+			background: white;
+		}
+
+		.meta-field {
+			padding: 16px 20px;
+			border-right: 1px solid #e2e8f0;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.meta-field:last-child {
+			border-right: none;
+		}
+
+		.meta-label {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 13px;
+			font-weight: 700;
+			color: #4a5568;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.meta-icon {
+			font-size: 16px;
+		}
+
+		.meta-input {
+			border: none;
+			border-bottom: 2px solid #e2e8f0;
+			padding: 6px 0;
+			font-size: 14px;
+			color: #2d3748;
+			background: transparent;
+			width: 100%;
+			transition: all 0.3s;
+		}
+
+		.meta-input:focus {
+			outline: none;
+			border-bottom-color: #3182ce;
+		}
+
+		.date-inputs {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		.date-input {
+			width: 50px;
+			text-align: center;
+			border: none;
+			border-bottom: 2px solid #e2e8f0;
+			padding: 6px 0;
+			font-size: 14px;
+		}
+
+		.date-input.year {
+			width: 70px;
+		}
+
+		.date-input:focus {
+			outline: none;
+			border-bottom-color: #3182ce;
+		}
+
+		.date-separator {
+			color: #a0aec0;
+			font-weight: 300;
+		}
+
+		/* Main Grid - Problem/Root Cause/Solution */
+		.main-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 0;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			overflow: hidden;
+			margin-bottom: 30px;
+		}
+
+		.main-block {
+			padding: 24px;
+			min-height: 400px;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		.main-block:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+			z-index: 10;
+		}
+
+		/* Problem Block - Red/Pink */
+		.block-problem {
+			background: linear-gradient(180deg, #fff5f5 0%, #fff0f0 100%);
+			border-right: 1px solid #fed7d7;
+		}
+
+		.block-problem .block-title {
+			color: #c53030;
+		}
+
+		/* Root Cause Block - Yellow/Orange */
+		.block-root {
+			background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+			border-right: 1px solid #fde68a;
+		}
+
+		.block-root .block-title {
+			color: #b45309;
+		}
+
+		/* Solution Block - Green */
+		.block-solution {
+			background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+		}
+
+		.block-solution .block-title {
+			color: #166534;
+		}
+
+		.block-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 20px;
+			padding-bottom: 16px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+		}
+
+		.block-icon {
+			font-size: 20px;
+		}
+
+		.block-title {
+			font-size: 16px;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.subsection {
+			margin-bottom: 20px;
+		}
+
+		.subsection-title {
+			font-size: 14px;
+			font-weight: 700;
+			color: #2d3748;
+			margin-bottom: 6px;
+		}
+
+		.subsection-subtitle {
+			font-size: 12px;
+			color: #a0aec0;
+			font-style: italic;
+			margin-bottom: 10px;
+		}
+
+		.input-line {
+			width: 100%;
+			border: none;
+			border-bottom: 1px solid #cbd5e0;
+			padding: 6px 0;
+			font-size: 14px;
+			color: #4a5568;
+			background: transparent;
+			margin-bottom: 8px;
+			transition: all 0.3s;
+		}
+
+		.input-line:focus {
+			outline: none;
+			border-bottom-color: #3182ce;
+			background: rgba(255, 255, 255, 0.5);
+		}
+
+		.checkbox-group {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			margin-top: 8px;
+		}
+
+		.checkbox-item {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 13px;
+			color: #718096;
+		}
+
+		.checkbox-item input[type="checkbox"] {
+			width: 14px;
+			height: 14px;
+			accent-color: #3182ce;
+		}
+
+		/* 5 Whys Section */
+		.whys-list {
+			margin-bottom: 16px;
+		}
+
+		.why-item {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			margin-bottom: 10px;
+		}
+
+		.why-label {
+			font-size: 13px;
+			font-weight: 600;
+			color: #b45309;
+			min-width: 55px;
+		}
+
+		.why-input {
+			flex: 1;
+			border: none;
+			border-bottom: 1px solid #cbd5e0;
+			padding: 4px 0;
+			font-size: 13px;
+			background: transparent;
+		}
+
+		.why-input:focus {
+			outline: none;
+			border-bottom-color: #b45309;
+		}
+
+		/* PDCA Cycle */
+		.pdca-section {
+			margin-bottom: 30px;
+		}
+
+		.pdca-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 16px;
+			font-size: 16px;
+			font-weight: 800;
+			color: #2b6cb0;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.pdca-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 0;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+
+		.pdca-block {
+			padding: 20px;
+			min-height: 160px;
+			position: relative;
+		}
+
+		/* P - Plan - Blue */
+		.pdca-p {
+			background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+			border-right: 1px solid #bfdbfe;
+		}
+
+		.pdca-p .pdca-letter {
+			color: #1e40af;
+		}
+
+		/* D - Do - Green */
+		.pdca-d {
+			background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+			border-right: 1px solid #bbf7d0;
+		}
+
+		.pdca-d .pdca-letter {
+			color: #166534;
+		}
+
+		/* C - Check - Yellow/Orange */
+		.pdca-c {
+			background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+			border-right: 1px solid #fde68a;
+		}
+
+		.pdca-c .pdca-letter {
+			color: #b45309;
+		}
+
+		/* A - Act - Purple */
+		.pdca-a {
+			background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%);
+		}
+
+		.pdca-a .pdca-letter {
+			color: #6b21a8;
+		}
+
+		.pdca-title {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			margin-bottom: 12px;
+		}
+
+		.pdca-letter {
+			font-size: 28px;
+			font-weight: 800;
+			line-height: 1;
+		}
+
+		.pdca-name {
+			font-size: 14px;
+			font-weight: 700;
+			color: #4a5568;
+		}
+
+		.pdca-input {
+			width: 100%;
+			border: none;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+			padding: 6px 0;
+			font-size: 13px;
+			background: transparent;
+			margin-bottom: 8px;
+			color: #4a5568;
+		}
+
+		.pdca-input:focus {
+			outline: none;
+			border-bottom-color: #3182ce;
+			background: rgba(255, 255, 255, 0.3);
+		}
+
+		/* Bottom Section - Results & Status */
+		.bottom-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+
+		.bottom-block {
+			padding: 24px;
+			min-height: 220px;
+		}
+
+		/* Results - Blue */
+		.block-results {
+			background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+			border-right: 1px solid #bae6fd;
+		}
+
+		.block-results .block-title {
+			color: #0369a1;
+		}
+
+		/* Status - Purple */
+		.block-status {
+			background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%);
+		}
+
+		.block-status .block-title {
+			color: #7c3aed;
+		}
+
+		.status-options {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			margin-bottom: 16px;
+		}
+
+		.status-option {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 13px;
+			color: #718096;
+		}
+
+		.radio-custom {
+			width: 14px;
+			height: 14px;
+			border: 2px solid #cbd5e0;
+			border-radius: 50%;
+			display: inline-block;
+			position: relative;
+			cursor: pointer;
+		}
+
+		.radio-custom.selected::after {
+			content: '';
+			width: 8px;
+			height: 8px;
+			background: #7c3aed;
+			border-radius: 50%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		.effect-measures {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16px;
+			margin-top: 12px;
+		}
+
+		.measure-item {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 13px;
+			color: #718096;
+		}
+
+		.arrow {
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.arrow.up {
+			color: #16a34a;
+		}
+
+		.arrow.down {
+			color: #dc2626;
+		}
+
+		.footer {
+			text-align: center;
+			margin-top: 30px;
+			font-size: 12px;
+			color: #a0aec0;
+			font-style: italic;
+		}
+
+		/* Save Button */
+		.save-btn {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			border: none;
+			padding: 14px 28px;
+			border-radius: 50px;
+			font-size: 14px;
+			font-weight: 700;
+			cursor: pointer;
+			box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+			transition: all 0.3s;
+			z-index: 1000;
+		}
+
+		.save-btn:hover {
+			transform: translateY(-3px) scale(1.05);
+			box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+		}
+
+		.save-notification {
+			position: fixed;
+			bottom: 90px;
+			right: 30px;
+			background: #16a34a;
+			color: white;
+			padding: 14px 24px;
+			border-radius: 12px;
+			font-size: 14px;
+			font-weight: 600;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: all 0.4s;
+			box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+			z-index: 1000;
+		}
+
+		.save-notification.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* Responsive */
+		@media (max-width: 1024px) {
+			.main-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.main-block {
+				border-right: none;
+				border-bottom: 1px solid #e2e8f0;
+			}
+
+			.pdca-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.bottom-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.block-results {
+				border-right: none;
+				border-bottom: 1px solid #e2e8f0;
+			}
+		}
+
+		@media (max-width: 640px) {
+			.meta-section {
+				grid-template-columns: 1fr;
+			}
+
+			.meta-field {
+				border-right: none;
+				border-bottom: 1px solid #e2e8f0;
+			}
+
+			.pdca-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.container {
+				padding: 20px;
+			}
+		}
+
+		/* Checkbox styling */
+		input[type="checkbox"] {
+			width: 14px;
+			height: 14px;
+			accent-color: #3182ce;
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<!-- Header -->
+		<div class="header">
+			<div class="header-top">
+				<span class="japanese-char">改善</span>
+				<h1>KAIZEN-лист</h1>
+			</div>
+			<div class="header-subtitle">Щоденний лист безперервного покращення</div>
+		</div>
+
+		<!-- Meta Info -->
+		<div class="meta-section">
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">🗓️</span>
+					Дата
+				</div>
+				<div class="date-inputs">
+					<input type="text" class="date-input" placeholder="ДД" maxlength="2">
+					<span class="date-separator">/</span>
+					<input type="text" class="date-input" placeholder="ММ" maxlength="2">
+					<span class="date-separator">/</span>
+					<input type="text" class="date-input year" placeholder="РРРР" maxlength="4">
+				</div>
+			</div>
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">👤</span>
+					Відповідальний
+				</div>
+				<input type="text" class="meta-input" placeholder="Введіть ім'я...">
+			</div>
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">🏷️</span>
+					Область / Процес
+				</div>
+				<input type="text" class="meta-input" placeholder="Назва процесу...">
+			</div>
+		</div>
+
+		<!-- Main Analysis Grid -->
+		<div class="main-grid">
+			<!-- Problem Block -->
+			<div class="main-block block-problem">
+				<div class="block-header">
+					<span class="block-icon">🛑</span>
+					<span class="block-title">Проблема / Втрата</span>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Опис проблеми:</div>
+					<div class="subsection-subtitle">Що відбувається не так?</div>
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Де виникає?</div>
+					<div class="subsection-subtitle">Місце / крок процесу</div>
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Як часто?</div>
+					<div class="checkbox-group">
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Постійно</span>
+						</label>
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Іноді</span>
+						</label>
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Рідко</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Вплив на бізнес:</div>
+					<div class="checkbox-group">
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Час</span>
+						</label>
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Гроші</span>
+						</label>
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Якість</span>
+						</label>
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Команда</span>
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Root Cause Block -->
+			<div class="main-block block-root">
+				<div class="block-header">
+					<span class="block-icon">🔍</span>
+					<span class="block-title">Коренева причина</span>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">5 Чому (5 Whys):</div>
+					<div class="whys-list">
+						<div class="why-item">
+							<span class="why-label">Чому 1:</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+						<div class="why-item">
+							<span class="why-label">Чому 2:</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+						<div class="why-item">
+							<span class="why-label">Чому 3:</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+						<div class="why-item">
+							<span class="why-label">Чому 4:</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+						<div class="why-item">
+							<span class="why-label">Чому 5:</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+					</div>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Справжня причина:</div>
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+				</div>
+			</div>
+
+			<!-- Solution Block -->
+			<div class="main-block block-solution">
+				<div class="block-header">
+					<span class="block-icon">✅</span>
+					<span class="block-title">Покращення / Рішення</span>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Ідея покращення:</div>
+					<div class="subsection-subtitle">Що конкретно зробити?</div>
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+					<input type="text" class="input-line" placeholder="">
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Кроки впровадження:</div>
+					<div class="whys-list">
+						<div class="why-item">
+							<span class="why-label">1.</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+						<div class="why-item">
+							<span class="why-label">2.</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+						<div class="why-item">
+							<span class="why-label">3.</span>
+							<input type="text" class="why-input" placeholder="">
+						</div>
+					</div>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Дедлайн:</div>
+					<div class="date-inputs">
+						<input type="text" class="date-input" placeholder="ДД" maxlength="2">
+						<span class="date-separator">/</span>
+						<input type="text" class="date-input" placeholder="ММ" maxlength="2">
+						<span class="date-separator">/</span>
+						<input type="text" class="date-input year" placeholder="РРРР" maxlength="4">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- PDCA Cycle -->
+		<div class="pdca-section">
+			<div class="pdca-header">
+				<span>🔄</span>
+				<span>ЦИКЛ PDCA</span>
+			</div>
+			<div class="pdca-grid">
+				<!-- Plan -->
+				<div class="pdca-block pdca-p">
+					<div class="pdca-title">
+						<span class="pdca-letter">P</span>
+						<span class="pdca-name">Plan — Планування</span>
+					</div>
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+				</div>
+
+				<!-- Do -->
+				<div class="pdca-block pdca-d">
+					<div class="pdca-title">
+						<span class="pdca-letter">D</span>
+						<span class="pdca-name">Do — Виконання</span>
+					</div>
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+				</div>
+
+				<!-- Check -->
+				<div class="pdca-block pdca-c">
+					<div class="pdca-title">
+						<span class="pdca-letter">C</span>
+						<span class="pdca-name">Check — Перевірка</span>
+					</div>
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+				</div>
+
+				<!-- Act -->
+				<div class="pdca-block pdca-a">
+					<div class="pdca-title">
+						<span class="pdca-letter">A</span>
+						<span class="pdca-name">Act — Дія</span>
+					</div>
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+					<input type="text" class="pdca-input" placeholder="">
+				</div>
+			</div>
+		</div>
+
+		<!-- Bottom Section -->
+		<div class="bottom-grid">
+			<!-- Results -->
+			<div class="bottom-block block-results">
+				<div class="block-header" style="border-bottom-color: rgba(3, 105, 161, 0.2);">
+					<span class="block-icon">📊</span>
+					<span class="block-title">Результат / Ефект</span>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">До покращення:</div>
+					<input type="text" class="input-line" placeholder="">
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Після покращення:</div>
+					<input type="text" class="input-line" placeholder="">
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Вимірюваний ефект:</div>
+					<div class="effect-measures">
+						<label class="measure-item">
+							<input type="checkbox">
+							<span>Час <span class="arrow down">↓</span></span>
+						</label>
+						<label class="measure-item">
+							<input type="checkbox">
+							<span>Витрати <span class="arrow down">↓</span></span>
+						</label>
+						<label class="measure-item">
+							<input type="checkbox">
+							<span>Якість <span class="arrow up">↑</span></span>
+						</label>
+						<label class="measure-item">
+							<input type="checkbox">
+							<span>Інше</span>
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Status -->
+			<div class="bottom-block block-status">
+				<div class="block-header" style="border-bottom-color: rgba(124, 58, 237, 0.2);">
+					<span class="block-icon">🎯</span>
+					<span class="block-title">Статус та наступні кроки</span>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Статус:</div>
+					<div class="status-options">
+						<label class="status-option" onclick="toggleRadio(this)">
+							<span class="radio-custom"></span>
+							<span>Відкрито</span>
+						</label>
+						<label class="status-option" onclick="toggleRadio(this)">
+							<span class="radio-custom"></span>
+							<span>В процесі</span>
+						</label>
+						<label class="status-option" onclick="toggleRadio(this)">
+							<span class="radio-custom"></span>
+							<span>Завершено</span>
+						</label>
+						<label class="status-option" onclick="toggleRadio(this)">
+							<span class="radio-custom"></span>
+							<span>Скасовано</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Стандартизація:</div>
+					<div class="checkbox-group">
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Оновлено інструкцію / SOP</span>
+						</label>
+						<label class="checkbox-item">
+							<input type="checkbox">
+							<span>Поширено на інші процеси</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="subsection">
+					<div class="subsection-title">Наступне покращення:</div>
+					<input type="text" class="input-line" placeholder="">
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			Kaizen-лист | Методологія безперервного покращення
+		</div>
+	</div>
+
+	<button class="save-btn" onclick="saveData()">💾 Зберегти зміни</button>
+	<div class="save-notification" id="notification">✓ Збережено!</div>
+
+	<script>
+		// Radio button toggle
+		function toggleRadio(element) {
+			document.querySelectorAll('.radio-custom').forEach(r => r.classList.remove('selected'));
+			element.querySelector('.radio-custom').classList.add('selected');
+			saveData();
+		}
+
+		// Save data
+		function saveData() {
+			const data = {
+				meta: {
+					date: Array.from(document.querySelectorAll('.meta-field .date-input')).map(i => i.value),
+					responsible: document.querySelectorAll('.meta-input')[0].value,
+					process: document.querySelectorAll('.meta-input')[1].value
+				},
+				inputs: Array.from(document.querySelectorAll('input[type="text"]')).map(i => i.value),
+				checkboxes: Array.from(document.querySelectorAll('input[type="checkbox"]')).map(c => c.checked),
+				radio: document.querySelector('.radio-custom.selected') ?
+					Array.from(document.querySelectorAll('.radio-custom')).indexOf(document.querySelector('.radio-custom.selected')) : -1
+			};
+
+			localStorage.setItem('kaizenData', JSON.stringify(data));
+
+			const notif = document.getElementById('notification');
+			notif.classList.add('show');
+			setTimeout(() => notif.classList.remove('show'), 2500);
+		}
+
+		// Load data
+		window.onload = function () {
+			const saved = localStorage.getItem('kaizenData');
+			if (saved) {
+				const data = JSON.parse(saved);
+
+				// Restore meta
+				if (data.meta) {
+					const dateInputs = document.querySelectorAll('.meta-field .date-input');
+					data.meta.date?.forEach((val, idx) => {
+						if (dateInputs[idx]) dateInputs[idx].value = val;
+					});
+
+					const metaInputs = document.querySelectorAll('.meta-input');
+					if (metaInputs[0]) metaInputs[0].value = data.meta.responsible || '';
+					if (metaInputs[1]) metaInputs[1].value = data.meta.process || '';
+				}
+
+				// Restore text inputs
+				const allInputs = document.querySelectorAll('input[type="text"]');
+				data.inputs?.forEach((val, idx) => {
+					if (allInputs[idx]) allInputs[idx].value = val;
+				});
+
+				// Restore checkboxes
+				const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+				data.checkboxes?.forEach((checked, idx) => {
+					if (checkboxes[idx]) checkboxes[idx].checked = checked;
+				});
+
+				// Restore radio
+				if (data.radio >= 0) {
+					const radios = document.querySelectorAll('.radio-custom');
+					if (radios[data.radio]) radios[data.radio].classList.add('selected');
+				}
+			}
+		};
+
+		// Auto-save on blur
+		document.querySelectorAll('input').forEach(input => {
+			input.addEventListener('blur', saveData);
+			input.addEventListener('change', saveData);
+		});
+	</script>
+</body>
+
+</html>
