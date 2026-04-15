@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Flip Clock</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			background: #f7f5f3;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 40px;
+		}
+
+		.clock-container {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			background: rgba(255, 255, 255, 0.6);
+			padding: 40px 50px;
+			border-radius: 24px;
+			backdrop-filter: blur(20px);
+			box-shadow:
+				0 20px 60px rgba(0, 0, 0, 0.08),
+				inset 0 1px 0 rgba(255, 255, 255, 0.8);
+		}
+
+		.digit-group {
+			display: flex;
+			gap: 8px;
+		}
+
+		.flip-card {
+			position: relative;
+			width: 80px;
+			height: 100px;
+			background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+			border-radius: 12px;
+			box-shadow:
+				0 4px 6px rgba(0, 0, 0, 0.1),
+				inset 0 1px 0 rgba(255, 255, 255, 0.8);
+			perspective: 400px;
+		}
+
+		/* Half cards */
+		.half {
+			position: absolute;
+			width: 100%;
+			height: 50%;
+			overflow: hidden;
+			left: 0;
+			background: inherit;
+		}
+
+		.half.top {
+			top: 0;
+			border-radius: 12px 12px 0 0;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+			z-index: 2;
+		}
+
+		.half.bottom {
+			bottom: 0;
+			border-radius: 0 0 12px 12px;
+			border-top: 1px solid rgba(255, 255, 255, 0.5);
+			z-index: 1;
+		}
+
+		.digit {
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			font-size: 64px;
+			font-weight: 300;
+			color: #475569;
+			line-height: 100px;
+			height: 100px;
+			left: 0;
+		}
+
+		.half.top .digit {
+			top: 0;
+		}
+
+		.half.bottom .digit {
+			bottom: 0;
+		}
+
+		/* Flippers for animation */
+		.flipper {
+			position: absolute;
+			width: 100%;
+			height: 50%;
+			overflow: hidden;
+			left: 0;
+			background: inherit;
+			backface-visibility: hidden;
+			z-index: 10;
+			display: none;
+		}
+
+		.flipper.top {
+			top: 0;
+			border-radius: 12px 12px 0 0;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+			transform-origin: bottom;
+		}
+
+		.flipper.bottom {
+			bottom: 0;
+			border-radius: 0 0 12px 12px;
+			border-top: 1px solid rgba(255, 255, 255, 0.5);
+			transform-origin: top;
+			transform: rotateX(180deg);
+		}
+
+		.flipper .digit {
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			font-size: 64px;
+			font-weight: 300;
+			color: #475569;
+			line-height: 100px;
+			height: 100px;
+			left: 0;
+		}
+
+		.flipper.top .digit {
+			top: 0;
+		}
+
+		.flipper.bottom .digit {
+			bottom: 0;
+		}
+
+		/* Animation */
+		.flipping .half {
+			opacity: 0;
+		}
+
+		.flipping .flipper {
+			display: block;
+		}
+
+		.flipping .flipper.top {
+			animation: flipTop 0.6s ease-in-out forwards;
+		}
+
+		.flipping .flipper.bottom {
+			animation: flipBottom 0.6s ease-in-out forwards;
+		}
+
+		@keyframes flipTop {
+			from {
+				transform: rotateX(0deg);
+			}
+
+			to {
+				transform: rotateX(-180deg);
+			}
+		}
+
+		@keyframes flipBottom {
+			from {
+				transform: rotateX(180deg);
+			}
+
+			to {
+				transform: rotateX(0deg);
+			}
+		}
+
+		.separator {
+			font-size: 48px;
+			font-weight: 200;
+			color: #94a3b8;
+			line-height: 100px;
+			animation: pulse 2s ease-in-out infinite;
+		}
+
+		@keyframes pulse {
+
+			0%,
+			100% {
+				opacity: 1;
+			}
+
+			50% {
+				opacity: 0.4;
+			}
+		}
+
+		@media (max-width: 600px) {
+			.clock-container {
+				padding: 24px 30px;
+				gap: 8px;
+			}
+
+			.flip-card {
+				width: 60px;
+				height: 80px;
+			}
+
+			.digit {
+				font-size: 48px;
+				line-height: 80px;
+				height: 80px;
+			}
+
+			.separator {
+				font-size: 36px;
+				line-height: 80px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="clock-container">
+		<div class="digit-group" id="hours">
+			<div class="flip-card" data-value="0">
+				<div class="half top">
+					<div class="digit">0</div>
+				</div>
+				<div class="half bottom">
+					<div class="digit">0</div>
+				</div>
+			</div>
+			<div class="flip-card" data-value="0">
+				<div class="half top">
+					<div class="digit">0</div>
+				</div>
+				<div class="half bottom">
+					<div class="digit">0</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="separator">:</div>
+
+		<div class="digit-group" id="minutes">
+			<div class="flip-card" data-value="0">
+				<div class="half top">
+					<div class="digit">0</div>
+				</div>
+				<div class="half bottom">
+					<div class="digit">0</div>
+				</div>
+			</div>
+			<div class="flip-card" data-value="0">
+				<div class="half top">
+					<div class="digit">0</div>
+				</div>
+				<div class="half bottom">
+					<div class="digit">0</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="separator">:</div>
+
+		<div class="digit-group" id="seconds">
+			<div class="flip-card" data-value="0">
+				<div class="half top">
+					<div class="digit">0</div>
+				</div>
+				<div class="half bottom">
+					<div class="digit">0</div>
+				</div>
+			</div>
+			<div class="flip-card" data-value="0">
+				<div class="half top">
+					<div class="digit">0</div>
+				</div>
+				<div class="half bottom">
+					<div class="digit">0</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function updateFlipCard(card, newValue) {
+			const currentValue = card.getAttribute('data-value');
+			if (currentValue === newValue) return;
+
+			const topHalf = card.querySelector('.half.top');
+			const bottomHalf = card.querySelector('.half.bottom');
+
+			// Create flipper elements with current and new values
+			const flipperTop = document.createElement('div');
+			flipperTop.className = 'flipper top';
+			flipperTop.innerHTML = `<div class="digit">${currentValue}</div>`;
+
+			const flipperBottom = document.createElement('div');
+			flipperBottom.className = 'flipper bottom';
+			flipperBottom.innerHTML = `<div class="digit">${newValue}</div>`;
+
+			card.appendChild(flipperTop);
+			card.appendChild(flipperBottom);
+
+			// Trigger animation
+			requestAnimationFrame(() => {
+				card.classList.add('flipping');
+			});
+
+			// Update static values and cleanup
+			setTimeout(() => {
+				topHalf.querySelector('.digit').textContent = newValue;
+				bottomHalf.querySelector('.digit').textContent = newValue;
+				card.setAttribute('data-value', newValue);
+
+				card.classList.remove('flipping');
+				flipperTop.remove();
+				flipperBottom.remove();
+			}, 600);
+		}
+
+		function updateClock() {
+			const now = new Date();
+			const hours = String(now.getHours()).padStart(2, '0');
+			const minutes = String(now.getMinutes()).padStart(2, '0');
+			const seconds = String(now.getSeconds()).padStart(2, '0');
+
+			const hourCards = document.querySelectorAll('#hours .flip-card');
+			updateFlipCard(hourCards[0], hours[0]);
+			updateFlipCard(hourCards[1], hours[1]);
+
+			const minuteCards = document.querySelectorAll('#minutes .flip-card');
+			updateFlipCard(minuteCards[0], minutes[0]);
+			updateFlipCard(minuteCards[1], minutes[1]);
+
+			const secondCards = document.querySelectorAll('#seconds .flip-card');
+			updateFlipCard(secondCards[0], seconds[0]);
+			updateFlipCard(secondCards[1], seconds[1]);
+		}
+
+		// Initialize immediately
+		updateClock();
+		setInterval(updateClock, 1000);
+	</script>
+</body>
+
+</html>
