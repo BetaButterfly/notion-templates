@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>OKR — Цілі та Ключові Результати</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+			background: #f8fafc;
+			padding: 20px;
+			min-height: 100vh;
+			color: #334155;
+		}
+
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			background: white;
+			padding: 40px;
+			border-radius: 16px;
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+		}
+
+		/* Header */
+		.header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.header h1 {
+			font-size: 2.2rem;
+			font-weight: 800;
+			color: #0f172a;
+			margin-bottom: 4px;
+		}
+
+		.header-subtitle {
+			font-size: 16px;
+			color: #64748b;
+			font-style: italic;
+		}
+
+		/* Meta Section */
+		.meta-section {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 0;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			overflow: hidden;
+			margin-bottom: 30px;
+			background: white;
+		}
+
+		.meta-field {
+			padding: 16px;
+			border-right: 1px solid #e2e8f0;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.meta-field:last-child {
+			border-right: none;
+		}
+
+		.meta-label {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 12px;
+			font-weight: 700;
+			color: #475569;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.meta-icon {
+			font-size: 14px;
+		}
+
+		.meta-input {
+			border: none;
+			border-bottom: 2px solid #e2e8f0;
+			padding: 6px 0;
+			font-size: 14px;
+			color: #0f172a;
+			background: transparent;
+			width: 100%;
+			transition: all 0.3s;
+		}
+
+		.meta-input:focus {
+			outline: none;
+			border-bottom-color: #3b82f6;
+		}
+
+		.quarter-inputs {
+			display: flex;
+			gap: 4px;
+			align-items: center;
+		}
+
+		.quarter-input {
+			width: 40px;
+			text-align: center;
+			border: none;
+			border-bottom: 2px solid #e2e8f0;
+			padding: 6px 0;
+			font-size: 14px;
+		}
+
+		.quarter-input.year {
+			width: 60px;
+		}
+
+		.quarter-input:focus {
+			outline: none;
+			border-bottom-color: #3b82f6;
+		}
+
+		.review-options {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			margin-top: 4px;
+		}
+
+		.checkbox-label {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 13px;
+			color: #64748b;
+			cursor: pointer;
+		}
+
+		.checkbox-label input[type="checkbox"] {
+			accent-color: #3b82f6;
+		}
+
+		/* Objective Block */
+		.objective-block {
+			margin-bottom: 30px;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+
+		.objective-header {
+			padding: 20px;
+			border-bottom: 1px solid #e2e8f0;
+		}
+
+		/* Color variants for objectives */
+		.obj-blue .objective-header {
+			background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+			border-left: 4px solid #2563eb;
+		}
+
+		.obj-green .objective-header {
+			background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+			border-left: 4px solid #16a34a;
+		}
+
+		.obj-orange .objective-header {
+			background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+			border-left: 4px solid #ea580c;
+		}
+
+		.obj-blue .obj-title {
+			color: #1e40af;
+		}
+
+		.obj-green .obj-title {
+			color: #166534;
+		}
+
+		.obj-orange .obj-title {
+			color: #9a3412;
+		}
+
+		.obj-header-top {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 8px;
+		}
+
+		.obj-icon {
+			font-size: 20px;
+		}
+
+		.obj-title {
+			font-size: 17px;
+			font-weight: 800;
+			text-transform: uppercase;
+		}
+
+		.obj-subtitle {
+			font-size: 14px;
+			color: #64748b;
+			font-style: italic;
+			margin-bottom: 12px;
+		}
+
+		.obj-meta-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			align-items: center;
+		}
+
+		.level-options {
+			display: flex;
+			gap: 12px;
+		}
+
+		.quarter-display {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 13px;
+			color: #64748b;
+		}
+
+		/* Key Results */
+		.key-results {
+			padding: 0;
+		}
+
+		.kr-item {
+			padding: 20px;
+			border-bottom: 1px solid #e2e8f0;
+			position: relative;
+		}
+
+		.kr-item:last-child {
+			border-bottom: none;
+		}
+
+		/* KR Colors */
+		.kr-1 {
+			background: #f8fafc;
+			border-left: 3px solid #3b82f6;
+		}
+
+		.kr-2 {
+			background: #f0fdf4;
+			border-left: 3px solid #22c55e;
+		}
+
+		.kr-3 {
+			background: #fff7ed;
+			border-left: 3px solid #f97316;
+		}
+
+		.kr-header {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 8px;
+			font-weight: 700;
+			font-size: 14px;
+		}
+
+		.kr-1 .kr-header {
+			color: #1d4ed8;
+		}
+
+		.kr-2 .kr-header {
+			color: #15803d;
+		}
+
+		.kr-3 .kr-header {
+			color: #c2410c;
+		}
+
+		.kr-number {
+			font-weight: 800;
+		}
+
+		.kr-description {
+			font-size: 13px;
+			color: #94a3b8;
+			font-style: italic;
+			margin-bottom: 16px;
+		}
+
+		.kr-metrics {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 16px;
+			margin-bottom: 16px;
+		}
+
+		.metric-field {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.metric-label {
+			font-size: 12px;
+			color: #64748b;
+			font-weight: 600;
+		}
+
+		.metric-input {
+			border: none;
+			border-bottom: 1px solid #cbd5e1;
+			padding: 4px 0;
+			font-size: 14px;
+			background: transparent;
+			width: 100%;
+		}
+
+		.metric-input:focus {
+			outline: none;
+			border-bottom-color: #3b82f6;
+		}
+
+		.kr-progress-row {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			margin-bottom: 12px;
+			flex-wrap: wrap;
+		}
+
+		.progress-label {
+			font-size: 13px;
+			color: #475569;
+			font-weight: 600;
+			min-width: 60px;
+		}
+
+		.progress-bar-container {
+			flex: 1;
+			min-width: 200px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.progress-bar-bg {
+			flex: 1;
+			height: 12px;
+			background: #e2e8f0;
+			border-radius: 6px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.progress-bar-fill {
+			height: 100%;
+			background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
+			border-radius: 6px;
+			transition: width 0.3s;
+			width: 0%;
+		}
+
+		.progress-input {
+			width: 60px;
+			border: none;
+			border-bottom: 1px solid #cbd5e1;
+			text-align: center;
+			font-size: 14px;
+			font-weight: 700;
+			color: #0f172a;
+		}
+
+		.kr-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+
+		.responsible-field {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 13px;
+			color: #64748b;
+		}
+
+		.responsible-input {
+			border: none;
+			border-bottom: 1px solid #cbd5e1;
+			padding: 4px 8px;
+			font-size: 13px;
+			width: 200px;
+		}
+
+		.status-options {
+			display: flex;
+			gap: 12px;
+		}
+
+		.status-label {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 13px;
+			color: #64748b;
+			cursor: pointer;
+		}
+
+		.status-label input[type="radio"] {
+			accent-color: #3b82f6;
+		}
+
+		/* Notes Section */
+		.notes-section {
+			padding: 16px 20px;
+			background: #f8fafc;
+			border-top: 1px solid #e2e8f0;
+		}
+
+		.notes-label {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 13px;
+			font-weight: 700;
+			color: #475569;
+			margin-bottom: 8px;
+		}
+
+		.notes-input {
+			width: 100%;
+			border: none;
+			border-bottom: 1px solid #cbd5e1;
+			padding: 8px 0;
+			font-size: 13px;
+			background: transparent;
+			resize: none;
+			min-height: 30px;
+		}
+
+		.notes-input:focus {
+			outline: none;
+			border-bottom-color: #3b82f6;
+		}
+
+		/* OKR Scale */
+		.scale-section {
+			margin: 40px 0;
+			padding: 24px;
+			background: #f8fafc;
+			border-radius: 8px;
+			border: 1px solid #e2e8f0;
+		}
+
+		.scale-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 20px;
+			font-size: 16px;
+			font-weight: 800;
+			color: #0f172a;
+		}
+
+		.scale-grid {
+			display: grid;
+			gap: 8px;
+		}
+
+		.scale-item {
+			display: grid;
+			grid-template-columns: 100px 1fr;
+			align-items: center;
+			gap: 16px;
+			padding: 12px;
+			border-radius: 6px;
+			font-size: 14px;
+		}
+
+		.scale-range {
+			font-weight: 800;
+			font-size: 15px;
+		}
+
+		.scale-desc {
+			color: #475569;
+		}
+
+		.scale-red {
+			background: #fef2f2;
+			border-left: 3px solid #ef4444;
+		}
+
+		.scale-red .scale-range {
+			color: #dc2626;
+		}
+
+		.scale-yellow {
+			background: #fffbeb;
+			border-left: 3px solid #f59e0b;
+		}
+
+		.scale-yellow .scale-range {
+			color: #d97706;
+		}
+
+		.scale-green {
+			background: #f0fdf4;
+			border-left: 3px solid #22c55e;
+		}
+
+		.scale-green .scale-range {
+			color: #16a34a;
+		}
+
+		.scale-blue {
+			background: #eff6ff;
+			border-left: 3px solid #3b82f6;
+		}
+
+		.scale-blue .scale-range {
+			color: #2563eb;
+		}
+
+		/* Bottom Section */
+		.bottom-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 20px;
+			margin-top: 30px;
+		}
+
+		.bottom-block {
+			padding: 24px;
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			background: white;
+		}
+
+		.bottom-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 20px;
+			font-size: 15px;
+			font-weight: 800;
+			color: #0f172a;
+		}
+
+		.bottom-subsection {
+			margin-bottom: 20px;
+		}
+
+		.bottom-subtitle {
+			font-size: 13px;
+			font-weight: 700;
+			color: #334155;
+			margin-bottom: 10px;
+		}
+
+		.bottom-input {
+			width: 100%;
+			border: none;
+			border-bottom: 1px solid #cbd5e1;
+			padding: 8px 0;
+			font-size: 14px;
+			margin-bottom: 8px;
+			background: transparent;
+		}
+
+		.bottom-input:focus {
+			outline: none;
+			border-bottom-color: #3b82f6;
+		}
+
+		/* Footer */
+		.footer {
+			text-align: center;
+			margin-top: 30px;
+			font-size: 12px;
+			color: #94a3b8;
+			font-style: italic;
+		}
+
+		.footer .brand {
+			color: #dc2626;
+			font-weight: 700;
+		}
+
+		/* Save Button */
+		.save-btn {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+			color: white;
+			border: none;
+			padding: 14px 28px;
+			border-radius: 50px;
+			font-size: 14px;
+			font-weight: 700;
+			cursor: pointer;
+			box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+			transition: all 0.3s;
+			z-index: 1000;
+		}
+
+		.save-btn:hover {
+			transform: translateY(-3px) scale(1.05);
+			box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5);
+		}
+
+		.save-notification {
+			position: fixed;
+			bottom: 90px;
+			right: 30px;
+			background: #22c55e;
+			color: white;
+			padding: 14px 24px;
+			border-radius: 12px;
+			font-size: 14px;
+			font-weight: 600;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: all 0.4s;
+			box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+			z-index: 1000;
+		}
+
+		.save-notification.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* Responsive */
+		@media (max-width: 1024px) {
+			.meta-section {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.meta-field:nth-child(2) {
+				border-right: none;
+			}
+
+			.meta-field:nth-child(3),
+			.meta-field:nth-child(4) {
+				border-top: 1px solid #e2e8f0;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.container {
+				padding: 20px;
+			}
+
+			.meta-section {
+				grid-template-columns: 1fr;
+			}
+
+			.meta-field {
+				border-right: none;
+				border-bottom: 1px solid #e2e8f0;
+			}
+
+			.kr-metrics {
+				grid-template-columns: 1fr;
+			}
+
+			.bottom-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.header h1 {
+				font-size: 1.6rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<!-- Header -->
+		<div class="header">
+			<h1>OKR — Цілі та Ключові Результати</h1>
+			<div class="header-subtitle">Objectives & Key Results</div>
+		</div>
+
+		<!-- Meta Section -->
+		<div class="meta-section">
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">🏢</span>
+					Компанія / Команда
+				</div>
+				<input type="text" class="meta-input" placeholder="Введіть назву...">
+			</div>
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">📅</span>
+					Період
+				</div>
+				<div class="quarter-inputs">
+					<span style="font-size: 13px; color: #64748b;">Q</span>
+					<input type="text" class="quarter-input" placeholder="1" maxlength="1">
+					<span class="quarter-input" style="border: none; width: 10px;">/</span>
+					<input type="text" class="quarter-input year" placeholder="2024" maxlength="4">
+				</div>
+			</div>
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">👤</span>
+					Власник OKR
+				</div>
+				<input type="text" class="meta-input" placeholder="Ім'я відповідального...">
+			</div>
+			<div class="meta-field">
+				<div class="meta-label">
+					<span class="meta-icon">🔄</span>
+					Цикл перегляду
+				</div>
+				<div class="review-options">
+					<label class="checkbox-label">
+						<input type="checkbox"> Тижневий
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox"> Місячний
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<!-- Objective 1 (Blue) -->
+		<div class="objective-block obj-blue">
+			<div class="objective-header">
+				<div class="obj-header-top">
+					<span class="obj-icon">🎯</span>
+					<span class="obj-title">Ціль 1 (Objective):</span>
+				</div>
+				<div class="obj-subtitle">Надихаюча, якісна ціль — куди ми прямуємо?</div>
+				<div class="obj-meta-row">
+					<div class="level-options">
+						<label class="checkbox-label">
+							<input type="radio" name="level1"> Компанія
+						</label>
+						<label class="checkbox-label">
+							<input type="radio" name="level1"> Команда
+						</label>
+						<label class="checkbox-label">
+							<input type="radio" name="level1"> Особистий
+						</label>
+					</div>
+					<div class="quarter-display">
+						<span>Квартал: Q</span>
+						<input type="text" class="quarter-input" placeholder="1" style="width: 30px;">
+						<input type="text" class="quarter-input year" placeholder="2024" style="width: 50px;">
+					</div>
+				</div>
+			</div>
+
+			<div class="key-results">
+				<!-- KR1 -->
+				<div class="kr-item kr-1">
+					<div class="kr-header">
+						<span class="kr-number">KR1</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат... (Що? Скільки? До коли?)</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input" placeholder="">
+						</div>
+						<div class="status-options">
+							<label class="status-label">
+								<input type="radio" name="status1_1"> На трасі
+							</label>
+							<label class="status-label">
+								<input type="radio" name="status1_1"> Ризик
+							</label>
+							<label class="status-label">
+								<input type="radio" name="status1_1"> Блок
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<!-- KR2 -->
+				<div class="kr-item kr-2">
+					<div class="kr-header">
+						<span class="kr-number">KR2</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат... (Що? Скільки? До коли?)</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input" placeholder="">
+						</div>
+						<div class="status-options">
+							<label class="status-label">
+								<input type="radio" name="status1_2"> На трасі
+							</label>
+							<label class="status-label">
+								<input type="radio" name="status1_2"> Ризик
+							</label>
+							<label class="status-label">
+								<input type="radio" name="status1_2"> Блок
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<!-- KR3 -->
+				<div class="kr-item kr-3">
+					<div class="kr-header">
+						<span class="kr-number">KR3</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат... (Що? Скільки? До коли?)</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input" placeholder="">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input" placeholder="">
+						</div>
+						<div class="status-options">
+							<label class="status-label">
+								<input type="radio" name="status1_3"> На трасі
+							</label>
+							<label class="status-label">
+								<input type="radio" name="status1_3"> Ризик
+							</label>
+							<label class="status-label">
+								<input type="radio" name="status1_3"> Блок
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="notes-section">
+				<div class="notes-label">
+					<span>📝</span>
+					<span>Нотатки / блокери:</span>
+				</div>
+				<input type="text" class="notes-input" placeholder="Введіть нотатки або блокуючі фактори...">
+			</div>
+		</div>
+
+		<!-- Objective 2 (Green) -->
+		<div class="objective-block obj-green">
+			<div class="objective-header">
+				<div class="obj-header-top">
+					<span class="obj-icon">🚀</span>
+					<span class="obj-title">Ціль 2 (Objective):</span>
+				</div>
+				<div class="obj-subtitle">Надихаюча, якісна ціль — куди ми прямуємо?</div>
+				<div class="obj-meta-row">
+					<div class="level-options">
+						<label class="checkbox-label">
+							<input type="radio" name="level2"> Компанія
+						</label>
+						<label class="checkbox-label">
+							<input type="radio" name="level2"> Команда
+						</label>
+						<label class="checkbox-label">
+							<input type="radio" name="level2"> Особистий
+						</label>
+					</div>
+					<div class="quarter-display">
+						<span>Квартал: Q</span>
+						<input type="text" class="quarter-input" placeholder="1" style="width: 30px;">
+						<input type="text" class="quarter-input year" placeholder="2024" style="width: 50px;">
+					</div>
+				</div>
+			</div>
+
+			<div class="key-results">
+				<div class="kr-item kr-1">
+					<div class="kr-header">
+						<span class="kr-number">KR1</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат... (Що? Скільки? До коли?)</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input">
+						</div>
+						<div class="status-options">
+							<label class="status-label"><input type="radio" name="status2_1"> На трасі</label>
+							<label class="status-label"><input type="radio" name="status2_1"> Ризик</label>
+							<label class="status-label"><input type="radio" name="status2_1"> Блок</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="kr-item kr-2">
+					<div class="kr-header">
+						<span class="kr-number">KR2</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат...</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input">
+						</div>
+						<div class="status-options">
+							<label class="status-label"><input type="radio" name="status2_2"> На трасі</label>
+							<label class="status-label"><input type="radio" name="status2_2"> Ризик</label>
+							<label class="status-label"><input type="radio" name="status2_2"> Блок</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="kr-item kr-3">
+					<div class="kr-header">
+						<span class="kr-number">KR3</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат...</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input">
+						</div>
+						<div class="status-options">
+							<label class="status-label"><input type="radio" name="status2_3"> На трасі</label>
+							<label class="status-label"><input type="radio" name="status2_3"> Ризик</label>
+							<label class="status-label"><input type="radio" name="status2_3"> Блок</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="notes-section">
+				<div class="notes-label">
+					<span>📝</span>
+					<span>Нотатки / блокери:</span>
+				</div>
+				<input type="text" class="notes-input">
+			</div>
+		</div>
+
+		<!-- Objective 3 (Orange) -->
+		<div class="objective-block obj-orange">
+			<div class="objective-header">
+				<div class="obj-header-top">
+					<span class="obj-icon">⚡</span>
+					<span class="obj-title">Ціль 3 (Objective):</span>
+				</div>
+				<div class="obj-subtitle">Надихаюча, якісна ціль — куди ми прямуємо?</div>
+				<div class="obj-meta-row">
+					<div class="level-options">
+						<label class="checkbox-label">
+							<input type="radio" name="level3"> Компанія
+						</label>
+						<label class="checkbox-label">
+							<input type="radio" name="level3"> Команда
+						</label>
+						<label class="checkbox-label">
+							<input type="radio" name="level3"> Особистий
+						</label>
+					</div>
+					<div class="quarter-display">
+						<span>Квартал: Q</span>
+						<input type="text" class="quarter-input" placeholder="1" style="width: 30px;">
+						<input type="text" class="quarter-input year" placeholder="2024" style="width: 50px;">
+					</div>
+				</div>
+			</div>
+
+			<div class="key-results">
+				<div class="kr-item kr-1">
+					<div class="kr-header">
+						<span class="kr-number">KR1</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат... (Що? Скільки? До коли?)</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input">
+						</div>
+						<div class="status-options">
+							<label class="status-label"><input type="radio" name="status3_1"> На трасі</label>
+							<label class="status-label"><input type="radio" name="status3_1"> Ризик</label>
+							<label class="status-label"><input type="radio" name="status3_1"> Блок</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="kr-item kr-2">
+					<div class="kr-header">
+						<span class="kr-number">KR2</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат...</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input">
+						</div>
+						<div class="status-options">
+							<label class="status-label"><input type="radio" name="status3_2"> На трасі</label>
+							<label class="status-label"><input type="radio" name="status3_2"> Ризик</label>
+							<label class="status-label"><input type="radio" name="status3_2"> Блок</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="kr-item kr-3">
+					<div class="kr-header">
+						<span class="kr-number">KR3</span>
+						<span>Ключовий результат:</span>
+					</div>
+					<div class="kr-description">Опишіть вимірюваний результат...</div>
+					<div class="kr-metrics">
+						<div class="metric-field">
+							<span class="metric-label">Базове значення:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Ціль:</span>
+							<input type="text" class="metric-input">
+						</div>
+						<div class="metric-field">
+							<span class="metric-label">Поточнє:</span>
+							<input type="text" class="metric-input">
+						</div>
+					</div>
+					<div class="kr-progress-row">
+						<span class="progress-label">Прогрес: 0%</span>
+						<div class="progress-bar-container">
+							<div class="progress-bar-bg">
+								<div class="progress-bar-fill" style="width: 0%"></div>
+							</div>
+							<input type="text" class="progress-input" placeholder="0%" onchange="updateProgress(this)">
+						</div>
+					</div>
+					<div class="kr-footer">
+						<div class="responsible-field">
+							<span>Відповідальний:</span>
+							<input type="text" class="responsible-input">
+						</div>
+						<div class="status-options">
+							<label class="status-label"><input type="radio" name="status3_3"> На трасі</label>
+							<label class="status-label"><input type="radio" name="status3_3"> Ризик</label>
+							<label class="status-label"><input type="radio" name="status3_3"> Блок</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="notes-section">
+				<div class="notes-label">
+					<span>📝</span>
+					<span>Нотатки / блокери:</span>
+				</div>
+				<input type="text" class="notes-input">
+			</div>
+		</div>
+
+		<!-- OKR Scale -->
+		<div class="scale-section">
+			<div class="scale-header">
+				<span>📏</span>
+				<span>Шкала оцінки OKR</span>
+			</div>
+			<div class="scale-grid">
+				<div class="scale-item scale-red">
+					<div class="scale-range">0.0 – 0.3</div>
+					<div class="scale-desc">Не досягнуто — ціль провалена або не розпочата</div>
+				</div>
+				<div class="scale-item scale-yellow">
+					<div class="scale-range">0.4 – 0.6</div>
+					<div class="scale-desc">Частково — є прогрес, але результат недостатній</div>
+				</div>
+				<div class="scale-item scale-green">
+					<div class="scale-range">0.7 – 1.0</div>
+					<div class="scale-desc">Досягнуто — ідеальний діапазон для амбітних OKR</div>
+				</div>
+				<div class="scale-item scale-blue">
+					<div class="scale-range">> 1.0</div>
+					<div class="scale-desc">Перевиконано — перегляньте амбітність наступних цілей</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bottom Grid -->
+		<div class="bottom-grid">
+			<div class="bottom-block">
+				<div class="bottom-header">
+					<span>🏁</span>
+					<span>Підсумок кварталу</span>
+				</div>
+				<div class="bottom-subsection">
+					<div class="bottom-subtitle">Що вдалося?</div>
+					<input type="text" class="bottom-input" placeholder="">
+					<input type="text" class="bottom-input" placeholder="">
+				</div>
+				<div class="bottom-subsection">
+					<div class="bottom-subtitle">Що не вдалося і чому?</div>
+					<input type="text" class="bottom-input" placeholder="">
+					<input type="text" class="bottom-input" placeholder="">
+				</div>
+			</div>
+
+			<div class="bottom-block">
+				<div class="bottom-header">
+					<span>💡</span>
+					<span>Наступний квартал</span>
+				</div>
+				<div class="bottom-subsection">
+					<div class="bottom-subtitle">Уроки для наступного циклу:</div>
+					<input type="text" class="bottom-input" placeholder="">
+					<input type="text" class="bottom-input" placeholder="">
+				</div>
+				<div class="bottom-subsection">
+					<div class="bottom-subtitle">Пріоритети Q+1:</div>
+					<input type="text" class="bottom-input" placeholder="">
+					<input type="text" class="bottom-input" placeholder="">
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			OKR — методологія <span class="brand">Intel & Google</span>. Ціль: 70% = успіх для амбітних OKR
+		</div>
+	</div>
+
+	<button class="save-btn" onclick="saveData()">💾 Зберегти зміни</button>
+	<div class="save-notification" id="notification">✓ Збережено!</div>
+
+	<script>
+		// Update progress bar
+		function updateProgress(input) {
+			let value = parseFloat(input.value.replace('%', ''));
+			if (isNaN(value)) value = 0;
+			if (value > 100) value = 100;
+			if (value < 0) value = 0;
+
+			const bar = input.parentElement.querySelector('.progress-bar-fill');
+			bar.style.width = value + '%';
+
+			if (value < 30) {
+				bar.style.background = '#ef4444';
+			} else if (value < 70) {
+				bar.style.background = 'linear-gradient(90deg, #f59e0b 0%, #eab308 100%)';
+			} else {
+				bar.style.background = 'linear-gradient(90deg, #22c55e 0%, #16a34a 100%)';
+			}
+
+			saveData();
+		}
+
+		// Save all data
+		function saveData() {
+			const data = {
+				inputs: Array.from(document.querySelectorAll('input[type="text"]')).map(i => i.value),
+				radios: Array.from(document.querySelectorAll('input[type="radio"]')).map(r => r.checked),
+				checkboxes: Array.from(document.querySelectorAll('input[type="checkbox"]')).map(c => c.checked)
+			};
+
+			localStorage.setItem('okrData', JSON.stringify(data));
+
+			const notif = document.getElementById('notification');
+			notif.classList.add('show');
+			setTimeout(() => notif.classList.remove('show'), 2500);
+		}
+
+		// Load data
+		window.onload = function () {
+			const saved = localStorage.getItem('okrData');
+			if (saved) {
+				const data = JSON.parse(saved);
+
+				const inputs = document.querySelectorAll('input[type="text"]');
+				data.inputs?.forEach((val, idx) => {
+					if (inputs[idx]) inputs[idx].value = val;
+				});
+
+				const radios = document.querySelectorAll('input[type="radio"]');
+				data.radios?.forEach((checked, idx) => {
+					if (radios[idx]) radios[idx].checked = checked;
+				});
+
+				const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+				data.checkboxes?.forEach((checked, idx) => {
+					if (checkboxes[idx]) checkboxes[idx].checked = checked;
+				});
+
+				// Update all progress bars
+				document.querySelectorAll('.progress-input').forEach(input => {
+					if (input.value) updateProgress(input);
+				});
+			}
+		};
+
+		// Auto-save on blur
+		document.querySelectorAll('input').forEach(input => {
+			input.addEventListener('blur', saveData);
+			input.addEventListener('change', saveData);
+		});
+	</script>
+</body>
+
+</html>
