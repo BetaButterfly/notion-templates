@@ -1,1 +1,1 @@
-# notion-templates
+# PM-templates
