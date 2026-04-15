@@ -1,328 +1,333 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pomodoro</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f7f5f3;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.6s ease;
-        }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			background: #f7f5f3;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background 0.6s ease;
+		}
 
-        body.break {
-            background: #f0ebe3;
-        }
+		body.break {
+			background: #f0ebe3;
+		}
 
-        .container {
-            text-align: center;
-            padding: 40px;
-        }
+		.container {
+			text-align: center;
+			padding: 40px;
+		}
 
-        .timer {
-            font-size: 80px;
-            font-weight: 200;
-            color: #5c6b73;
-            letter-spacing: -2px;
-            margin-bottom: 40px;
-            font-variant-numeric: tabular-nums;
-            transition: color 0.6s ease;
-        }
+		.timer {
+			font-size: 80px;
+			font-weight: 200;
+			color: #5c6b73;
+			letter-spacing: -2px;
+			margin-bottom: 40px;
+			font-variant-numeric: tabular-nums;
+			transition: color 0.6s ease;
+		}
 
-        body.break .timer {
-            color: #8b7355;
-        }
+		body.break .timer {
+			color: #8b7355;
+		}
 
-        .mode {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #9db4c0;
-            margin-bottom: 60px;
-            font-weight: 500;
-            transition: color 0.6s ease;
-        }
+		.mode {
+			font-size: 14px;
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			color: #9db4c0;
+			margin-bottom: 60px;
+			font-weight: 500;
+			transition: color 0.6s ease;
+		}
 
-        body.break .mode {
-            color: #d4a373;
-        }
+		body.break .mode {
+			color: #d4a373;
+		}
 
-        .mode-selector {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 40px;
-        }
+		.mode-selector {
+			display: flex;
+			gap: 12px;
+			justify-content: center;
+			margin-bottom: 40px;
+		}
 
-        .mode-btn {
-            padding: 10px 20px;
-            border: 1px solid #d1d5db;
-            background: transparent;
-            color: #6b7280;
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+		.mode-btn {
+			padding: 10px 20px;
+			border: 1px solid #d1d5db;
+			background: transparent;
+			color: #6b7280;
+			font-size: 13px;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			border-radius: 20px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
 
-        .mode-btn.active {
-            background: #9db4c0;
-            border-color: #9db4c0;
-            color: white;
-        }
+		.mode-btn.active {
+			background: #9db4c0;
+			border-color: #9db4c0;
+			color: white;
+		}
 
-        body.break .mode-btn.active {
-            background: #d4a373;
-            border-color: #d4a373;
-        }
+		body.break .mode-btn.active {
+			background: #d4a373;
+			border-color: #d4a373;
+		}
 
-        .controls {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            align-items: center;
-        }
+		.controls {
+			display: flex;
+			gap: 16px;
+			justify-content: center;
+			align-items: center;
+		}
 
-        button {
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            padding: 14px 28px;
-            font-size: 13px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
+		button {
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			padding: 14px 28px;
+			font-size: 13px;
+			letter-spacing: 1.5px;
+			text-transform: uppercase;
+			border-radius: 30px;
+			transition: all 0.3s ease;
+			font-family: inherit;
+		}
 
-        .btn-primary {
-            background: #9db4c0;
-            color: white;
-            min-width: 140px;
-        }
+		.btn-primary {
+			background: #9db4c0;
+			color: white;
+			min-width: 140px;
+		}
 
-        .btn-primary:hover {
-            background: #8aa3b0;
-            transform: translateY(-2px);
-        }
+		.btn-primary:hover {
+			background: #8aa3b0;
+			transform: translateY(-2px);
+		}
 
-        body.break .btn-primary {
-            background: #d4a373;
-        }
+		body.break .btn-primary {
+			background: #d4a373;
+		}
 
-        body.break .btn-primary:hover {
-            background: #c49363;
-        }
+		body.break .btn-primary:hover {
+			background: #c49363;
+		}
 
-        .btn-secondary {
-            color: #9db4c0;
-            border: 1px solid #9db4c0;
-            padding: 14px 24px;
-        }
+		.btn-secondary {
+			color: #9db4c0;
+			border: 1px solid #9db4c0;
+			padding: 14px 24px;
+		}
 
-        .btn-secondary:hover {
-            background: rgba(157, 180, 192, 0.1);
-        }
+		.btn-secondary:hover {
+			background: rgba(157, 180, 192, 0.1);
+		}
 
-        body.break .btn-secondary {
-            color: #d4a373;
-            border-color: #d4a373;
-        }
+		body.break .btn-secondary {
+			color: #d4a373;
+			border-color: #d4a373;
+		}
 
-        body.break .btn-secondary:hover {
-            background: rgba(212, 163, 115, 0.1);
-        }
+		body.break .btn-secondary:hover {
+			background: rgba(212, 163, 115, 0.1);
+		}
 
-        .progress-ring {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 0 auto 30px;
-        }
+		.progress-ring {
+			position: relative;
+			width: 300px;
+			height: 300px;
+			margin: 0 auto 30px;
+		}
 
-        .progress-ring svg {
-            transform: rotate(-90deg);
-        }
+		.progress-ring svg {
+			transform: rotate(-90deg);
+		}
 
-        .progress-ring-circle {
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.35s, stroke 0.6s ease;
-        }
+		.progress-ring-circle {
+			fill: none;
+			stroke-width: 2;
+			stroke-linecap: round;
+			transition: stroke-dashoffset 0.35s, stroke 0.6s ease;
+		}
 
-        .bg {
-            stroke: #e0e6e9;
-        }
+		.bg {
+			stroke: #e0e6e9;
+		}
 
-        .progress {
-            stroke: #9db4c0;
-            stroke-dasharray: 880;
-            stroke-dashoffset: 0;
-        }
+		.progress {
+			stroke: #9db4c0;
+			stroke-dasharray: 880;
+			stroke-dashoffset: 0;
+		}
 
-        body.break .progress {
-            stroke: #d4a373;
-        }
+		body.break .progress {
+			stroke: #d4a373;
+		}
 
-        .timer-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+		.timer-content {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
 
-        @media (max-width: 480px) {
-            .timer {
-                font-size: 60px;
-            }
-            .progress-ring {
-                width: 260px;
-                height: 260px;
-            }
-            .mode-selector {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
+		@media (max-width: 480px) {
+			.timer {
+				font-size: 60px;
+			}
+
+			.progress-ring {
+				width: 260px;
+				height: 260px;
+			}
+
+			.mode-selector {
+				flex-wrap: wrap;
+			}
+		}
+	</style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="progress-ring">
-            <svg width="300" height="300">
-                <circle class="progress-ring-circle bg" cx="150" cy="150" r="140"></circle>
-                <circle class="progress-ring-circle progress" id="progress" cx="150" cy="150" r="140"></circle>
-            </svg>
-            <div class="timer-content">
-                <div class="mode" id="mode">Фокус</div>
-                <div class="timer" id="timer">25:00</div>
-            </div>
-        </div>
-        
-        <div class="mode-selector">
-            <button class="mode-btn active" onclick="setMode('focus')">Фокус 25</button>
-            <button class="mode-btn" onclick="setMode('break')">Перерва 5</button>
-        </div>
-        
-        <div class="controls">
-            <button class="btn-secondary" onclick="resetTimer()">Скинути</button>
-            <button class="btn-primary" id="toggleBtn" onclick="toggleTimer()">Старт</button>
-        </div>
-    </div>
+	<div class="container">
+		<div class="progress-ring">
+			<svg width="300" height="300">
+				<circle class="progress-ring-circle bg" cx="150" cy="150" r="140"></circle>
+				<circle class="progress-ring-circle progress" id="progress" cx="150" cy="150" r="140"></circle>
+			</svg>
+			<div class="timer-content">
+				<div class="mode" id="mode">Фокус</div>
+				<div class="timer" id="timer">25:00</div>
+			</div>
+		</div>
 
-    <script>
-        let timeLeft = 25 * 60;
-        let totalTime = 25 * 60;
-        let isRunning = false;
-        let isBreak = false;
-        let interval;
+		<div class="mode-selector">
+			<button class="mode-btn active" onclick="setMode('focus')">Фокус 25</button>
+			<button class="mode-btn" onclick="setMode('break')">Перерва 5</button>
+		</div>
 
-        const timerDisplay = document.getElementById('timer');
-        const modeDisplay = document.getElementById('mode');
-        const toggleBtn = document.getElementById('toggleBtn');
-        const progressCircle = document.getElementById('progress');
-        const circumference = 2 * Math.PI * 140;
+		<div class="controls">
+			<button class="btn-secondary" onclick="resetTimer()">Скинути</button>
+			<button class="btn-primary" id="toggleBtn" onclick="toggleTimer()">Старт</button>
+		</div>
+	</div>
 
-        progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-        progressCircle.style.strokeDashoffset = 0;
+	<script>
+		let timeLeft = 25 * 60;
+		let totalTime = 25 * 60;
+		let isRunning = false;
+		let isBreak = false;
+		let interval;
 
-        function updateDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            const offset = circumference - (timeLeft / totalTime) * circumference;
-            progressCircle.style.strokeDashoffset = offset;
-        }
+		const timerDisplay = document.getElementById('timer');
+		const modeDisplay = document.getElementById('mode');
+		const toggleBtn = document.getElementById('toggleBtn');
+		const progressCircle = document.getElementById('progress');
+		const circumference = 2 * Math.PI * 140;
 
-        function setMode(mode) {
-            pauseTimer();
-            
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            
-            if (mode === 'focus') {
-                isBreak = false;
-                document.body.classList.remove('break');
-                timeLeft = 25 * 60;
-                totalTime = 25 * 60;
-                modeDisplay.textContent = 'Фокус';
-                document.querySelectorAll('.mode-btn')[0].classList.add('active');
-            } else {
-                isBreak = true;
-                document.body.classList.add('break');
-                timeLeft = 5 * 60;
-                totalTime = 5 * 60;
-                modeDisplay.textContent = 'Перерва';
-                document.querySelectorAll('.mode-btn')[1].classList.add('active');
-            }
-            
-            toggleBtn.textContent = 'Старт';
-            updateDisplay();
-        }
+		progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+		progressCircle.style.strokeDashoffset = 0;
 
-        function toggleTimer() {
-            if (isRunning) {
-                pauseTimer();
-            } else {
-                startTimer();
-            }
-        }
+		function updateDisplay() {
+			const minutes = Math.floor(timeLeft / 60);
+			const seconds = timeLeft % 60;
+			timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-        function startTimer() {
-            isRunning = true;
-            toggleBtn.textContent = 'Пауза';
-            interval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateDisplay();
-                } else {
-                    completeTimer();
-                }
-            }, 1000);
-        }
+			const offset = circumference - (timeLeft / totalTime) * circumference;
+			progressCircle.style.strokeDashoffset = offset;
+		}
 
-        function pauseTimer() {
-            isRunning = false;
-            toggleBtn.textContent = 'Продовжити';
-            clearInterval(interval);
-        }
+		function setMode(mode) {
+			pauseTimer();
 
-        function resetTimer() {
-            pauseTimer();
-            timeLeft = isBreak ? 5 * 60 : 25 * 60;
-            totalTime = isBreak ? 5 * 60 : 25 * 60;
-            toggleBtn.textContent = 'Старт';
-            updateDisplay();
-        }
+			document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
 
-        function completeTimer() {
-            pauseTimer();
-            toggleBtn.textContent = 'Готово';
-        }
+			if (mode === 'focus') {
+				isBreak = false;
+				document.body.classList.remove('break');
+				timeLeft = 25 * 60;
+				totalTime = 25 * 60;
+				modeDisplay.textContent = 'Фокус';
+				document.querySelectorAll('.mode-btn')[0].classList.add('active');
+			} else {
+				isBreak = true;
+				document.body.classList.add('break');
+				timeLeft = 5 * 60;
+				totalTime = 5 * 60;
+				modeDisplay.textContent = 'Перерва';
+				document.querySelectorAll('.mode-btn')[1].classList.add('active');
+			}
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                toggleTimer();
-            }
-        });
+			toggleBtn.textContent = 'Старт';
+			updateDisplay();
+		}
 
-        updateDisplay();
-    </script>
+		function toggleTimer() {
+			if (isRunning) {
+				pauseTimer();
+			} else {
+				startTimer();
+			}
+		}
+
+		function startTimer() {
+			isRunning = true;
+			toggleBtn.textContent = 'Пауза';
+			interval = setInterval(() => {
+				if (timeLeft > 0) {
+					timeLeft--;
+					updateDisplay();
+				} else {
+					completeTimer();
+				}
+			}, 1000);
+		}
+
+		function pauseTimer() {
+			isRunning = false;
+			toggleBtn.textContent = 'Продовжити';
+			clearInterval(interval);
+		}
+
+		function resetTimer() {
+			pauseTimer();
+			timeLeft = isBreak ? 5 * 60 : 25 * 60;
+			totalTime = isBreak ? 5 * 60 : 25 * 60;
+			toggleBtn.textContent = 'Старт';
+			updateDisplay();
+		}
+
+		function completeTimer() {
+			pauseTimer();
+			toggleBtn.textContent = 'Готово';
+		}
+
+		// Keyboard shortcuts
+		document.addEventListener('keydown', (e) => {
+			if (e.code === 'Space') {
+				e.preventDefault();
+				toggleTimer();
+			}
+		});
+
+		updateDisplay();
+	</script>
 </body>
+
 </html>
