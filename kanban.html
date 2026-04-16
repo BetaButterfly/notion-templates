@@ -19,7 +19,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .header h1 {
@@ -32,6 +32,39 @@
         .header p {
             color: #a8a29e;
             font-size: 0.85rem;
+        }
+
+        /* 🔄 КНОПКА ПЕРЕМИКАННЯ */
+        .view-toggle {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #78716c;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .toggle-btn:hover {
+            background: white;
+            color: #57534e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .toggle-btn.active {
+            background: #57534e;
+            color: white;
+            border-color: #57534e;
         }
 
         .board {
@@ -110,11 +143,37 @@
             flex-direction: column;
             gap: 10px;
             min-height: 80px;
+            max-height: 55vh; /* ЗАМОВЧУВАННЯ: зі скролом */
+            overflow-y: auto;
+            padding-right: 6px;
+            transition: max-height 0.3s ease;
+        }
+
+        /* Коли розширений режим */
+        .task-list.expanded {
+            max-height: none;
+            overflow-y: visible;
+        }
+
+        /* Скролбар */
+        .task-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.02);
+            border-radius: 10px;
+        }
+        .task-list::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.15);
+            border-radius: 10px;
+        }
+        .task-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.25);
         }
 
         .task-card {
             background: white;
-            padding: 12px 32px 12px 12px; /* Місце для кнопки справа */
+            padding: 12px 32px 12px 12px;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
             cursor: grab;
@@ -133,7 +192,6 @@
             transform: rotate(3deg) scale(0.95);
         }
 
-        /* 🗑️ КНОПКА ВИДАЛЕННЯ - ПОСТІЙНО ВИДИМА */
         .delete-btn {
             position: absolute;
             top: 6px;
@@ -228,7 +286,6 @@
             font-style: italic;
         }
 
-        /* Анімація видалення */
         @keyframes deleteAnim {
             to {
                 transform: scale(0.8);
@@ -248,9 +305,12 @@
             .board { grid-template-columns: 1fr; }
             body { padding: 20px 10px; }
             .delete-btn {
-                width: 28px; /* Більше для пальця */
+                width: 28px;
                 height: 28px;
                 font-size: 1.1rem;
+            }
+            .task-list {
+                max-height: 50vh; /* Менше на телефоні */
             }
         }
     </style>
@@ -260,6 +320,14 @@
         <div class="header">
             <h1>Мої завдання</h1>
             <p>🗑️ Натисніть × щоб видалити • Перетягуйте між колонками</p>
+        </div>
+
+        <!-- 🔄 КНОПКА ПЕРЕМИКАННЯ -->
+        <div class="view-toggle">
+            <button class="toggle-btn" id="toggleBtn" onclick="toggleView()">
+                <span>📐</span>
+                <span>Компактний вигляд</span>
+            </button>
         </div>
 
         <div class="board">
@@ -318,10 +386,34 @@
 
     <script>
         let tasks = JSON.parse(localStorage.getItem('kanban-tasks')) || [];
+        let expanded = false;
 
         function saveTasks() {
             localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
             updateCounts();
+        }
+
+        // 🔄 ПЕРЕМИКАННЯ ВИГЛЯДУ
+        function toggleView() {
+            expanded = !expanded;
+            const lists = document.querySelectorAll('.task-list');
+            const btn = document.getElementById('toggleBtn');
+            
+            lists.forEach(list => {
+                if (expanded) {
+                    list.classList.add('expanded');
+                } else {
+                    list.classList.remove('expanded');
+                }
+            });
+
+            if (expanded) {
+                btn.innerHTML = '<span>📏</span><span>Розширений вигляд</span>';
+                btn.classList.add('active');
+            } else {
+                btn.innerHTML = '<span>📐</span><span>Компактний вигляд</span>';
+                btn.classList.remove('active');
+            }
         }
 
         function updateCounts() {
@@ -349,21 +441,17 @@
             div.draggable = true;
             div.dataset.id = task.id;
             
-            // Створюємо кнопку видалення окремо, щоб надійно прикріпити обробник
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
             deleteBtn.innerHTML = '×';
             deleteBtn.title = 'Видалити';
             
-            // 🎯 ОСНОВНА ЗМІНА: надійний обробник кліку без confirm()
             deleteBtn.addEventListener('click', function(e) {
-                e.stopPropagation(); // Зупиняємо спливання
-                e.preventDefault();  // Запобігаємо стандартній поведінці
+                e.stopPropagation();
+                e.preventDefault();
                 
-                // Візуально позначаємо що видаляється
                 div.classList.add('deleting');
                 
-                // Чекаємо анімацію і видаляємо
                 setTimeout(() => {
                     tasks = tasks.filter(t => t.id !== task.id);
                     div.remove();
@@ -410,7 +498,6 @@
             div.appendChild(textDiv);
             div.appendChild(footer);
 
-            // Drag events
             div.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', task.id);
                 div.classList.add('dragging');
@@ -470,7 +557,13 @@
             const taskEl = createTaskElement(task);
             list.appendChild(taskEl);
             
-            // Фокус на тексті
+            // Якщо компактний режим — скролимо до нової задачі
+            if (!expanded) {
+                setTimeout(() => {
+                    taskEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+            
             setTimeout(() => {
                 const textDiv = taskEl.querySelector('.task-text');
                 textDiv.focus();
@@ -496,7 +589,6 @@
             updateCounts();
         }
 
-        // Drag and Drop для колонок
         document.querySelectorAll('.column').forEach(column => {
             column.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -522,7 +614,6 @@
             });
         });
 
-        // Ініціалізація
         renderTasks();
     </script>
 </body>
