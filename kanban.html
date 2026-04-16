@@ -1,495 +1,492 @@
 <!DOCTYPE html>
 <html lang="uk">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Канбан | Notion Style</title>
-	<style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Канбан | Notion Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #44403c;
+        }
 
-		body {
-			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-			background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
-			min-height: 100vh;
-			padding: 40px 20px;
-			color: #44403c;
-		}
+        .container { max-width: 1200px; margin: 0 auto; }
 
-		.container {
-			max-width: 1200px;
-			margin: 0 auto;
-		}
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-		.header {
-			text-align: center;
-			margin-bottom: 40px;
-		}
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #57534e;
+            margin-bottom: 8px;
+        }
 
-		.header h1 {
-			font-size: 2rem;
-			font-weight: 300;
-			letter-spacing: -0.5px;
-			color: #57534e;
-			margin-bottom: 8px;
-		}
+        .header p {
+            color: #a8a29e;
+            font-size: 0.9rem;
+        }
 
-		.header p {
-			color: #a8a29e;
-			font-size: 0.9rem;
-		}
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            align-items: start;
+        }
 
-		.board {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-			gap: 24px;
-			align-items: start;
-		}
+        .column {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            min-height: 200px;
+        }
 
-		.column {
-			background: rgba(255, 255, 255, 0.6);
-			backdrop-filter: blur(10px);
-			border-radius: 24px;
-			padding: 20px;
-			box-shadow:
-				0 4px 6px -1px rgba(0, 0, 0, 0.02),
-				0 2px 4px -1px rgba(0, 0, 0, 0.02),
-				inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-			transition: transform 0.2s ease;
-			min-height: 200px;
-		}
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
 
-		.column:hover {
-			transform: translateY(-2px);
-			box-shadow:
-				0 10px 15px -3px rgba(0, 0, 0, 0.03),
-				0 4px 6px -2px rgba(0, 0, 0, 0.02),
-				inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-		}
+        .column-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #57534e;
+        }
 
-		.column-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 20px;
-			padding-bottom: 16px;
-			border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-		}
+        .icon { font-size: 1.2rem; }
+        .todo .icon { color: #f59e0b; }
+        .progress .icon { color: #3b82f6; }
+        .done .icon { color: #10b981; }
 
-		.column-title {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			font-weight: 500;
-			font-size: 0.95rem;
-			color: #57534e;
-		}
+        .count {
+            background: rgba(0, 0, 0, 0.05);
+            color: #78716c;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
 
-		.icon {
-			font-size: 1.2rem;
-			filter: saturate(0.8);
-		}
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed rgba(0, 0, 0, 0.1);
+            background: transparent;
+            border-radius: 12px;
+            color: #a8a29e;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
 
-		.count {
-			background: rgba(0, 0, 0, 0.05);
-			color: #78716c;
-			font-size: 0.75rem;
-			padding: 4px 10px;
-			border-radius: 20px;
-			font-weight: 600;
-			min-width: 24px;
-			text-align: center;
-		}
+        .add-btn:hover {
+            border-color: #94a3b8;
+            color: #64748b;
+            background: rgba(148, 163, 184, 0.05);
+        }
 
-		.add-btn {
-			width: 100%;
-			padding: 12px;
-			border: 2px dashed rgba(0, 0, 0, 0.1);
-			background: transparent;
-			border-radius: 12px;
-			color: #a8a29e;
-			font-size: 0.9rem;
-			cursor: pointer;
-			transition: all 0.2s ease;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 8px;
-			margin-top: 12px;
-		}
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 100px;
+        }
 
-		.add-btn:hover {
-			border-color: #94a3b8;
-			color: #64748b;
-			background: rgba(148, 163, 184, 0.05);
-		}
+        .task-card {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            cursor: grab;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
 
-		.task-list {
-			display: flex;
-			flex-direction: column;
-			gap: 12px;
-			min-height: 100px;
-		}
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
 
-		.task-card {
-			background: white;
-			padding: 16px;
-			border-radius: 16px;
-			box-shadow:
-				0 1px 3px rgba(0, 0, 0, 0.02),
-				0 1px 2px rgba(0, 0, 0, 0.04);
-			cursor: grab;
-			transition: all 0.2s ease;
-			position: relative;
-			border: 1px solid rgba(0, 0, 0, 0.03);
-		}
+        .task-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
 
-		.task-card:hover {
-			transform: translateY(-2px) scale(1.01);
-			box-shadow:
-				0 4px 12px rgba(0, 0, 0, 0.05),
-				0 2px 4px rgba(0, 0, 0, 0.03);
-		}
+        /* 🗑️ СТИЛІ ДЛЯ КНОПКИ ВИДАЛЕННЯ - ТЕПЕР ЗАВЖДИ ВИДИМА */
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: #a8a29e;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            opacity: 1; /* ЗАВЖДИ ВИДИМА */
+        }
 
-		.task-card:active {
-			cursor: grabbing;
-			transform: scale(0.98);
-		}
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
+            transform: scale(1.1);
+        }
 
-		.task-card.dragging {
-			opacity: 0.5;
-			transform: rotate(5deg) scale(0.95);
-			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-		}
+        /* На мобільних трохи більша для пальця */
+        @media (max-width: 768px) {
+            .delete-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1.2rem;
+            }
+        }
 
-		.task-text {
-			font-size: 0.9rem;
-			line-height: 1.5;
-			color: #44403c;
-			outline: none;
-			border: none;
-			background: transparent;
-			width: 100%;
-			resize: none;
-			overflow: hidden;
-		}
+        .task-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #44403c;
+            outline: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            min-height: 20px;
+            margin-top: 8px; /* Відступ від кнопки видалення */
+            cursor: text;
+        }
 
-		.task-footer {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-top: 12px;
-			padding-top: 12px;
-			border-top: 1px solid rgba(0, 0, 0, 0.03);
-		}
+        .task-text:focus {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 4px;
+            padding: 4px;
+            margin: 4px -4px -4px;
+        }
 
-		.task-date {
-			font-size: 0.7rem;
-			color: #a8a29e;
-		}
+        .task-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.03);
+        }
 
-		.delete-btn {
-			opacity: 0;
-			background: none;
-			border: none;
-			color: #d6d3d1;
-			cursor: pointer;
-			font-size: 1.1rem;
-			padding: 4px;
-			border-radius: 6px;
-			transition: all 0.2s ease;
-		}
+        .task-date {
+            font-size: 0.75rem;
+            color: #a8a29e;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
 
-		.task-card:hover .delete-btn {
-			opacity: 1;
-		}
+        .task-date:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: #78716c;
+        }
 
-		.delete-btn:hover {
-			color: #ef4444;
-			background: rgba(239, 68, 68, 0.1);
-		}
+        .date-input {
+            font-size: 0.75rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            padding: 4px;
+            color: #57534e;
+            background: white;
+            cursor: pointer;
+        }
 
-		.column.drag-over {
-			background: rgba(255, 255, 255, 0.8);
-			box-shadow: inset 0 0 0 2px #94a3b8;
-		}
+        .column.drag-over {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 0 0 2px #94a3b8;
+        }
 
-		/* Стилі для різних колонок */
-		.todo .icon {
-			color: #f59e0b;
-		}
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #d6d3d1;
+            font-size: 0.85rem;
+        }
 
-		.progress .icon {
-			color: #3b82f6;
-		}
-
-		.done .icon {
-			color: #10b981;
-		}
-
-		.empty-state {
-			text-align: center;
-			padding: 40px 20px;
-			color: #d6d3d1;
-			font-size: 0.85rem;
-			pointer-events: none;
-		}
-
-		@media (max-width: 768px) {
-			.board {
-				grid-template-columns: 1fr;
-			}
-
-			body {
-				padding: 20px 10px;
-			}
-		}
-
-		/* Анімація появи нової задачі */
-		@keyframes slideIn {
-			from {
-				opacity: 0;
-				transform: translateY(-10px);
-			}
-
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		.task-card.new {
-			animation: slideIn 0.3s ease;
-		}
-	</style>
+        @media (max-width: 768px) {
+            .board { grid-template-columns: 1fr; }
+            body { padding: 20px 10px; }
+        }
+    </style>
 </head>
-
 <body>
-	<div class="container">
-		<div class="header">
-			<h1>Мої завдання</h1>
-			<p>Перетягуй картки між колонками</p>
-		</div>
+    <div class="container">
+        <div class="header">
+            <h1>Мої завдання</h1>
+            <p>🗑️ Натисніть × в правому верхньому куті картки щоб видалити</p>
+        </div>
 
-		<div class="board">
-			<!-- Колонка Зробити -->
-			<div class="column todo" data-status="todo">
-				<div class="column-header">
-					<div class="column-title">
-						<span class="icon">🕐</span>
-						<span>Заплановано</span>
-					</div>
-					<span class="count">0</span>
-				</div>
-				<div class="task-list" id="todo-list">
-					<div class="empty-state">Немає завдань</div>
-				</div>
-				<button class="add-btn" onclick="addTask('todo')">
-					<span>+</span>
-					<span>Додати завдання</span>
-				</button>
-			</div>
+        <div class="board">
+            <div class="column todo" data-status="todo">
+                <div class="column-header">
+                    <div class="column-title">
+                        <span class="icon">🕐</span>
+                        <span>Заплановано</span>
+                    </div>
+                    <span class="count">0</span>
+                </div>
+                <div class="task-list" id="todo-list">
+                    <div class="empty-state">Немає завдань</div>
+                </div>
+                <button class="add-btn" onclick="addTask('todo')">
+                    <span>+</span>
+                    <span>Додати завдання</span>
+                </button>
+            </div>
 
-			<!-- Колонка В процесі -->
-			<div class="column progress" data-status="progress">
-				<div class="column-header">
-					<div class="column-title">
-						<span class="icon">⚡</span>
-						<span>В роботі</span>
-					</div>
-					<span class="count">0</span>
-				</div>
-				<div class="task-list" id="progress-list">
-					<div class="empty-state">Немає завдань</div>
-				</div>
-				<button class="add-btn" onclick="addTask('progress')">
-					<span>+</span>
-					<span>Додати завдання</span>
-				</button>
-			</div>
+            <div class="column progress" data-status="progress">
+                <div class="column-header">
+                    <div class="column-title">
+                        <span class="icon">⚡</span>
+                        <span>В роботі</span>
+                    </div>
+                    <span class="count">0</span>
+                </div>
+                <div class="task-list" id="progress-list">
+                    <div class="empty-state">Немає завдань</div>
+                </div>
+                <button class="add-btn" onclick="addTask('progress')">
+                    <span>+</span>
+                    <span>Додати завдання</span>
+                </button>
+            </div>
 
-			<!-- Колонка Готово -->
-			<div class="column done" data-status="done">
-				<div class="column-header">
-					<div class="column-title">
-						<span class="icon">✅</span>
-						<span>Готово</span>
-					</div>
-					<span class="count">0</span>
-				</div>
-				<div class="task-list" id="done-list">
-					<div class="empty-state">Немає завдань</div>
-				</div>
-				<button class="add-btn" onclick="addTask('done')">
-					<span>+</span>
-					<span>Додати завдання</span>
-				</button>
-			</div>
-		</div>
-	</div>
+            <div class="column done" data-status="done">
+                <div class="column-header">
+                    <div class="column-title">
+                        <span class="icon">✅</span>
+                        <span>Готово</span>
+                    </div>
+                    <span class="count">0</span>
+                </div>
+                <div class="task-list" id="done-list">
+                    <div class="empty-state">Немає завдань</div>
+                </div>
+                <button class="add-btn" onclick="addTask('done')">
+                    <span>+</span>
+                    <span>Додати завдання</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
-	<script>
-		// Завантаження задач з localStorage
-		let tasks = JSON.parse(localStorage.getItem('kanban-tasks')) || [];
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('kanban-tasks')) || [];
 
-		function saveTasks() {
-			localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
-			updateCounts();
-		}
+        function saveTasks() {
+            localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+            updateCounts();
+        }
 
-		function updateCounts() {
-			['todo', 'progress', 'done'].forEach(status => {
-				const count = tasks.filter(t => t.status === status).length;
-				const column = document.querySelector(`.column[data-status="${status}"]`);
-				column.querySelector('.count').textContent = count;
+        function updateCounts() {
+            ['todo', 'progress', 'done'].forEach(status => {
+                const count = tasks.filter(t => t.status === status).length;
+                const column = document.querySelector(`.column[data-status="${status}"]`);
+                column.querySelector('.count').textContent = count;
+                
+                const list = document.getElementById(`${status}-list`);
+                const emptyState = list.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.style.display = count === 0 ? 'block' : 'none';
+                }
+            });
+        }
 
-				const list = document.getElementById(`${status}-list`);
-				const emptyState = list.querySelector('.empty-state');
-				if (emptyState) {
-					emptyState.style.display = count === 0 ? 'block' : 'none';
-				}
-			});
-		}
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
+        }
 
-		function createTaskElement(task) {
-			const div = document.createElement('div');
-			div.className = 'task-card new';
-			div.draggable = true;
-			div.dataset.id = task.id;
-
-			div.innerHTML = `
-                <div class="task-text" contenteditable="true" onblur="updateTask('${task.id}', this.innerText)">${task.text}</div>
+        function createTaskElement(task) {
+            const div = document.createElement('div');
+            div.className = 'task-card';
+            div.draggable = true;
+            div.dataset.id = task.id;
+            
+            // 🗑️ КНОПКА ВИДАЛЕННЯ ТЕПЕР У ПРАВОМУ ВЕРХНЬОМУ КУТІ
+            div.innerHTML = `
+                <button class="delete-btn" onclick="deleteTask('${task.id}')" title="Видалити">×</button>
+                <div class="task-text" contenteditable="true">${task.text}</div>
                 <div class="task-footer">
-                    <span class="task-date">${new Date(task.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })}</span>
-                    <button class="delete-btn" onclick="deleteTask('${task.id}')">×</button>
+                    <span class="task-date" onclick="editDate('${task.id}', this)">${formatDate(task.date)}</span>
                 </div>
             `;
 
-			// Drag events
-			div.addEventListener('dragstart', (e) => {
-				e.dataTransfer.setData('text/plain', task.id);
-				div.classList.add('dragging');
-			});
+            const textDiv = div.querySelector('.task-text');
+            
+            textDiv.addEventListener('blur', function() {
+                const newText = this.innerText.trim();
+                if (newText && newText !== task.text) {
+                    task.text = newText;
+                    saveTasks();
+                } else if (!newText) {
+                    this.innerText = task.text;
+                }
+            });
 
-			div.addEventListener('dragend', () => {
-				div.classList.remove('dragging');
-				document.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
-			});
+            textDiv.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
 
-			// Auto-resize textarea behavior
-			const textDiv = div.querySelector('.task-text');
-			textDiv.addEventListener('input', function () {
-				this.style.height = 'auto';
-				this.style.height = this.scrollHeight + 'px';
-			});
+            div.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', task.id);
+                div.classList.add('dragging');
+            });
 
-			return div;
-		}
+            div.addEventListener('dragend', () => {
+                div.classList.remove('dragging');
+                document.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
+            });
 
-		function addTask(status) {
-			const id = Date.now().toString();
-			const task = {
-				id: id,
-				text: 'Нове завдання...',
-				status: status,
-				date: new Date().toISOString()
-			};
-			tasks.push(task);
+            return div;
+        }
 
-			const list = document.getElementById(`${status}-list`);
-			const emptyState = list.querySelector('.empty-state');
-			if (emptyState) emptyState.style.display = 'none';
+        function deleteTask(id) {
+            // 🗑️ ПІДТВЕРДЖЕННЯ ВИДАЛЕННЯ
+            if (confirm('Точно видалити цю картку?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                const el = document.querySelector(`[data-id="${id}"]`);
+                el.style.transform = 'scale(0.9)';
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.remove();
+                    renderTasks();
+                }, 200);
+                saveTasks();
+            }
+        }
 
-			const taskEl = createTaskElement(task);
-			list.appendChild(taskEl);
+        function editDate(taskId, dateElement) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
 
-			// Focus on new task
-			setTimeout(() => {
-				const textDiv = taskEl.querySelector('.task-text');
-				textDiv.focus();
-				document.execCommand('selectAll', false, null);
-			}, 100);
+            const currentDate = new Date(task.date).toISOString().split('T')[0];
+            
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'date-input';
+            input.value = currentDate;
+            
+            dateElement.replaceWith(input);
+            input.focus();
 
-			saveTasks();
-		}
+            function saveDate() {
+                if (input.value) {
+                    task.date = new Date(input.value).toISOString();
+                    saveTasks();
+                }
+                renderTasks();
+            }
 
-		function updateTask(id, text) {
-			const task = tasks.find(t => t.id === id);
-			if (task) {
-				task.text = text;
-				saveTasks();
-			}
-		}
+            input.addEventListener('blur', saveDate);
+            input.addEventListener('change', saveDate);
+        }
 
-		function deleteTask(id) {
-			if (confirm('Видалити завдання?')) {
-				tasks = tasks.filter(t => t.id !== id);
-				const el = document.querySelector(`[data-id="${id}"]`);
-				el.style.transform = 'scale(0.9) opacity(0)';
-				setTimeout(() => {
-					el.remove();
-					renderTasks();
-				}, 200);
-				saveTasks();
-			}
-		}
+        function addTask(status) {
+            const id = Date.now().toString();
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const task = {
+                id: id,
+                text: 'Нове завдання',
+                status: status,
+                date: tomorrow.toISOString()
+            };
+            tasks.push(task);
+            
+            const list = document.getElementById(`${status}-list`);
+            const emptyState = list.querySelector('.empty-state');
+            if (emptyState) emptyState.style.display = 'none';
+            
+            const taskEl = createTaskElement(task);
+            list.appendChild(taskEl);
+            
+            setTimeout(() => {
+                const textDiv = taskEl.querySelector('.task-text');
+                textDiv.focus();
+                document.execCommand('selectAll', false, null);
+            }, 100);
+            
+            saveTasks();
+        }
 
-		function renderTasks() {
-			['todo', 'progress', 'done'].forEach(status => {
-				const list = document.getElementById(`${status}-list`);
-				list.innerHTML = '<div class="empty-state">Немає завдань</div>';
+        function renderTasks() {
+            ['todo', 'progress', 'done'].forEach(status => {
+                const list = document.getElementById(`${status}-list`);
+                list.innerHTML = '<div class="empty-state">Немає завдань</div>';
+                
+                const statusTasks = tasks.filter(t => t.status === status);
+                if (statusTasks.length > 0) {
+                    list.innerHTML = '';
+                    statusTasks.forEach(task => {
+                        list.appendChild(createTaskElement(task));
+                    });
+                }
+            });
+            updateCounts();
+        }
 
-				const statusTasks = tasks.filter(t => t.status === status);
-				if (statusTasks.length > 0) {
-					list.innerHTML = '';
-					statusTasks.forEach(task => {
-						list.appendChild(createTaskElement(task));
-					});
-				}
-			});
-			updateCounts();
-		}
+        document.querySelectorAll('.column').forEach(column => {
+            column.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                column.classList.add('drag-over');
+            });
 
-		// Drag and Drop для колонок
-		document.querySelectorAll('.column').forEach(column => {
-			column.addEventListener('dragover', (e) => {
-				e.preventDefault();
-				column.classList.add('drag-over');
-			});
+            column.addEventListener('dragleave', () => {
+                column.classList.remove('drag-over');
+            });
 
-			column.addEventListener('dragleave', () => {
-				column.classList.remove('drag-over');
-			});
+            column.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const id = e.dataTransfer.getData('text/plain');
+                const newStatus = column.dataset.status;
+                
+                const task = tasks.find(t => t.id === id);
+                if (task && task.status !== newStatus) {
+                    task.status = newStatus;
+                    saveTasks();
+                    renderTasks();
+                }
+                column.classList.remove('drag-over');
+            });
+        });
 
-			column.addEventListener('drop', (e) => {
-				e.preventDefault();
-				const id = e.dataTransfer.getData('text/plain');
-				const newStatus = column.dataset.status;
-
-				const task = tasks.find(t => t.id === id);
-				if (task && task.status !== newStatus) {
-					task.status = newStatus;
-					saveTasks();
-					renderTasks();
-				}
-				column.classList.remove('drag-over');
-			});
-		});
-
-		// Ініціалізація
-		renderTasks();
-
-		// Додавання через Enter (якщо фокус на кнопці)
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter' && e.metaKey) {
-				addTask('todo');
-			}
-		});
-	</script>
+        renderTasks();
+    </script>
 </body>
-
 </html>
