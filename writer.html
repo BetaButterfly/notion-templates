@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Письменник | Notion Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #f5f5f0;
+            --sidebar: rgba(255, 255, 255, 0.7);
+            --text: #44403c;
+            --muted: #a8a29e;
+            --accent: #57534e;
+            --idea: #f59e0b;
+            --draft: #3b82f6;
+            --edit: #8b5cf6;
+            --done: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* 📑 SIDEBAR - Список розділів */
+        .sidebar {
+            width: 320px;
+            background: var(--sidebar);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .stats-mini {
+            background: rgba(255,255,255,0.6);
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .stats-mini strong {
+            display: block;
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-top: 4px;
+        }
+
+        .sections-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .sections-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .add-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.05);
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .sections-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .section-item {
+            padding: 12px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .section-item:hover {
+            background: rgba(255,255,255,0.5);
+            transform: translateX(4px);
+        }
+
+        .section-item.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-idea { background: var(--idea); }
+        .status-draft { background: var(--draft); }
+        .status-edit { background: var(--edit); }
+        .status-done { background: var(--done); }
+
+        .section-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        /* 📝 EDITOR - Основна зона */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 60px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .breadcrumbs {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .editor-tools {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .tool-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(0,0,0,0.08);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--accent);
+            transition: all 0.2s;
+        }
+
+        .tool-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .tool-btn.secondary {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .tool-btn.secondary:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--accent);
+        }
+
+        .status-select {
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.08);
+            background: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+            color: var(--text);
+        }
+
+        /* Поля редагування */
+        .editor-fields {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .chapter-number {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .title-input {
+            font-size: 2.2rem;
+            font-weight: 600;
+            border: none;
+            outline: none;
+            width: 100%;
+            background: transparent;
+            color: var(--accent);
+            margin-bottom: 30px;
+            padding: 10px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .title-input:focus {
+            border-bottom-color: rgba(0,0,0,0.1);
+        }
+
+        .title-input::placeholder {
+            color: #d6d3d1;
+        }
+
+        .content-editor {
+            min-height: 60vh;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text);
+            outline: none;
+            padding: 20px 0;
+            white-space: pre-wrap;
+        }
+
+        .content-editor:empty:before {
+            content: "Почніть писати тут...";
+            color: #d6d3d1;
+            font-style: italic;
+        }
+
+        /* 📊 FOOTER STATS */
+        .editor-footer {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            font-size: 0.85rem;
+            color: var(--muted);
+            display: flex;
+            gap: 20px;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* 🎯 FOCUS MODE */
+        body.focus-mode .sidebar,
+        body.focus-mode .editor-header,
+        body.focus-mode .editor-footer {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        body.focus-mode .editor-container {
+            padding: 60px 100px;
+        }
+
+        /* 📱 MOBILE */
+        @media (max-width: 968px) {
+            .sidebar { width: 260px; }
+            .editor-container { padding: 30px; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: 40vh;
+                border-right: none;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+            .editor-container { height: 60vh; }
+        }
+
+        /* Анімації */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-item {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- 📑 SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span>📚</span>
+            <span>Мій проєкт</span>
+        </div>
+
+        <div class="stats-mini">
+            Загальний прогрес
+            <strong id="totalProgress">0%</strong>
+        </div>
+
+        <div class="sections-header">
+            <span class="sections-title">Розділи</span>
+            <button class="add-btn" onclick="addSection()" title="Новий розділ">+</button>
+        </div>
+
+        <div class="sections-list" id="sectionsList">
+            <!-- Розділи генеруються JS -->
+        </div>
+    </aside>
+
+    <!-- 📝 EDITOR -->
+    <main class="editor-container">
+        <div class="editor-header">
+            <div class="breadcrumbs" id="breadcrumbs">Розділ 1 з 3</div>
+            
+            <div class="editor-tools">
+                <select class="status-select" id="statusSelect" onchange="changeStatus(this.value)">
+                    <option value="idea">💡 Ідея</option>
+                    <option value="draft">📝 Чернетка</option>
+                    <option value="edit">✏️ Редагування</option>
+                    <option value="done">✅ Готово</option>
+                </select>
+                
+                <button class="tool-btn secondary" onclick="toggleFocus()" title="Фокус-режим">
+                    🎯
+                </button>
+                
+                <button class="tool-btn" onclick="exportText()">
+                    ⬇️ Експорт
+                </button>
+                
+                <button class="tool-btn secondary" onclick="deleteSection()" title="Видалити розділ">
+                    🗑️
+                </button>
+            </div>
+        </div>
+
+        <div class="editor-fields">
+            <div class="chapter-number" id="chapterNum">Розділ 1</div>
+            <input type="text" class="title-input" id="titleInput" placeholder="Назва розділу..." oninput="updateTitle(this.value)">
+            <div class="content-editor" id="contentEditor" contenteditable="true" oninput="updateContent(this.innerText)"></div>
+        </div>
+    </main>
+
+    <!-- 📊 STATS FOOTER -->
+    <div class="editor-footer">
+        <div class="stat-item">
+            <span>Слів:</span>
+            <span class="stat-value" id="wordCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Символів:</span>
+            <span class="stat-value" id="charCount">0</span>
+        </div>
+        <div class="stat-item">
+            <span>Читання:</span>
+            <span class="stat-value" id="readTime">0 хв</span>
+        </div>
+    </div>
+
+    <script>
+        // Дані
+        let sections = JSON.parse(localStorage.getItem('writer-sections')) || [
+            {
+                id: 1,
+                title: "Вступ",
+                content: "Тут буде вступ до вашої роботи...",
+                status: "draft",
+                words: 0,
+                progress: 10
+            },
+            {
+                id: 2,
+                title: "Теоретична частина",
+                content: "",
+                status: "idea",
+                words: 0,
+                progress: 0
+            }
+        ];
+        
+        let currentId = parseInt(localStorage.getItem('writer-current')) || sections[0]?.id || 1;
+
+        // Ініціалізація
+        function init() {
+            renderSidebar();
+            loadSection(currentId);
+        }
+
+        // Рендер sidebar
+        function renderSidebar() {
+            const list = document.getElementById('sectionsList');
+            list.innerHTML = '';
+            
+            let totalWords = 0;
+            let completedSections = 0;
+            
+            sections.forEach((section, index) => {
+                totalWords += section.words || 0;
+                if (section.status === 'done') completedSections++;
+                
+                const item = document.createElement('div');
+                item.className = `section-item ${section.id === currentId ? 'active' : ''}`;
+                item.onclick = () => loadSection(section.id);
+                
+                const statusColors = {
+                    idea: 'status-idea',
+                    draft: 'status-draft',
+                    edit: 'status-edit',
+                    done: 'status-done'
+                };
+                
+                const statusLabels = {
+                    idea: 'Ідея',
+                    draft: 'Чернетка',
+                    edit: 'Редагування',
+                    done: 'Готово'
+                };
+                
+                item.innerHTML = `
+                    <div class="section-title">
+                        <span class="section-status ${statusColors[section.status]}"></span>
+                        ${section.title || 'Без назви'}
+                    </div>
+                    <div class="section-meta">
+                        <span>${section.words || 0} слів</span>
+                        <span>${statusLabels[section.status]}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${section.progress}%"></div>
+                    </div>
+                `;
+                
+                list.appendChild(item);
+            });
+            
+            // Оновлюємо загальний прогрес
+            const totalProgress = sections.length ? Math.round((completedSections / sections.length) * 100) : 0;
+            document.getElementById('totalProgress').textContent = totalProgress + '%';
+            
+            // Зберігаємо
+            localStorage.setItem('writer-sections', JSON.stringify(sections));
+        }
+
+        // Завантажити розділ
+        function loadSection(id) {
+            currentId = id;
+            const section = sections.find(s => s.id === id);
+            if (!section) return;
+            
+            // Оновлюємо UI
+            document.getElementById('chapterNum').textContent = `Розділ ${sections.findIndex(s => s.id === id) + 1}`;
+            document.getElementById('titleInput').value = section.title || '';
+            document.getElementById('contentEditor').innerText = section.content || '';
+            document.getElementById('statusSelect').value = section.status || 'idea';
+            document.getElementById('breadcrumbs').textContent = `Розділ ${sections.findIndex(s => s.id === id) + 1} з ${sections.length}`;
+            
+            renderSidebar();
+            updateStats();
+        }
+
+        // Оновлення даних
+        function updateTitle(value) {
+            const section = sections.find(s => s.id === currentId);
+            if (section) {
+                section.title = value;
+                renderSidebar();
+            }
+        }
+
+        function updateContent(text) {
+            const section = sections.find(s => s.id === currentId);
+            if (section) {
+                section.content = text;
+                section.words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                
+                // Авто-прогрес: якщо більше 100 слів — вважаємо що є чернетка
+                if (section.words > 100 && section.status === 'idea') {
+                    section.progress = 30;
+                } else if (section.words > 500) {
+                    section.progress = 60;
+                }
+                
+                updateStats();
+                renderSidebar();
+            }
+        }
+
+        function changeStatus(status) {
+            const section = sections.find(s => s.id === currentId);
+            if (section) {
+                section.status = status;
+                // Авто-прогрес за статусом
+                const progressMap = { idea: 10, draft: 40, edit: 75, done: 100 };
+                section.progress = progressMap[status] || 0;
+                renderSidebar();
+            }
+        }
+
+        // Статистика
+        function updateStats() {
+            const text = document.getElementById('contentEditor').innerText || '';
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            const readTime = Math.ceil(words / 120); // 120 слів/хв
+            
+            document.getElementById('wordCount').textContent = words;
+            document.getElementById('charCount').textContent = chars;
+            document.getElementById('readTime').textContent = readTime + ' хв';
+        }
+
+        // Додати розділ
+        function addSection() {
+            const newId = Date.now();
+            const newSection = {
+                id: newId,
+                title: "Новий розділ",
+                content: "",
+                status: "idea",
+                words: 0,
+                progress: 0
+            };
+            sections.push(newSection);
+            renderSidebar();
+            loadSection(newId);
+            
+            // Фокус на назві
+            setTimeout(() => {
+                document.getElementById('titleInput').focus();
+                document.getElementById('titleInput').select();
+            }, 50);
+        }
+
+        // Видалити розділ
+        function deleteSection() {
+            if (sections.length <= 1) {
+                alert("Не можна видалити останній розділ!");
+                return;
+            }
+            
+            if (confirm("Видалити цей розділ? Текст буде втрачено.")) {
+                sections = sections.filter(s => s.id !== currentId);
+                currentId = sections[0].id;
+                renderSidebar();
+                loadSection(currentId);
+            }
+        }
+
+        // Фокус-режим
+        function toggleFocus() {
+            document.body.classList.toggle('focus-mode');
+        }
+
+        // Експорт
+        function exportText() {
+            const section = sections.find(s => s.id === currentId);
+            if (!section) return;
+            
+            const text = `${section.title}\n\n${section.content}`;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${section.title || 'розділ'}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Збереження при закритті
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('writer-current', currentId);
+            localStorage.setItem('writer-sections', JSON.stringify(sections));
+        });
+
+        // Ініціалізація
+        init();
+    </script>
+</body>
+</html>
