@@ -13,6 +13,7 @@
             --text: #44403c;
             --muted: #a8a29e;
             --accent: #57534e;
+            --danger: #ef4444;
             --idea: #f59e0b;
             --draft: #3b82f6;
             --edit: #8b5cf6;
@@ -28,7 +29,6 @@
             display: flex;
         }
 
-        /* 📑 SIDEBAR - Список розділів */
         .sidebar {
             width: 320px;
             background: var(--sidebar);
@@ -131,6 +131,21 @@
             border-color: rgba(0,0,0,0.05);
         }
 
+        .section-item.deleting {
+            animation: deleteAnim 0.3s ease forwards;
+        }
+
+        @keyframes deleteAnim {
+            to {
+                transform: scale(0.9);
+                opacity: 0;
+                height: 0;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+        }
+
         .section-title {
             font-weight: 500;
             font-size: 0.95rem;
@@ -174,7 +189,6 @@
             transition: width 0.3s;
         }
 
-        /* 📝 EDITOR - Основна зона */
         .editor-container {
             flex: 1;
             display: flex;
@@ -213,6 +227,9 @@
             font-size: 0.85rem;
             color: var(--accent);
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .tool-btn:hover {
@@ -231,6 +248,16 @@
             color: var(--accent);
         }
 
+        .tool-btn.danger {
+            color: var(--danger);
+        }
+
+        .tool-btn.danger:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
         .status-select {
             padding: 8px 14px;
             border-radius: 20px;
@@ -242,7 +269,6 @@
             color: var(--text);
         }
 
-        /* Поля редагування */
         .editor-fields {
             max-width: 800px;
             margin: 0 auto;
@@ -294,7 +320,6 @@
             font-style: italic;
         }
 
-        /* 📊 FOOTER STATS */
         .editor-footer {
             position: fixed;
             bottom: 30px;
@@ -334,7 +359,74 @@
             padding: 60px 100px;
         }
 
-        /* 📱 MOBILE */
+        /* 📋 EXPORT PANEL */
+        .export-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .export-panel.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .export-textarea {
+            width: 100%;
+            height: 200px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            resize: none;
+            margin: 16px 0;
+        }
+
+        .export-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .export-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .export-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .export-hint {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
         @media (max-width: 968px) {
             .sidebar { width: 260px; }
             .editor-container { padding: 30px; }
@@ -349,16 +441,12 @@
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
             .editor-container { height: 60vh; }
-        }
-
-        /* Анімації */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-item {
-            animation: fadeIn 0.3s ease;
+            .editor-footer {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -380,15 +468,13 @@
             <button class="add-btn" onclick="addSection()" title="Новий розділ">+</button>
         </div>
 
-        <div class="sections-list" id="sectionsList">
-            <!-- Розділи генеруються JS -->
-        </div>
+        <div class="sections-list" id="sectionsList"></div>
     </aside>
 
     <!-- 📝 EDITOR -->
     <main class="editor-container">
         <div class="editor-header">
-            <div class="breadcrumbs" id="breadcrumbs">Розділ 1 з 3</div>
+            <div class="breadcrumbs" id="breadcrumbs">Розділ 1 з 1</div>
             
             <div class="editor-tools">
                 <select class="status-select" id="statusSelect" onchange="changeStatus(this.value)">
@@ -402,11 +488,11 @@
                     🎯
                 </button>
                 
-                <button class="tool-btn" onclick="exportText()">
-                    ⬇️ Експорт
+                <button class="tool-btn" onclick="showExport()">
+                    📋 Копіювати
                 </button>
                 
-                <button class="tool-btn secondary" onclick="deleteSection()" title="Видалити розділ">
+                <button class="tool-btn danger" onclick="deleteSection()" title="Видалити розділ">
                     🗑️
                 </button>
             </div>
@@ -419,7 +505,7 @@
         </div>
     </main>
 
-    <!-- 📊 STATS FOOTER -->
+    <!-- 📊 FOOTER STATS -->
     <div class="editor-footer">
         <div class="stat-item">
             <span>Слів:</span>
@@ -435,20 +521,22 @@
         </div>
     </div>
 
+    <!-- 📋 EXPORT MODAL (без блокування) -->
+    <div class="export-overlay" id="exportOverlay" onclick="hideExport()"></div>
+    <div class="export-panel" id="exportPanel">
+        <div class="export-title">📋 Текст для копіювання</div>
+        <div class="export-hint">Натисніть Ctrl+C (Cmd+C), щоб скопіювати</div>
+        <textarea class="export-textarea" id="exportTextarea" readonly></textarea>
+        <button class="tool-btn" onclick="copyToClipboard()" style="width: 100%; justify-content: center;">
+            📋 Скопіювати в буфер
+        </button>
+    </div>
+
     <script>
-        // Дані
         let sections = JSON.parse(localStorage.getItem('writer-sections')) || [
             {
                 id: 1,
                 title: "Вступ",
-                content: "Тут буде вступ до вашої роботи...",
-                status: "draft",
-                words: 0,
-                progress: 10
-            },
-            {
-                id: 2,
-                title: "Теоретична частина",
                 content: "",
                 status: "idea",
                 words: 0,
@@ -458,13 +546,11 @@
         
         let currentId = parseInt(localStorage.getItem('writer-current')) || sections[0]?.id || 1;
 
-        // Ініціалізація
         function init() {
             renderSidebar();
             loadSection(currentId);
         }
 
-        // Рендер sidebar
         function renderSidebar() {
             const list = document.getElementById('sectionsList');
             list.innerHTML = '';
@@ -478,6 +564,7 @@
                 
                 const item = document.createElement('div');
                 item.className = `section-item ${section.id === currentId ? 'active' : ''}`;
+                item.dataset.id = section.id;
                 item.onclick = () => loadSection(section.id);
                 
                 const statusColors = {
@@ -511,21 +598,17 @@
                 list.appendChild(item);
             });
             
-            // Оновлюємо загальний прогрес
             const totalProgress = sections.length ? Math.round((completedSections / sections.length) * 100) : 0;
             document.getElementById('totalProgress').textContent = totalProgress + '%';
             
-            // Зберігаємо
             localStorage.setItem('writer-sections', JSON.stringify(sections));
         }
 
-        // Завантажити розділ
         function loadSection(id) {
             currentId = id;
             const section = sections.find(s => s.id === id);
             if (!section) return;
             
-            // Оновлюємо UI
             document.getElementById('chapterNum').textContent = `Розділ ${sections.findIndex(s => s.id === id) + 1}`;
             document.getElementById('titleInput').value = section.title || '';
             document.getElementById('contentEditor').innerText = section.content || '';
@@ -536,7 +619,6 @@
             updateStats();
         }
 
-        // Оновлення даних
         function updateTitle(value) {
             const section = sections.find(s => s.id === currentId);
             if (section) {
@@ -551,7 +633,6 @@
                 section.content = text;
                 section.words = text.trim() ? text.trim().split(/\s+/).length : 0;
                 
-                // Авто-прогрес: якщо більше 100 слів — вважаємо що є чернетка
                 if (section.words > 100 && section.status === 'idea') {
                     section.progress = 30;
                 } else if (section.words > 500) {
@@ -567,26 +648,23 @@
             const section = sections.find(s => s.id === currentId);
             if (section) {
                 section.status = status;
-                // Авто-прогрес за статусом
                 const progressMap = { idea: 10, draft: 40, edit: 75, done: 100 };
                 section.progress = progressMap[status] || 0;
                 renderSidebar();
             }
         }
 
-        // Статистика
         function updateStats() {
             const text = document.getElementById('contentEditor').innerText || '';
             const words = text.trim() ? text.trim().split(/\s+/).length : 0;
             const chars = text.length;
-            const readTime = Math.ceil(words / 120); // 120 слів/хв
+            const readTime = Math.ceil(words / 120);
             
             document.getElementById('wordCount').textContent = words;
             document.getElementById('charCount').textContent = chars;
             document.getElementById('readTime').textContent = readTime + ' хв';
         }
 
-        // Додати розділ
         function addSection() {
             const newId = Date.now();
             const newSection = {
@@ -601,55 +679,115 @@
             renderSidebar();
             loadSection(newId);
             
-            // Фокус на назві
             setTimeout(() => {
                 document.getElementById('titleInput').focus();
                 document.getElementById('titleInput').select();
             }, 50);
         }
 
-        // Видалити розділ
+        // 🗑️ ВИДАЛЕННЯ БЕЗ CONFIRM() — МИТТЄВЕ З АНІМАЦІЄЮ
         function deleteSection() {
             if (sections.length <= 1) {
-                alert("Не можна видалити останній розділ!");
+                // Показуємо візуальний фідбек замість alert
+                const btn = document.querySelector('.tool-btn.danger');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⚠️ Останній!';
+                btn.style.background = '#f59e0b';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 1500);
                 return;
             }
             
-            if (confirm("Видалити цей розділ? Текст буде втрачено.")) {
+            // Знаходимо DOM елемент і додаємо клас анімації
+            const sectionEl = document.querySelector(`.section-item[data-id="${currentId}"]`);
+            if (sectionEl) {
+                sectionEl.classList.add('deleting');
+            }
+            
+            // Чекаємо анімацію і видаляємо
+            setTimeout(() => {
+                const index = sections.findIndex(s => s.id === currentId);
                 sections = sections.filter(s => s.id !== currentId);
-                currentId = sections[0].id;
+                
+                // Переходимо до сусіднього розділу
+                if (index > 0) {
+                    currentId = sections[index - 1].id;
+                } else {
+                    currentId = sections[0].id;
+                }
+                
                 renderSidebar();
                 loadSection(currentId);
-            }
+            }, 300);
         }
 
-        // Фокус-режим
-        function toggleFocus() {
-            document.body.classList.toggle('focus-mode');
-        }
-
-        // Експорт
-        function exportText() {
+        // 📋 ЕКСПОРТ — ПОКАЗУЄМО В МОДАЛЬНОМУ ВІКНІ З ТЕКСТОМ
+        function showExport() {
             const section = sections.find(s => s.id === currentId);
             if (!section) return;
             
             const text = `${section.title}\n\n${section.content}`;
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${section.title || 'розділ'}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
+            document.getElementById('exportTextarea').value = text;
+            
+            document.getElementById('exportOverlay').classList.add('show');
+            document.getElementById('exportPanel').classList.add('show');
+            
+            // Автовиділення тексту
+            setTimeout(() => {
+                document.getElementById('exportTextarea').select();
+            }, 100);
         }
 
-        // Збереження при закритті
+        function hideExport() {
+            document.getElementById('exportOverlay').classList.remove('show');
+            document.getElementById('exportPanel').classList.remove('show');
+        }
+
+        function copyToClipboard() {
+            const textarea = document.getElementById('exportTextarea');
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Скопійовано!';
+                btn.style.background = '#10b981';
+                btn.style.color = 'white';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    hideExport();
+                }, 1000);
+            } catch (err) {
+                // Якщо execCommand не спрацював (безпека), користувач може скопіювати вручну
+                console.log('Copy failed, use manual selection');
+            }
+        }
+
+        function toggleFocus() {
+            document.body.classList.toggle('focus-mode');
+        }
+
+        // Закриття модалки по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideExport();
+                if (document.body.classList.contains('focus-mode')) {
+                    toggleFocus();
+                }
+            }
+        });
+
         window.addEventListener('beforeunload', () => {
             localStorage.setItem('writer-current', currentId);
             localStorage.setItem('writer-sections', JSON.stringify(sections));
         });
 
-        // Ініціалізація
         init();
     </script>
 </body>
