@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Нотатки</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+            touch-action: manipulation;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #fafaf9;
+            color: #1c1917;
+            padding: 20px 16px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .wrap {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #292524;
+        }
+
+        .sub {
+            color: #78716c;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* Quote */
+        .quote {
+            background: #fff;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quote-head {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #a8a29e;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .quote-head button {
+            background: #f5f5f4;
+            border: 1px solid #e7e5e4;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #57534e;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .quote-text {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #292524;
+        }
+
+        .quote-author {
+            font-size: 14px;
+            color: #78716c;
+        }
+
+        /* Input */
+        .box {
+            background: #fff;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .box-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #78716c;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            min-height: 90px;
+            resize: vertical;
+            margin-bottom: 12px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        textarea:focus {
+            border-color: #a8a29e;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            background: #292524;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            font-family: inherit;
+            margin-bottom: 12px;
+        }
+
+        .btn:active {
+            background: #1c1917;
+            transform: translateY(1px);
+        }
+
+        .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: transparent;
+            border: 1px solid #e7e5e4;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            color: #78716c;
+            cursor: pointer;
+            font-family: inherit;
+            -webkit-appearance: none;
+        }
+
+        .tag.sel {
+            background: #292524;
+            color: #fff;
+            border-color: #292524;
+        }
+
+        /* Filters — CSS ONLY via radio buttons */
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e7e5e4;
+            padding-bottom: 12px;
+        }
+
+        .filter-group input[type="radio"] {
+            display: none;
+        }
+
+        .filter-group label {
+            padding: 6px 12px;
+            font-size: 14px;
+            color: #78716c;
+            cursor: pointer;
+            border-radius: 6px;
+            background: transparent;
+        }
+
+        .filter-group input[type="radio"]:checked + label {
+            background: #f5f5f4;
+            color: #292524;
+            font-weight: 500;
+        }
+
+        /* Entries */
+        .entry {
+            background: #fff;
+            border: 1px solid #e7e5e4;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .entry-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a8a29e;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .entry-text {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+
+        .entry-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #a8a29e;
+            padding-top: 10px;
+            border-top: 1px solid #f5f5f4;
+        }
+
+        .del {
+            background: #fef2f2;
+            color: #dc2626;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .del:active {
+            background: #fecaca;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #d6d3d1;
+            font-size: 15px;
+        }
+
+        .hint {
+            text-align: center;
+            font-size: 12px;
+            color: #d6d3d1;
+            margin-top: 24px;
+        }
+
+        /* CSS-only tab visibility */
+        #tab-all:checked ~ .entries-all,
+        #tab-today:checked ~ .entries-today,
+        #tab-week:checked ~ .entries-week {
+            display: block !important;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Щоденник</h1>
+        <div class="sub">Записуйте думки та ідеї</div>
+
+        <!-- Quote -->
+        <div class="quote">
+            <div class="quote-head">
+                <span>Цитата дня</span>
+                <button type="button" onclick="newQuote()">Оновити</button>
+            </div>
+            <div class="quote-text" id="qText">Простота — це найвища ступінь досконалості.</div>
+            <div class="quote-author" id="qAuthor">— Леонардо да Вінчі</div>
+        </div>
+
+        <!-- Input -->
+        <div class="box">
+            <div class="box-top">
+                <span style="font-weight:500;color:#292524;">Нова нотатка</span>
+                <span id="todayDate">17 квітня</span>
+            </div>
+            
+            <textarea id="txt" placeholder="Що у вас на думці?"></textarea>
+            
+            <button type="button" class="btn" onclick="add()">Додати нотатку</button>
+            
+            <div class="tags">
+                <button type="button" class="tag sel" onclick="setTag(this,'note')">Нотатка</button>
+                <button type="button" class="tag" onclick="setTag(this,'idea')">Ідея</button>
+                <button type="button" class="tag" onclick="setTag(this,'task')">Завдання</button>
+                <button type="button" class="tag" onclick="setTag(this,'goal')">Ціль</button>
+            </div>
+        </div>
+
+        <!-- CSS Tabs -->
+        <div class="filter-group">
+            <input type="radio" name="tab" id="tab-all" checked onchange="render()">
+            <label for="tab-all">Всі</label>
+            
+            <input type="radio" name="tab" id="tab-today" onchange="render()">
+            <label for="tab-today">Сьогодні</label>
+            
+            <input type="radio" name="tab" id="tab-week" onchange="render()">
+            <label for="tab-week">Тиждень</label>
+        </div>
+
+        <!-- Entries -->
+        <div id="list">
+            <div class="empty">Нотатки з'являться тут</div>
+        </div>
+
+        <div class="hint">💾 Зберігається автоматично в браузері</div>
+    </div>
+
+    <script>
+        var items = [];
+        var tag = 'note';
+        var filter = 'all';
+
+        var quotes = [
+            {t:"Простота — це найвища ступінь досконалості.",a:"Леонардо да Вінчі"},
+            {t:"Дія — це основний ключ до всього успіху.",a:"Пабло Пікассо"},
+            {t:"Не відкладай на завтра те, що можеш зробити сьогодні.",a:"Бенджамін Франклін"},
+            {t:"Найкращий спосіб передбачити майбутнє — створити його.",a:"Пітер Друкер"},
+            {t:"Успіх — це сума маленьких зусиль, повторених день за днем.",a:""},
+            {t:"Почніть звідти, де ви є. Використовуйте те, що маєте.",a:"Артур Еш"}
+        ];
+
+        var tags = {note:'Нотатка', idea:'Ідея', task:'Завдання', goal:'Ціль'};
+
+        function init(){
+            var d = new Date();
+            document.getElementById('todayDate').innerText = d.getDate() + ' ' + ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'][d.getMonth()];
+            try { items = JSON.parse(localStorage.getItem('dn_v1')) || []; } catch(e){}
+            render();
+        }
+
+        function newQuote(){
+            var q = quotes[Math.floor(Math.random()*quotes.length)];
+            document.getElementById('qText').innerText = q.t;
+            document.getElementById('qAuthor').innerText = q.a ? '— '+q.a : '';
+        }
+
+        function setTag(el, t){
+            tag = t;
+            var all = document.querySelectorAll('.tag');
+            for(var i=0;i<all.length;i++) all[i].className = 'tag';
+            el.className = 'tag sel';
+        }
+
+        function add(){
+            var v = document.getElementById('txt').value.trim();
+            if(!v){
+                var t = document.getElementById('txt');
+                t.style.borderColor = '#dc2626';
+                setTimeout(function(){t.style.borderColor='';},500);
+                return;
+            }
+            items.unshift({
+                id: Date.now(),
+                text: v,
+                tag: tag,
+                time: new Date().toISOString()
+            });
+            save();
+            document.getElementById('txt').value = '';
+            render();
+        }
+
+        function remove(id){
+            var out = [];
+            for(var i=0;i<items.length;i++) if(items[i].id !== id) out.push(items[i]);
+            items = out;
+            save();
+            render();
+        }
+
+        function save(){
+            try { localStorage.setItem('dn_v1', JSON.stringify(items)); } catch(e){}
+        }
+
+        function render(){
+            var el = document.getElementById('list');
+            var out = [];
+            var now = new Date();
+            var today = now.toDateString();
+            var weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+            
+            var filter = document.querySelector('input[name="tab"]:checked').id.replace('tab-','');
+
+            for(var i=0;i<items.length;i++){
+                var d = new Date(items[i].time);
+                if(filter==='today' && d.toDateString()!==today) continue;
+                if(filter==='week' && d<weekAgo) continue;
+                out.push(items[i]);
+            }
+
+            if(out.length===0){
+                el.innerHTML = '<div class="empty">Нотатки з\'являться тут</div>';
+                return;
+            }
+
+            var html = '';
+            for(var i=0;i<out.length;i++){
+                var d = new Date(out[i].time);
+                var dateStr = d.getDate()+' '+['січ','лют','бер','квіт','трав','черв','лип','серп','вер','жовт','лист','груд'][d.getMonth()];
+                var timeStr = ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+                html += '<div class="entry">';
+                html += '<div class="entry-tag">'+tags[out[i].tag]+'</div>';
+                html += '<div class="entry-text">'+escape(out[i].text)+'</div>';
+                html += '<div class="entry-foot"><span>'+dateStr+', '+timeStr+'</span>';
+                html += '<button type="button" class="del" onclick="remove('+out[i].id+')">Видалити</button></div>';
+                html += '</div>';
+            }
+            el.innerHTML = html;
+        }
+
+        function escape(s){
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
+        // Touch fix for mobile iframe
+        document.addEventListener('touchstart', function(){}, {passive:true});
+
+        init();
+    </script>
+</body>
+</html>
