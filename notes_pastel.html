@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Щоденник</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            color: #44403c;
+            padding: 32px 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #57534e;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .sub {
+            color: #a8a29e;
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+
+        /* Quote - стиль як у помодоро */
+        .quote-box {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.03);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .quote-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .quote-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #a8a29e;
+            font-weight: 500;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            color: #78716c;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: white;
+            color: #57534e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quote-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #57534e;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .quote-author {
+            font-size: 0.9rem;
+            color: #a8a29e;
+        }
+
+        /* Input - стиль помодоро */
+        .input-box {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.03);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .input-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .input-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #57534e;
+        }
+
+        .date-badge {
+            font-size: 0.85rem;
+            color: #a8a29e;
+            background: rgba(0,0,0,0.03);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-family: inherit;
+            min-height: 90px;
+            resize: vertical;
+            margin-bottom: 16px;
+            outline: none;
+            background: rgba(255,255,255,0.5);
+            color: #44403c;
+            -webkit-appearance: none;
+        }
+
+        textarea:focus {
+            border-color: #94a3b8;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        textarea::placeholder {
+            color: #d6d3d1;
+        }
+
+        .add-button {
+            width: 100%;
+            background: #94a3b8;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(148,163,184,0.2);
+        }
+
+        .add-button:hover {
+            background: #7d8fa3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(148,163,184,0.3);
+        }
+
+        .add-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 3px rgba(148,163,184,0.2);
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: transparent;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            color: #a8a29e;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            border-color: #94a3b8;
+            color: #78716c;
+        }
+
+        .tag.selected {
+            background: #94a3b8;
+            color: white;
+            border-color: #94a3b8;
+            box-shadow: 0 2px 6px rgba(148,163,184,0.2);
+        }
+
+        /* Filter */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            color: #a8a29e;
+            cursor: pointer;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            color: #78716c;
+        }
+
+        .filter-btn.active {
+            background: rgba(255,255,255,0.6);
+            color: #57534e;
+            font-weight: 500;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        }
+
+        /* Entries - картки як у помодоро */
+        .entry {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.03);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        .entry-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .entry-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #44403c;
+            margin-bottom: 14px;
+            word-wrap: break-word;
+        }
+
+        .entry-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .entry-date {
+            font-size: 0.8rem;
+            color: #d6d3d1;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.08);
+            color: #ef4444;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 48px 20px;
+            color: #d6d3d1;
+            font-size: 1rem;
+        }
+
+        .hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #d6d3d1;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 20px 16px; }
+            h1 { font-size: 1.5rem; }
+            .quote-box, .input-box { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Щоденник</h1>
+        <div class="sub">Записуйте думки та ідеї</div>
+
+        <!-- Quote -->
+        <div class="quote-box">
+            <div class="quote-top">
+                <span class="quote-label">Цитата дня</span>
+                <button class="refresh-btn" onclick="newQuote()">Оновити</button>
+            </div>
+            <div class="quote-text" id="quoteText">Простота — це найвища ступінь досконалості.</div>
+            <div class="quote-author" id="quoteAuthor">— Леонардо да Вінчі</div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-box">
+            <div class="input-top">
+                <span class="input-title">Нова нотатка</span>
+                <span class="date-badge" id="currentDate">17 квітня</span>
+            </div>
+            
+            <textarea id="noteInput" placeholder="Що у вас на думці?"></textarea>
+            
+            <button class="add-button" onclick="add()">Додати нотатку</button>
+            
+            <div class="tags">
+                <button class="tag selected" onclick="setTag(this,'note')">Нотатка</button>
+                <button class="tag" onclick="setTag(this,'idea')">Ідея</button>
+                <button class="tag" onclick="setTag(this,'task')">Завдання</button>
+                <button class="tag" onclick="setTag(this,'goal')">Ціль</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFilter(this,'all')">Всі</button>
+            <button class="filter-btn" onclick="setFilter(this,'today')">Сьогодні</button>
+            <button class="filter-btn" onclick="setFilter(this,'week')">Тиждень</button>
+        </div>
+
+        <!-- Entries -->
+        <div id="entriesList">
+            <div class="empty">Нотатки з'являться тут</div>
+        </div>
+
+        <div class="hint">💾 Автозбереження увімкнено</div>
+    </div>
+
+    <script>
+        var items = [];
+        var tag = 'note';
+        var filter = 'all';
+
+        var quotes = [
+            {t:"Простота — це найвища ступінь досконалості.",a:"Леонардо да Вінчі"},
+            {t:"Дія — це основний ключ до всього успіху.",a:"Пабло Пікассо"},
+            {t:"Не відкладай на завтра те, що можеш зробити сьогодні.",a:"Бенджамін Франклін"},
+            {t:"Найкращий спосіб передбачити майбутнє — створити його.",a:"Пітер Друкер"},
+            {t:"Успіх — це сума маленьких зусиль, повторених день за днем.",a:""},
+            {t:"Почніть звідти, де ви є. Використовуйте те, що маєте.",a:"Артур Еш"}
+        ];
+
+        var tags = {note:'Нотатка', idea:'Ідея', task:'Завдання', goal:'Ціль'};
+
+        function init(){
+            var d = new Date();
+            document.getElementById('currentDate').innerText = d.getDate() + ' ' + ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'][d.getMonth()];
+            try { items = JSON.parse(localStorage.getItem('dn_v2')) || []; } catch(e){}
+            render();
+        }
+
+        function newQuote(){
+            var q = quotes[Math.floor(Math.random()*quotes.length)];
+            document.getElementById('quoteText').innerText = q.t;
+            document.getElementById('quoteAuthor').innerText = q.a ? '— '+q.a : '';
+        }
+
+        function setTag(el, t){
+            tag = t;
+            var all = document.querySelectorAll('.tag');
+            for(var i=0;i<all.length;i++) all[i].className = 'tag';
+            el.className = 'tag selected';
+        }
+
+        function setFilter(el, f){
+            filter = f;
+            var all = document.querySelectorAll('.filter-btn');
+            for(var i=0;i<all.length;i++) all[i].className = 'filter-btn';
+            el.className = 'filter-btn active';
+            render();
+        }
+
+        function add(){
+            var input = document.getElementById('noteInput');
+            var text = input.value.trim();
+            if(!text){
+                input.style.borderColor = '#ef4444';
+                setTimeout(function(){input.style.borderColor='';},500);
+                return;
+            }
+            items.unshift({id:Date.now(), text:text, tag:tag, time:new Date().toISOString()});
+            save();
+            input.value = '';
+            render();
+        }
+
+        function remove(id){
+            var out = [];
+            for(var i=0;i<items.length;i++) if(items[i].id !== id) out.push(items[i]);
+            items = out;
+            save();
+            render();
+        }
+
+        function save(){
+            try { localStorage.setItem('dn_v2', JSON.stringify(items)); } catch(e){}
+        }
+
+        function render(){
+            var el = document.getElementById('entriesList');
+            var out = [];
+            var now = new Date();
+            var today = now.toDateString();
+            var weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+
+            for(var i=0;i<items.length;i++){
+                var d = new Date(items[i].time);
+                if(filter==='today' && d.toDateString()!==today) continue;
+                if(filter==='week' && d<weekAgo) continue;
+                out.push(items[i]);
+            }
+
+            if(out.length===0){
+                el.innerHTML = '<div class="empty">Нотатки з\'являться тут</div>';
+                return;
+            }
+
+            var html = '';
+            for(var i=0;i<out.length;i++){
+                var d = new Date(out[i].time);
+                var dateStr = d.getDate()+' '+['січ','лют','бер','квіт','трав','черв','лип','серп','вер','жовт','лист','груд'][d.getMonth()];
+                var timeStr = ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+                html += '<div class="entry">';
+                html += '<div class="entry-tag">'+tags[out[i].tag]+'</div>';
+                html += '<div class="entry-text">'+escape(out[i].text)+'</div>';
+                html += '<div class="entry-footer"><span class="entry-date">'+dateStr+', '+timeStr+'</span>';
+                html += '<button class="delete-btn" onclick="remove('+out[i].id+')">Видалити</button></div>';
+                html += '</div>';
+            }
+            el.innerHTML = html;
+        }
+
+        function escape(s){
+            var d = document.createElement('div');
+            d.appendChild(document.createTextNode(s));
+            return d.innerHTML;
+        }
+
+        document.getElementById('noteInput').addEventListener('keydown', function(e){
+            if(e.key==='Enter' && !e.shiftKey){
+                e.preventDefault();
+                add();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
