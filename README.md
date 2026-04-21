@@ -29,6 +29,7 @@
 ### Методології та аналіз
 | Шаблон | Опис | Перегляд |
 |---|---|---|
+| [raci.html](raci.html) | RACI матриця — визначення ролей та відповідальності | [відкрити](https://betabutterfly.github.io/notion-templates/raci.html) |
 | [pdca.html](pdca.html) | PDCA — цикл постійного покращення | [відкрити](https://betabutterfly.github.io/notion-templates/pdca.html) |
 | [kaizen.html](kaizen.html) | Kaizen-лист щоденних покращень | [відкрити](https://betabutterfly.github.io/notion-templates/kaizen.html) |
 | [lean_canvas.html](lean_canvas.html) | Lean Canvas — бізнес-модель на одній сторінці | [відкрити](https://betabutterfly.github.io/notion-templates/lean_canvas.html) |

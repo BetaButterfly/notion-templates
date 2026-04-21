@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RACI матриця | Notion Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #44403c;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #57534e;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: #a8a29e;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #78716c;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: white;
+            color: #57534e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn.primary {
+            background: #57534e;
+            color: white;
+            border-color: #57534e;
+        }
+
+        .btn.primary:hover {
+            background: #6d6763;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .color-r { background: #ef4444; }
+        .color-a { background: #f59e0b; }
+        .color-c { background: #3b82f6; }
+        .color-i { background: #10b981; }
+
+        .table-wrapper {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.03);
+            font-weight: 600;
+            color: #57534e;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            color: #78716c;
+            position: relative;
+        }
+
+        .task-cell {
+            font-weight: 500;
+            color: #57534e;
+            min-width: 150px;
+        }
+
+        .editable {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .editable:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .raci-cell {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 4px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .raci-cell:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .raci-cell.empty {
+            background: rgba(0, 0, 0, 0.03);
+            color: #a8a29e;
+            font-size: 0.75rem;
+        }
+
+        .raci-cell.r {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .raci-cell.a {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .raci-cell.c {
+            background: #dbeafe;
+            color: #0c2d6b;
+        }
+
+        .raci-cell.i {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        .add-row {
+            margin-top: 15px;
+        }
+
+        .add-row input {
+            width: 200px;
+            padding: 8px 12px;
+            border: 1px solid #d4d4ce;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .legend {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            th, td {
+                padding: 8px 4px;
+                font-size: 0.75rem;
+            }
+
+            .raci-cell {
+                min-width: 45px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RACI матриця</h1>
+            <p>Визначте ролі та відповідальність у проектах</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn primary" id="addTaskBtn">+ Додати завдання</button>
+            <button class="btn primary" id="addPersonBtn">+ Додати учасника</button>
+            <button class="btn" id="clearBtn">🔄 Очистити все</button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color color-r"></div>
+                <span><strong>R</strong> — Відповідальна особа (Responsible)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-a"></div>
+                <span><strong>A</strong> — Підзвітна особа (Accountable)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-c"></div>
+                <span><strong>C</strong> — Консультує (Consulted)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-i"></div>
+                <span><strong>I</strong> — Інформується (Informed)</span>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="raciTable">
+                <thead>
+                    <tr id="headerRow">
+                        <th style="min-width: 150px;">Завдання / Учасники</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="add-row">
+            <input type="text" id="newTaskInput" placeholder="Назва нового завдання">
+            <button class="btn primary" onclick="addTaskFromInput()">Додати</button>
+        </div>
+    </div>
+
+    <script>
+        let data = {
+            tasks: ['Планування', 'Розробка', 'Тестування', 'Розгортання'],
+            people: ['Менеджер', 'Розробник', 'Тестувальник', 'DevOps'],
+            matrix: {}
+        };
+
+        function initData() {
+            data.tasks.forEach(task => {
+                data.matrix[task] = {};
+                data.people.forEach(person => {
+                    data.matrix[task][person] = '';
+                });
+            });
+        }
+
+        function renderTable() {
+            const headerRow = document.getElementById('headerRow');
+            const tableBody = document.getElementById('tableBody');
+
+            headerRow.innerHTML = '<th style="min-width: 150px;">Завдання / Учасники</th>';
+
+            data.people.forEach(person => {
+                const th = document.createElement('th');
+                th.style.minWidth = '80px';
+                th.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                        <span class="editable" onclick="editPerson('${person}')">${person}</span>
+                        <button class="delete-btn" onclick="deletePerson('${person}')">×</button>
+                    </div>
+                `;
+                headerRow.appendChild(th);
+            });
+
+            tableBody.innerHTML = '';
+
+            data.tasks.forEach(task => {
+                const tr = document.createElement('tr');
+
+                const tdTask = document.createElement('td');
+                tdTask.className = 'task-cell';
+                tdTask.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+                        <span class="editable" onclick="editTask('${task}')">${task}</span>
+                        <button class="delete-btn" onclick="deleteTask('${task}')">×</button>
+                    </div>
+                `;
+                tr.appendChild(tdTask);
+
+                data.people.forEach(person => {
+                    const td = document.createElement('td');
+                    const value = data.matrix[task][person] || '';
+                    const cellClass = value ? value.toLowerCase() : 'empty';
+                    const cellText = value ? value.toUpperCase() : '—';
+
+                    td.innerHTML = `<div class="raci-cell ${cellClass}" onclick="toggleRaci('${task}', '${person}')">${cellText}</div>`;
+                    tr.appendChild(td);
+                });
+
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function toggleRaci(task, person) {
+            const current = data.matrix[task][person] || '';
+            const options = ['r', 'a', 'c', 'i'];
+            const currentIndex = options.indexOf(current.toLowerCase());
+            const nextIndex = (currentIndex + 1) % (options.length + 1);
+
+            data.matrix[task][person] = nextIndex < options.length ? options[nextIndex] : '';
+            renderTable();
+        }
+
+        function editTask(oldTask) {
+            const newTask = prompt('Редагувати завдання:', oldTask);
+            if (newTask && newTask !== oldTask && !data.tasks.includes(newTask)) {
+                data.matrix[newTask] = data.matrix[oldTask];
+                delete data.matrix[oldTask];
+                const idx = data.tasks.indexOf(oldTask);
+                if (idx > -1) data.tasks[idx] = newTask;
+                renderTable();
+            }
+        }
+
+        function deleteTask(task) {
+            if (confirm(`Видалити завдання "${task}"?`)) {
+                delete data.matrix[task];
+                data.tasks = data.tasks.filter(t => t !== task);
+                renderTable();
+            }
+        }
+
+        function editPerson(oldPerson) {
+            const newPerson = prompt('Редагувати учасника:', oldPerson);
+            if (newPerson && newPerson !== oldPerson && !data.people.includes(newPerson)) {
+                data.tasks.forEach(task => {
+                    data.matrix[task][newPerson] = data.matrix[task][oldPerson];
+                    delete data.matrix[task][oldPerson];
+                });
+                const idx = data.people.indexOf(oldPerson);
+                if (idx > -1) data.people[idx] = newPerson;
+                renderTable();
+            }
+        }
+
+        function deletePerson(person) {
+            if (confirm(`Видалити учасника "${person}"?`)) {
+                data.people = data.people.filter(p => p !== person);
+                data.tasks.forEach(task => {
+                    delete data.matrix[task][person];
+                });
+                renderTable();
+            }
+        }
+
+        function addTaskFromInput() {
+            const input = document.getElementById('newTaskInput');
+            const task = input.value.trim();
+            if (task && !data.tasks.includes(task)) {
+                data.tasks.push(task);
+                data.matrix[task] = {};
+                data.people.forEach(person => {
+                    data.matrix[task][person] = '';
+                });
+                input.value = '';
+                renderTable();
+            }
+        }
+
+        document.getElementById('addTaskBtn').onclick = () => {
+            const task = prompt('Назва нового завдання:');
+            if (task && !data.tasks.includes(task)) {
+                data.tasks.push(task);
+                data.matrix[task] = {};
+                data.people.forEach(person => {
+                    data.matrix[task][person] = '';
+                });
+                renderTable();
+            }
+        };
+
+        document.getElementById('addPersonBtn').onclick = () => {
+            const person = prompt('Ім\'я учасника:');
+            if (person && !data.people.includes(person)) {
+                data.people.push(person);
+                data.tasks.forEach(task => {
+                    data.matrix[task][person] = '';
+                });
+                renderTable();
+            }
+        };
+
+        document.getElementById('clearBtn').onclick = () => {
+            if (confirm('Очистити всю матрицю?')) {
+                data.tasks.forEach(task => {
+                    data.people.forEach(person => {
+                        data.matrix[task][person] = '';
+                    });
+                });
+                renderTable();
+            }
+        };
+
+        initData();
+        renderTable();
+    </script>
+</body>
+</html>
