@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PDCA Цикл</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            color: #44403c;
+            padding: 32px 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: #57534e;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: #a8a29e;
+            font-size: 0.9rem;
+        }
+
+        /* Cycle visual */
+        .cycle-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .cycle-step {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .cycle-p { background: #94a3b8; color: white; }
+        .cycle-d { background: #86efac; color: #166534; }
+        .cycle-c { background: #fcd34d; color: #92400e; }
+        .cycle-a { background: #fca5a5; color: #991b1b; }
+
+        .cycle-arrow {
+            color: #d6d3d1;
+            font-size: 1.4rem;
+            font-weight: 300;
+        }
+
+        /* Cards */
+        .pdca-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pdca-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .card-p::before { background: #94a3b8; }
+        .card-d::before { background: #86efac; }
+        .card-c::before { background: #fcd34d; }
+        .card-a::before { background: #fca5a5; }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .letter-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .badge-p { background: rgba(148, 163, 184, 0.2); color: #475569; }
+        .badge-d { background: rgba(134, 239, 172, 0.2); color: #166534; }
+        .badge-c { background: rgba(252, 211, 77, 0.2); color: #92400e; }
+        .badge-a { background: rgba(252, 165, 165, 0.2); color: #991b1b; }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #292524;
+        }
+
+        .card-sub {
+            font-size: 0.8rem;
+            color: #a8a29e;
+        }
+
+        .question {
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #44403c;
+            margin-bottom: 6px;
+        }
+
+        .question-hint {
+            font-size: 0.8rem;
+            color: #d6d3d1;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            min-height: 60px;
+            resize: vertical;
+            background: rgba(255,255,255,0.5);
+            color: #44403c;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #94a3b8;
+            background: white;
+        }
+
+        /* Checklist */
+        .checklist {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        .checklist h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #292524;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: #57534e;
+            cursor: pointer;
+        }
+
+        .check-item label {
+            font-size: 0.9rem;
+            color: #57534e;
+            cursor: pointer;
+        }
+
+        /* Summary */
+        .summary-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        .summary-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #292524;
+            margin-bottom: 16px;
+        }
+
+        .field {
+            margin-bottom: 12px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.85rem;
+            color: #a8a29e;
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: rgba(255,255,255,0.5);
+            color: #44403c;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #94a3b8;
+            background: white;
+        }
+
+        /* Buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #94a3b8;
+            color: white;
+            box-shadow: 0 2px 8px rgba(148,163,184,0.25);
+        }
+
+        .btn-primary:hover {
+            background: #7d8fa3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #a8a29e;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0,0,0,0.03);
+            color: #57534e;
+        }
+
+        .saved-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #292524;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .saved-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .footer-hint {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #d6d3d1;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 600px) {
+            .cycle-visual { gap: 8px; }
+            .cycle-step { width: 60px; height: 60px; font-size: 0.7rem; }
+            .cycle-arrow { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="header">
+            <h1>PDCA — Цикл управління</h1>
+            <p>Plan · Do · Check · Act — постійне вдосконалення</p>
+        </div>
+
+        <!-- Cycle Visual -->
+        <div class="cycle-visual">
+            <div class="cycle-step cycle-p">
+                <span style="font-size:1.2rem;">📋</span>
+                <span>PLAN</span>
+            </div>
+            <div class="cycle-arrow">→</div>
+            <div class="cycle-step cycle-d">
+                <span style="font-size:1.2rem;">⚡</span>
+                <span>DO</span>
+            </div>
+            <div class="cycle-arrow">→</div>
+            <div class="cycle-step cycle-c">
+                <span style="font-size:1.2rem;">🔍</span>
+                <span>CHECK</span>
+            </div>
+            <div class="cycle-arrow">→</div>
+            <div class="cycle-step cycle-a">
+                <span style="font-size:1.2rem;">🎯</span>
+                <span>ACT</span>
+            </div>
+        </div>
+
+        <!-- Project Info -->
+        <div class="summary-card">
+            <h3>📌 Інформація про проєкт</h3>
+            <div class="field">
+                <label>Назва процесу / проєкту</label>
+                <input type="text" id="projectName" placeholder="Що вдосконалюємо?">
+            </div>
+            <div class="field">
+                <label>Відповідальний</label>
+                <input type="text" id="projectOwner" placeholder="Хто керує циклом?">
+            </div>
+            <div class="field">
+                <label>Дата початку циклу</label>
+                <input type="date" id="cycleStart">
+            </div>
+        </div>
+
+        <!-- PLAN -->
+        <div class="pdca-card card-p">
+            <div class="card-header">
+                <div class="letter-badge badge-p">P</div>
+                <div>
+                    <div class="card-title">Plan — Планування</div>
+                    <div class="card-sub">Визначити проблему, проаналізувати, розробити план</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Яку проблему / можливість адресуємо?</div>
+                <div class="question-hint">Опишіть поточну ситуацію, що не влаштовує...</div>
+                <textarea id="pProblem" placeholder=""></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Корінна причина (5 Whys):</div>
+                <div class="question-hint">Чому це відбувається? Чому? Чому?...</div>
+                <textarea id="pRootCause" placeholder="1. Тому що... 2. Тому що..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Цільовий стан (як має бути?):</div>
+                <textarea id="pGoal" placeholder="Опишіть ідеальний результат..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">План дій:</div>
+                <div class="question-hint">Що конкретно робимо, хто відповідає, коли дедлайн</div>
+                <textarea id="pPlan" placeholder="1. [Дія] — [Відповідальний] — [Термін]"></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Необхідні ресурси:</div>
+                <textarea id="pResources" placeholder="Бюджет, час, люди, інструменти..."></textarea>
+            </div>
+        </div>
+
+        <!-- DO -->
+        <div class="pdca-card card-d">
+            <div class="card-header">
+                <div class="letter-badge badge-d">D</div>
+                <div>
+                    <div class="card-title">Do — Виконання</div>
+                    <div class="card-sub">Реалізувати план, зібрати дані, документувати</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Що було зроблено?</div>
+                <div class="question-hint">Конкретні дії, кроки, рішення</div>
+                <textarea id="dDone" placeholder=""></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Відхилення від плану:</div>
+                <textarea id="dDeviations" placeholder="Що пішло не за планом і чому?"></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Спостереження / несподіванки:</div>
+                <textarea id="dObservations" placeholder="Що дізналися під час виконання?"></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Дані / метрики:</div>
+                <div class="question-hint">Числа, факти, виміри до і після</div>
+                <textarea id="dData" placeholder="Було: ___ → Стало: ___"></textarea>
+            </div>
+        </div>
+
+        <!-- CHECK -->
+        <div class="pdca-card card-c">
+            <div class="card-header">
+                <div class="letter-badge badge-c">C</div>
+                <div>
+                    <div class="card-title">Check — Перевірка</div>
+                    <div class="card-sub">Проаналізувати результати, порівняти з планом, знайти уроки</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Результат vs План:</div>
+                <div class="question-hint">Досягли цілі? На скільки %?</div>
+                <textarea id="cResult" placeholder="Ціль: ___ → Досягнуто: ___%"></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Що спрацювало добре?</div>
+                <textarea id="cSuccess" placeholder="Позитивні моменти, успішні рішення..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Що не спрацювало?</div>
+                <textarea id="cFail" placeholder="Помилки, бар'єри, що завадило..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Уроки / інсайти:</div>
+                <textarea id="cLessons" placeholder="Що дізналися? Що б зробили інакше?"></textarea>
+            </div>
+        </div>
+
+        <!-- ACT -->
+        <div class="pdca-card card-a">
+            <div class="card-header">
+                <div class="letter-badge badge-a">A</div>
+                <div>
+                    <div class="card-title">Act — Дія / Удосконалення</div>
+                    <div class="card-sub">Стандартизувати успіх, виправити помилки, запустити новий цикл</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Що стандартизуємо?</div>
+                <div class="question-hint">Що будемо робити системно, закріплюємо в процес</div>
+                <textarea id="aStandard" placeholder="Нові правила, чек-листи, інструкції..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Що виправляємо?</div>
+                <textarea id="aFix" placeholder="Конкретні дії для усунення проблем..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Наступний цикл PDCA:</div>
+                <div class="question-hint">Яку наступну проблему беремо? Коли стартуємо?</div>
+                <textarea id="aNext" placeholder="Проблема: ___ → Старт: ___"></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Висновок / рішення:</div>
+                <textarea id="aConclusion" placeholder="Фінальне рішення: прийняти / відхилити / доопрацювати"></textarea>
+            </div>
+        </div>
+
+        <!-- Checklist -->
+        <div class="checklist">
+            <h3>☑ Чек-лист завершення циклу</h3>
+            <div class="check-item">
+                <input type="checkbox" id="ch1"><label for="ch1">Проблема чітко визначена та підтверджена даними</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="ch2"><label for="ch2">Корінну причину знайдено (не симптом!)</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="ch3"><label for="ch3">План дій конкретний з відповідальними та дедлайнами</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="ch4"><label for="ch4">Результати виміряні та порівняні з базовим рівнем</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="ch5"><label for="ch5">Уроки задокументовані та передані команді</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="ch6"><label for="ch6">Успішні практики стандартизовані в процес</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="ch7"><label for="ch7">Наступний цикл PDCA заплановано</label>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="saveAll()">💾 Зберегти цикл</button>
+            <button class="btn btn-secondary" onclick="exportData()">📋 Експорт</button>
+            <button class="btn btn-secondary" onclick="clearAll()">Очистити</button>
+        </div>
+
+        <div class="footer-hint">PDCA — Walter Shewhart / W. Edwards Deming, 1950s</div>
+    </div>
+
+    <div class="saved-toast" id="toast">✅ Збережено!</div>
+
+    <script>
+        // Fields to save
+        var fields = [
+            'projectName','projectOwner','cycleStart',
+            'pProblem','pRootCause','pGoal','pPlan','pResources',
+            'dDone','dDeviations','dObservations','dData',
+            'cResult','cSuccess','cFail','cLessons',
+            'aStandard','aFix','aNext','aConclusion'
+        ];
+
+        var checks = ['ch1','ch2','ch3','ch4','ch5','ch6','ch7'];
+
+        function init() {
+            // Load saved data
+            try {
+                var saved = localStorage.getItem('pdca-data');
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    fields.forEach(function(f) {
+                        var el = document.getElementById(f);
+                        if (el && data[f]) el.value = data[f];
+                    });
+                    checks.forEach(function(c) {
+                        var el = document.getElementById(c);
+                        if (el && data[c]) el.checked = true;
+                    });
+                }
+            } catch(e) {}
+
+            // Set today as default
+            var today = new Date().toISOString().split('T')[0];
+            var startEl = document.getElementById('cycleStart');
+            if (startEl && !startEl.value) startEl.value = today;
+        }
+
+        function saveAll() {
+            var data = {};
+            fields.forEach(function(f) {
+                var el = document.getElementById(f);
+                if (el) data[f] = el.value;
+            });
+            checks.forEach(function(c) {
+                var el = document.getElementById(c);
+                if (el) data[c] = el.checked;
+            });
+
+            try {
+                localStorage.setItem('pdca-data', JSON.stringify(data));
+                showToast('✅ Збережено!');
+            } catch(e) {
+                showToast('⚠️ Помилка збереження');
+            }
+        }
+
+        function exportData() {
+            var text = 'PDCA ЦИКЛ\n';
+            text += '==========\n\n';
+            
+            var name = document.getElementById('projectName').value || 'Без назви';
+            text += 'Проєкт: ' + name + '\n';
+            text += 'Дата: ' + (document.getElementById('cycleStart').value || '-') + '\n\n';
+
+            var sections = [
+                ['PLAN — ПЛАНУВАННЯ', ['pProblem','pRootCause','pGoal','pPlan','pResources']],
+                ['DO — ВИКОНАННЯ', ['dDone','dDeviations','dObservations','dData']],
+                ['CHECK — ПЕРЕВІРКА', ['cResult','cSuccess','cFail','cLessons']],
+                ['ACT — ДІЯ', ['aStandard','aFix','aNext','aConclusion']]
+            ];
+
+            sections.forEach(function(sec) {
+                text += sec[0] + '\n';
+                text += '-'.repeat(sec[0].length) + '\n';
+                var labels = {
+                    pProblem: 'Проблема', pRootCause: 'Корінна причина', pGoal: 'Ціль', pPlan: 'План', pResources: 'Ресурси',
+                    dDone: 'Зроблено', dDeviations: 'Відхилення', dObservations: 'Спостереження', dData: 'Дані',
+                    cResult: 'Результат', cSuccess: 'Що спрацювало', cFail: 'Що не спрацювало', cLessons: 'Уроки',
+                    aStandard: 'Стандартизація', aFix: 'Виправлення', aNext: 'Наступний цикл', aConclusion: 'Висновок'
+                };
+                sec[1].forEach(function(f) {
+                    var el = document.getElementById(f);
+                    var val = el ? el.value.trim() : '';
+                    if (val) text += labels[f] + ': ' + val + '\n\n';
+                });
+                text += '\n';
+            });
+
+            // Copy to clipboard
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast('📋 Скопійовано в буфер!');
+            } catch(e) {
+                showToast('⚠️ Скопіюйте вручну');
+            }
+            document.body.removeChild(ta);
+        }
+
+        function clearAll() {
+            if (!confirm('Очистити всі поля?')) return;
+            fields.forEach(function(f) {
+                var el = document.getElementById(f);
+                if (el) el.value = '';
+            });
+            checks.forEach(function(c) {
+                var el = document.getElementById(c);
+                if (el) el.checked = false;
+            });
+            try { localStorage.removeItem('pdca-data'); } catch(e) {}
+            showToast('🗑 Очищено');
+        }
+
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Auto-save on input
+        fields.forEach(function(f) {
+            var el = document.getElementById(f);
+            if (el) {
+                el.addEventListener('blur', saveAll);
+            }
+        });
+
+        checks.forEach(function(c) {
+            var el = document.getElementById(c);
+            if (el) {
+                el.addEventListener('change', saveAll);
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
