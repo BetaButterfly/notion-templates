@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Україномовні шаблони для Notion</title>
+<meta name="description" content="Колекція HTML-шаблонів українською для Notion: тайм-менеджмент, нотатки, цілі, методології.">
+<meta property="og:title" content="Україномовні шаблони для Notion">
+<meta property="og:description" content="Колекція HTML-шаблонів українською для Notion.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg: #fafafa;
+    --fg: #1b1b1b;
+    --muted: #5b5b5b;
+    --accent: #2f6feb;
+    --card: #ffffff;
+    --border: #e4e4e7;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1116;
+      --fg: #e6edf3;
+      --muted: #9ba5b3;
+      --accent: #539bf5;
+      --card: #161b22;
+      --border: #30363d;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px; }
+  header h1 { margin: 0 0 10px; font-size: 2.1rem; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); max-width: 720px; font-size: 1.02rem; }
+  header code {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.9em;
+  }
+  section { margin-top: 48px; }
+  section h2 {
+    margin: 0 0 16px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+  .card p { margin: 0 0 18px; color: var(--muted); font-size: 0.93rem; flex: 1; }
+  .actions { display: flex; gap: 8px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 14px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    background: transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn:not(.primary):hover { background: var(--bg); }
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Україномовні шаблони для Notion</h1>
+    <p>Колекція HTML-шаблонів українською для навчання, самоорганізації та менеджменту. Вбудовуйте у Notion через <code>/embed</code> або використовуйте як самостійні сторінки.</p>
+  </header>
+
+  <section>
+    <h2>Тайм-менеджмент</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Годинник</h3>
+        <p>Аналоговий годинник.</p>
+        <div class="actions">
+          <a class="btn primary" href="clock.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/clock.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Pomodoro</h3>
+        <p>Таймер для фокус-сесій за методом «Помідор».</p>
+        <div class="actions">
+          <a class="btn primary" href="pomodoro.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/pomodoro.html">Код</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Нотатки та письмо</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Нотатки</h3>
+        <p>Щоденник у мінімалістичному стилі.</p>
+        <div class="actions">
+          <a class="btn primary" href="notes.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/notes.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Нотатки (пастель)</h3>
+        <p>Щоденник у пастельних тонах.</p>
+        <div class="actions">
+          <a class="btn primary" href="notes_pastel.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/notes_pastel.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Письменник</h3>
+        <p>Робочий простір для письменника.</p>
+        <div class="actions">
+          <a class="btn primary" href="writer.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/writer.html">Код</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Цілі та планування</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>SMART</h3>
+        <p>Шаблон постановки цілей за критеріями SMART.</p>
+        <div class="actions">
+          <a class="btn primary" href="smart.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/smart.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>OKR</h3>
+        <p>Цілі та ключові результати.</p>
+        <div class="actions">
+          <a class="btn primary" href="okr.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/okr.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Канбан</h3>
+        <p>Канбан-дошка для завдань.</p>
+        <div class="actions">
+          <a class="btn primary" href="kanban.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/kanban.html">Код</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>Методології та аналіз</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>PDCA</h3>
+        <p>Цикл постійного покращення: Plan–Do–Check–Act.</p>
+        <div class="actions">
+          <a class="btn primary" href="pdca.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/pdca.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Kaizen</h3>
+        <p>Лист щоденних покращень.</p>
+        <div class="actions">
+          <a class="btn primary" href="kaizen.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/kaizen.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Lean Canvas</h3>
+        <p>Бізнес-модель на одній сторінці.</p>
+        <div class="actions">
+          <a class="btn primary" href="lean_canvas.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/lean_canvas.html">Код</a>
+        </div>
+      </article>
+      <article class="card">
+        <h3>SWOT</h3>
+        <p>SWOT-аналіз із матрицею TOWS.</p>
+        <div class="actions">
+          <a class="btn primary" href="swot_analysis.html">Відкрити</a>
+          <a class="btn" href="https://github.com/BetaButterfly/notion-templates/blob/main/swot_analysis.html">Код</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer>
+    <p>Репозиторій: <a href="https://github.com/BetaButterfly/notion-templates">BetaButterfly/notion-templates</a> · Ліцензія: MIT</p>
+  </footer>
+</div>
+</body>
+</html>
