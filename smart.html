@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMART Цілі</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            color: #44403c;
+            padding: 32px 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: #57534e;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: #a8a29e;
+            font-size: 0.9rem;
+        }
+
+        /* Top form */
+        .top-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a8a29e;
+            font-weight: 500;
+        }
+
+        .field input {
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: rgba(255,255,255,0.5);
+            color: #44403c;
+            outline: none;
+            width: 100%;
+        }
+
+        .field input:focus {
+            border-color: #94a3b8;
+            background: white;
+        }
+
+        .blueprint {
+            background: rgba(241, 245, 249, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 8px;
+        }
+
+        .blueprint-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .blueprint-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            color: #57534e;
+        }
+
+        .blueprint-inputs input {
+            border: none;
+            border-bottom: 1px solid #cbd5e1;
+            background: transparent;
+            padding: 4px 2px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: #0f172a;
+            min-width: 80px;
+            outline: none;
+        }
+
+        .blueprint-inputs input:focus {
+            border-bottom-color: #94a3b8;
+        }
+
+        /* SMART Cards */
+        .smart-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .smart-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .card-s::before { background: #86efac; }
+        .card-m::before { background: #93c5fd; }
+        .card-a::before { background: #fcd34d; }
+        .card-r::before { background: #c4b5fd; }
+        .card-t::before { background: #fca5a5; }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .letter-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .badge-s { background: rgba(134, 239, 172, 0.2); color: #166534; }
+        .badge-m { background: rgba(147, 197, 253, 0.2); color: #1e40af; }
+        .badge-a { background: rgba(252, 211, 77, 0.2); color: #92400e; }
+        .badge-r { background: rgba(196, 181, 253, 0.2); color: #5b21b6; }
+        .badge-t { background: rgba(252, 165, 165, 0.2); color: #991b1b; }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #292524;
+        }
+
+        .card-sub {
+            font-size: 0.8rem;
+            color: #a8a29e;
+        }
+
+        .question {
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #44403c;
+            margin-bottom: 6px;
+        }
+
+        .question-hint {
+            font-size: 0.8rem;
+            color: #d6d3d1;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            min-height: 60px;
+            resize: vertical;
+            background: rgba(255,255,255,0.5);
+            color: #44403c;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #94a3b8;
+            background: white;
+        }
+
+        /* Checklist */
+        .checklist {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        .checklist h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #292524;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: #57534e;
+            cursor: pointer;
+        }
+
+        .check-item label {
+            font-size: 0.9rem;
+            color: #57534e;
+            cursor: pointer;
+        }
+
+        /* Two columns */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        .result-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #292524;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #57534e;
+        }
+
+        .radio-item input {
+            accent-color: #57534e;
+        }
+
+        /* Buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #94a3b8;
+            color: white;
+            box-shadow: 0 2px 8px rgba(148,163,184,0.25);
+        }
+
+        .btn-primary:hover {
+            background: #7d8fa3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #a8a29e;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0,0,0,0.03);
+            color: #57534e;
+        }
+
+        .saved-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #292524;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .saved-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .footer-hint {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #d6d3d1;
+            margin-top: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="header">
+            <h1>SMART — Шаблон постановки цілей</h1>
+            <p>Specific · Measurable · Achievable · Relevant · Time-bound</p>
+        </div>
+
+        <!-- Goal Info -->
+        <div class="top-card">
+            <div class="form-row">
+                <div class="field">
+                    <label>Назва цілі</label>
+                    <input type="text" id="goalName" placeholder="Коротка назва...">
+                </div>
+                <div class="field">
+                    <label>Відповідальний</label>
+                    <input type="text" id="goalOwner" placeholder="Хто відповідає...">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="field">
+                    <label>Дата початку</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="field">
+                    <label>Дедлайн</label>
+                    <input type="date" id="endDate">
+                </div>
+            </div>
+
+            <div class="blueprint">
+                <div class="blueprint-label">Формулювання цілі (одним реченням):</div>
+                <div class="blueprint-inputs">
+                    Я досягну <input type="text" id="bpResult" placeholder="результат"> до <input type="text" id="bpDate" placeholder="дата"> вимірюючи це через <input type="text" id="bpMetric" placeholder="метрика">
+                </div>
+            </div>
+        </div>
+
+        <!-- S -->
+        <div class="smart-card card-s">
+            <div class="card-header">
+                <div class="letter-badge badge-s">S</div>
+                <div>
+                    <div class="card-title">Specific — Конкретна</div>
+                    <div class="card-sub">Ціль повинна бути чіткою та зрозумілою</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Що саме потрібно досягти?</div>
+                <div class="question-hint">Опишіть конкретний результат...</div>
+                <textarea id="sWhat" placeholder=""></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Хто залучений до досягнення?</div>
+                <textarea id="sWho" placeholder="Команда, відповідальні, стейкхолдери..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Де це відбувається?</div>
+                <textarea id="sWhere" placeholder="Місце, відділ, ринок, географія..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Чому ця ціль важлива?</div>
+                <textarea id="sWhy" placeholder="Зв'язок зі стратегією, цінність для бізнесу..."></textarea>
+            </div>
+        </div>
+
+        <!-- M -->
+        <div class="smart-card card-m">
+            <div class="card-header">
+                <div class="letter-badge badge-m">M</div>
+                <div>
+                    <div class="card-title">Measurable — Вимірювана</div>
+                    <div class="card-sub">Чіткі критерії успіху: цифри, факти, метрики</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Яка ключова метрика успіху?</div>
+                <div class="question-hint">Наприклад: виручка, кількість клієнтів, NPS...</div>
+                <textarea id="mMetric" placeholder=""></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Базове значення (зараз):</div>
+                <textarea id="mCurrent" placeholder="Поточний показник до початку роботи..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Цільове значення:</div>
+                <textarea id="mTarget" placeholder="Чого потрібно досягти в числах..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Як і як часто вимірюємо прогрес?</div>
+                <textarea id="mHow" placeholder="Щотижня / щомісяця, інструмент вимірювання..."></textarea>
+            </div>
+        </div>
+
+        <!-- A -->
+        <div class="smart-card card-a">
+            <div class="card-header">
+                <div class="letter-badge badge-a">A</div>
+                <div>
+                    <div class="card-title">Achievable — Досяжна</div>
+                    <div class="card-sub">Реалістична з урахуванням наявних ресурсів</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Які ресурси є у наявності?</div>
+                <textarea id="aResources" placeholder="Бюджет, команда, технології, час..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Які можливості / переваги допоможуть?</div>
+                <textarea id="aPros" placeholder="Досвід, партнери, ринкова позиція..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Які потенційні перешкоди?</div>
+                <textarea id="aCons" placeholder="Ризики, обмеження, залежності..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Чи схожі цілі досягалися раніше?</div>
+                <textarea id="aHistory" placeholder="Прецеденти, бенчмарки, аналоги..."></textarea>
+            </div>
+        </div>
+
+        <!-- R -->
+        <div class="smart-card card-r">
+            <div class="card-header">
+                <div class="letter-badge badge-r">R</div>
+                <div>
+                    <div class="card-title">Relevant — Актуальна</div>
+                    <div class="card-sub">Важлива зараз та узгоджена з пріоритетами</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Як ціль пов'язана зі стратегією?</div>
+                <textarea id="rStrategy" placeholder="Зв'язок з OKR, місією, річними пріоритетами..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Чому саме зараз?</div>
+                <textarea id="rWhyNow" placeholder="Актуальність у поточному контексті ринку..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Що відбудеться, якщо ціль НЕ буде досягнута?</div>
+                <textarea id="rIfNot" placeholder="Вплив на бізнес, команду, клієнтів..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Чи є ця ціль пріоритетом №1 зараз?</div>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="rPriority" value="yes"> Так</label>
+                    <label class="radio-item"><input type="radio" name="rPriority" value="partial"> Частково</label>
+                    <label class="radio-item"><input type="radio" name="rPriority" value="no"> Ні — переформулювати</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- T -->
+        <div class="smart-card card-t">
+            <div class="card-header">
+                <div class="letter-badge badge-t">T</div>
+                <div>
+                    <div class="card-title">Time-bound — Обмежена в часі</div>
+                    <div class="card-sub">Чіткий дедлайн</div>
+                </div>
+            </div>
+            <div class="question">
+                <div class="question-text">Кінцевий дедлайн:</div>
+                <input type="date" id="tDeadline" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
+            </div>
+            <div class="question">
+                <div class="question-text">Контрольна точка 1:</div>
+                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                    <input type="date" id="tCheck1Date" style="flex: 1; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
+                </div>
+                <textarea id="tCheck1Result" placeholder="Очікуваний результат..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Контрольна точка 2:</div>
+                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                    <input type="date" id="tCheck2Date" style="flex: 1; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
+                </div>
+                <textarea id="tCheck2Result" placeholder="Очікуваний результат..."></textarea>
+            </div>
+            <div class="question">
+                <div class="question-text">Як часто переглядаємо прогрес?</div>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="tReview" value="weekly"> Щотижня</label>
+                    <label class="radio-item"><input type="radio" name="tReview" value="biweekly"> Раз на 2 тижні</label>
+                    <label class="radio-item"><input type="radio" name="tReview" value="monthly"> Щомісяця</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Checklist -->
+        <div class="checklist">
+            <h3>☑ Фінальна перевірка SMART-цілі</h3>
+            <div class="check-item">
+                <input type="checkbox" id="c1"><label for="c1">Ціль сформульована конкретно — без розмитих слів типу «покращити
