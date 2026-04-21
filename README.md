@@ -10,7 +10,6 @@
 | Шаблон | Опис | Перегляд |
 |---|---|---|
 | [clock.html](clock.html) | Аналоговий годинник | [відкрити](https://betabutterfly.github.io/notion-templates/clock.html) |
-| [flip_clock.html](flip_clock.html) | Фліп-годинник з анімацією цифр | [відкрити](https://betabutterfly.github.io/notion-templates/flip_clock.html) |
 | [pomodoro.html](pomodoro.html) | Таймер Pomodoro для фокус-сесій | [відкрити](https://betabutterfly.github.io/notion-templates/pomodoro.html) |
 
 ### Нотатки та письмо
