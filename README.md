@@ -36,6 +36,7 @@
 | [lean_canvas.html](lean_canvas.html) | Lean Canvas — бізнес-модель на одній сторінці | [відкрити](https://betabutterfly.github.io/notion-templates/lean_canvas.html) |
 | [swot_analysis.html](swot_analysis.html) | SWOT-аналіз із матрицею TOWS | [відкрити](https://betabutterfly.github.io/notion-templates/swot_analysis.html) |
 | [status_zvit.html](status_zvit.html) | Щотижневий статус-звіт для менеджерів | [відкрити](https://betabutterfly.github.io/notion-templates/status_zvit.html) |
+| [management_space.html](management_space.html) | Інструмент для управління завданнями та комунікацією | [відкрити](https://betabutterfly.github.io/notion-templates/management_space.html) |
 
 ## Використання
 - Відкрийте шаблон через посилання «Перегляд».
