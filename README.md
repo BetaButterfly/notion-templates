@@ -18,6 +18,7 @@
 | [notes.html](notes.html) | Щоденник у мінімалістичному стилі | [відкрити](https://betabutterfly.github.io/notion-templates/notes.html) |
 | [notes_pastel.html](notes_pastel.html) | Щоденник у пастельних тонах | [відкрити](https://betabutterfly.github.io/notion-templates/notes_pastel.html) |
 | [writer.html](writer.html) | Робочий простір для письменника | [відкрити](https://betabutterfly.github.io/notion-templates/writer.html) |
+| [meeting_notes.html](meeting_notes.html) | Документування та організація зустрічей | [відкрити](https://betabutterfly.github.io/notion-templates/meeting_notes.html) |
 
 ### Цілі та планування
 | Шаблон | Опис | Перегляд |
@@ -34,6 +35,7 @@
 | [kaizen.html](kaizen.html) | Kaizen-лист щоденних покращень | [відкрити](https://betabutterfly.github.io/notion-templates/kaizen.html) |
 | [lean_canvas.html](lean_canvas.html) | Lean Canvas — бізнес-модель на одній сторінці | [відкрити](https://betabutterfly.github.io/notion-templates/lean_canvas.html) |
 | [swot_analysis.html](swot_analysis.html) | SWOT-аналіз із матрицею TOWS | [відкрити](https://betabutterfly.github.io/notion-templates/swot_analysis.html) |
+| [status_zvit.html](status_zvit.html) | Щотижневий статус-звіт для менеджерів | [відкрити](https://betabutterfly.github.io/notion-templates/status_zvit.html) |
 
 ## Використання
 - Відкрийте шаблон через посилання «Перегляд».
