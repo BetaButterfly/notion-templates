@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менеджмент · три тони</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #FDF6E3;
+            font-family: 'IBM Plex Mono', monospace;
+            color: #2C3E2F;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* тритони */
+        .card {
+            background: #FFFCF5;
+            border: 2px solid #D5C4A1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 4px 4px 0 rgba(44, 62, 47, 0.05);
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-bottom: 2px solid #D5C4A1;
+            display: inline-block;
+            padding-bottom: 0.2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        /* сітка */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+            margin: 2rem 0;
+        }
+
+        /* завдання */
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #EBE2D0;
+        }
+
+        .task-text {
+            flex: 1;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #2C3E2F;
+            cursor: pointer;
+        }
+
+        /* нотатки */
+        .note-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #EBE2D0;
+        }
+
+        /* форма */
+        .row {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        input, button {
+            font-family: 'IBM Plex Mono', monospace;
+            background: #FFFCF5;
+            border: 2px solid #D5C4A1;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            color: #2C3E2F;
+        }
+
+        input:focus {
+            border-color: #2C3E2F;
+            outline: none;
+        }
+
+        button {
+            background: #EBE2D0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background: #D5C4A1;
+        }
+
+        /* чат — просто стрічка */
+        .chat-box {
+            background: #FFFCF5;
+            border: 2px solid #D5C4A1;
+            border-radius: 12px;
+            padding: 1rem;
+            height: 260px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .msg {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #EBE2D0;
+            font-size: 0.85rem;
+        }
+
+        .msg strong {
+            font-weight: 700;
+        }
+
+        .time {
+            font-size: 0.65rem;
+            color: #8f9b7e;
+            margin-left: 0.5rem;
+        }
+
+        .small-btn {
+            background: transparent;
+            border: 1px solid #D5C4A1;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+        }
+
+        .flex-right {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .export-bar {
+            background: #FFFCF5;
+            border: 2px solid #D5C4A1;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid #D5C4A1;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 style="font-size: 1.8rem; border-bottom: 3px solid #D5C4A1; display: inline-block;">Менеджмент</h1>
+
+    <div class="grid">
+        <!-- ЗАВДАННЯ -->
+        <div class="card">
+            <h2>📋 Завдання</h2>
+            <div id="tasksContainer"></div>
+            <div class="row">
+                <input type="text" id="taskInput" placeholder="нове завдання">
+                <button id="addTaskBtn">+</button>
+            </div>
+            <div class="flex-right">
+                <button id="clearCompletedBtn" class="small-btn">✕ виконані</button>
+            </div>
+        </div>
+
+        <!-- НОТАТКИ -->
+        <div class="card">
+            <h2>📝 Нотатки</h2>
+            <div id="notesContainer"></div>
+            <div class="row">
+                <input type="text" id="noteInput" placeholder="коротка нотатка">
+                <button id="addNoteBtn">+</button>
+            </div>
+            <div class="flex-right">
+                <button id="clearNotesBtn" class="small-btn">очистити</button>
+            </div>
+        </div>
+
+        <!-- КОМУНІКАЦІЯ (без контактів — просто спільний чат) -->
+        <div class="card">
+            <h2>💬 Чат</h2>
+            <div class="chat-box" id="chatMessages"></div>
+            <div class="row">
+                <input type="text" id="chatInput" placeholder="повідомлення...">
+                <button id="sendBtn">→</button>
+            </div>
+            <div class="flex-right">
+                <button id="clearChatBtn" class="small-btn">очистити чат</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Експорт для Notion -->
+    <div class="export-bar">
+        <span>🔗 Інтеграція з Notion (embed)</span>
+        <div style="display: flex; gap: 0.8rem;">
+            <button id="exportJsonBtn">📤 експорт JSON</button>
+            <button id="copyJsonBtn">📋 копіювати</button>
+        </div>
+    </div>
+
+    <div class="stats">
+        <span>завдань: <span id="taskCount">0</span></span>
+        <span>нотаток: <span id="noteCount">0</span></span>
+        <span>⚡ три тони · мінімалізм</span>
+    </div>
+</div>
+
+<script>
+    // ========== ДАНІ ==========
+    let tasks = [];
+    let notes = [];
+    let messages = [];
+
+    // DOM
+    const tasksDiv = document.getElementById('tasksContainer');
+    const notesDiv = document.getElementById('notesContainer');
+    const chatDiv = document.getElementById('chatMessages');
+    const taskInput = document.getElementById('taskInput');
+    const noteInput = document.getElementById('noteInput');
+    const chatInput = document.getElementById('chatInput');
+
+    // ========== ЗБЕРЕЖЕННЯ ==========
+    function saveAll() {
+        localStorage.setItem('retro_tasks', JSON.stringify(tasks));
+        localStorage.setItem('retro_notes', JSON.stringify(notes));
+        localStorage.setItem('retro_chat', JSON.stringify(messages));
+    }
+
+    function loadData() {
+        const savedTasks = localStorage.getItem('retro_tasks');
+        const savedNotes = localStorage.getItem('retro_notes');
+        const savedChat = localStorage.getItem('retro_chat');
+
+        tasks = savedTasks ? JSON.parse(savedTasks) : [
+            { text: "Підготувати матеріали", done: false },
+            { text: "Перевірити завдання", done: false }
+        ];
+        notes = savedNotes ? JSON.parse(savedNotes) : [
+            "Зустріч о 14:00",
+            "Оновити Notion базу"
+        ];
+        messages = savedChat ? JSON.parse(savedChat) : [
+            { author: "Учасник", text: "Готовий до роботи", time: new Date().toLocaleTimeString() }
+        ];
+    }
+
+    // ========== ВІДОБРАЖЕННЯ ==========
+    function renderTasks() {
+        tasksDiv.innerHTML = '';
+        tasks.forEach((t, idx) => {
+            const div = document.createElement('div');
+            div.className = 'task-item';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = t.done;
+            cb.addEventListener('change', () => {
+                tasks[idx].done = cb.checked;
+                saveAll();
+                renderTasks();
+                updateStats();
+            });
+            const span = document.createElement('span');
+            span.className = 'task-text';
+            span.textContent = t.text;
+            if (t.done) span.classList.add('completed');
+            div.appendChild(cb);
+            div.appendChild(span);
+            tasksDiv.appendChild(div);
+        });
+        updateStats();
+    }
+
+    function renderNotes() {
+        notesDiv.innerHTML = '';
+        notes.forEach((note, idx) => {
+            const div = document.createElement('div');
+            div.className = 'note-item';
+            const span = document.createElement('span');
+            span.textContent = note;
+            const delBtn = document.createElement('button');
+            delBtn.textContent = '✕';
+            delBtn.className = 'small-btn';
+            delBtn.style.padding = '0.1rem 0.5rem';
+            delBtn.addEventListener('click', () => {
+                notes.splice(idx, 1);
+                saveAll();
+                renderNotes();
+                updateStats();
+            });
+            div.appendChild(span);
+            div.appendChild(delBtn);
+            notesDiv.appendChild(div);
+        });
+        updateStats();
+    }
+
+    function renderChat() {
+        chatDiv.innerHTML = '';
+        messages.forEach(msg => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg';
+            msgDiv.innerHTML = `<strong>${escapeHtml(msg.author)}</strong> ${escapeHtml(msg.text)} <span class="time">${msg.time || ''}</span>`;
+            chatDiv.appendChild(msgDiv);
+        });
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function updateStats() {
+        document.getElementById('taskCount').innerText = tasks.length;
+        document.getElementById('noteCount').innerText = notes.length;
+    }
+
+    // ========== ДІЇ ==========
+    function addTask() {
+        const text = taskInput.value.trim();
+        if (!text) return;
+        tasks.push({ text, done: false });
+        saveAll();
+        renderTasks();
+        taskInput.value = '';
+    }
+
+    function clearCompleted() {
+        tasks = tasks.filter(t => !t.done);
+        saveAll();
+        renderTasks();
+    }
+
+    function addNote() {
+        const text = noteInput.value.trim();
+        if (!text) return;
+        notes.push(text);
+        saveAll();
+        renderNotes();
+        noteInput.value = '';
+    }
+
+    function clearNotes() {
+        notes = [];
+        saveAll();
+        renderNotes();
+    }
+
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        messages.push({ author: 'Ви', text: text, time: timeStr });
+        saveAll();
+        renderChat();
+        chatInput.value = '';
+    }
+
+    function clearChat() {
+        messages = [];
+        saveAll();
+        renderChat();
+    }
+
+    // ========== ЕКСПОРТ ДЛЯ NOTION ==========
+    function getExportData() {
+        return {
+            tasks: tasks,
+            notes: notes,
+            chat: messages
+        };
+    }
+
+    function exportJSON() {
+        const data = getExportData();
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `manager_${new Date().toISOString().slice(0,19)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    async function copyJSON() {
+        const data = getExportData();
+        const jsonStr = JSON.stringify(data, null, 2);
+        try {
+            await navigator.clipboard.writeText(jsonStr);
+            alert('JSON скопійовано — можна вставити в Notion як код або базу');
+        } catch(e) {
+            alert('Не вдалося скопіювати');
+        }
+    }
+
+    // ========== ІНІЦІАЛІЗАЦІЯ ==========
+    function init() {
+        loadData();
+        renderTasks();
+        renderNotes();
+        renderChat();
+        updateStats();
+
+        document.getElementById('addTaskBtn').onclick = addTask;
+        document.getElementById('clearCompletedBtn').onclick = clearCompleted;
+        document.getElementById('addNoteBtn').onclick = addNote;
+        document.getElementById('clearNotesBtn').onclick = clearNotes;
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('clearChatBtn').onclick = clearChat;
+        document.getElementById('exportJsonBtn').onclick = exportJSON;
+        document.getElementById('copyJsonBtn').onclick = copyJSON;
+
+        taskInput.addEventListener('keypress', (e) => e.key === 'Enter' && addTask());
+        noteInput.addEventListener('keypress', (e) => e.key === 'Enter' && addNote());
+        chatInput.addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
+    }
+
+    init();
+</script>
+</body>
+</html>
