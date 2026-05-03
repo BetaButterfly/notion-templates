@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Щоденний планувальник · самоменеджмент</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F9F6F0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .planner-container {
+            max-width: 900px;
+            width: 100%;
+            background: #FFFFFF;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+
+        .header-section {
+            padding: 1.8rem 2rem 1rem 2rem;
+            border-bottom: 2px solid #E9E0D3;
+            background: #FFFFFF;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #3E6B5E, #C47A5C);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .sub {
+            color: #8F7A6B;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .date-badge {
+            background: #FEFAF5;
+            padding: 0.5rem 1rem;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-tracker {
+            background: #FEFAF5;
+            border-radius: 1.5rem;
+            padding: 0.8rem 1.2rem;
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+
+        .stats {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .stat-number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #3E6B5E;
+        }
+
+        .progress-bar {
+            flex: 2;
+            min-width: 140px;
+        }
+
+        .bar-bg {
+            background: #E9E0D3;
+            border-radius: 60px;
+            height: 6px;
+        }
+
+        .bar-fill {
+            background: #C47A5C;
+            width: 0%;
+            height: 6px;
+            border-radius: 60px;
+            transition: width 0.3s;
+        }
+
+        .add-task-btn {
+            background: #3E6B5E;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tasks-list {
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .task-item {
+            background: #FFFFFF;
+            border: 1px solid #EDE4DA;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            border-color: #D6CABC;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .task-check {
+            flex-shrink: 0;
+        }
+        .task-check input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #3E6B5E;
+        }
+
+        .task-time {
+            flex-shrink: 0;
+            background: #F0EAE1;
+            padding: 0.2rem 0.8rem;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #3E6B5E;
+            min-width: 75px;
+            text-align: center;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+        .task-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #2C3A2F;
+        }
+        .task-note {
+            font-size: 0.7rem;
+            color: #8F7A6B;
+            margin-top: 0.2rem;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.3rem;
+            flex-shrink: 0;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #A39282;
+            padding: 0.3rem;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .icon-btn:hover {
+            background: #EFE6DC;
+            color: #3E6B5E;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #B1A187;
+        }
+
+        footer {
+            background: #FEFAF5;
+            padding: 0.8rem 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #B1A187;
+            border-top: 1px solid #EFE3D8;
+        }
+
+        /* модалка */
+        .modal-overlay {
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal {
+            background: white;
+            border-radius: 1.8rem;
+            max-width: 400px;
+            width: 90%;
+            padding: 1.5rem;
+        }
+        .modal h3 {
+            margin-bottom: 1rem;
+            color: #3E6B5E;
+        }
+        .modal input, .modal select {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border: 1px solid #E0D6CC;
+            border-radius: 1rem;
+            font-family: inherit;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        .modal-buttons button {
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+        }
+        .save-btn { background: #3E6B5E; color: white; }
+        .cancel-btn { background: #EFE6DC; color: #5F4E3E; }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .task-item { flex-wrap: wrap; }
+            .task-time { margin-left: 2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="planner-container">
+    <div class="header-section">
+        <h1><i class="fas fa-calendar-day"></i> План на день</h1>
+        <div class="sub">студентський розклад + особисті справи</div>
+        <div class="date-badge">
+            <i class="far fa-calendar-alt"></i> 
+            <span id="currentDate"></span>
+            <span style="font-size:0.7rem;">📌 Завтрашній день</span>
+        </div>
+        <div class="progress-tracker">
+            <div class="stats">
+                <span class="stat-number" id="completedCount">0</span>
+                <span>/ <span id="totalCount">0</span> виконано</span>
+            </div>
+            <div class="progress-bar">
+                <div class="bar-bg"><div class="bar-fill" id="progressFill"></div></div>
+            </div>
+            <button class="add-task-btn" id="addTaskBtn"><i class="fas fa-plus"></i> додати справу</button>
+        </div>
+    </div>
+
+    <div class="tasks-list" id="tasksList"></div>
+    <footer>
+        <span><i class="fas fa-clock"></i> справи сортуються за часом</span>
+        <span><i class="fas fa-check-circle"></i> відмічай виконані</span>
+    </footer>
+</div>
+
+<!-- модальне вікно -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+        <h3 id="modalTitle">✏️ справа</h3>
+        <input type="text" id="taskTitle" placeholder="Що треба зробити?">
+        <input type="time" id="taskTime" value="15:00">
+        <input type="text" id="taskNote" placeholder="Додаткова нотатка (необов'язково)">
+        <div class="modal-buttons">
+            <button class="cancel-btn" id="closeModalBtn">Скасувати</button>
+            <button class="save-btn" id="saveTaskBtn">Зберегти</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- ЗАВДАННЯ ЗА ПРИКЛАДОМ (пари з 6:30 до 14:00, потім інші справи) ----------
+    let tasks = [
+        { id: 1, title: "🎓 Пари в університеті", time: "06:30", note: "6:30 – 14:00 (лекції, семінари)", completed: false },
+        { id: 2, title: "📚 Підготуватися до 2 занять", time: "14:15", note: "повторити матеріал, зробити конспекти", completed: false },
+        { id: 3, title: "👧 Забрати сестричку зі школи", time: "14:45", note: "до 15:00 прийти до школи", completed: false },
+        { id: 4, title: "🎨 Завести на гурток", time: "15:00", note: "гурток о 15:00, відвести дитину", completed: false },
+        { id: 5, title: "🛒 Купити продукти", time: "15:30", note: "список: хліб, молоко, овочі, фрукти", completed: false },
+        { id: 6, title: "👧 Забрати сестричку з гуртка", time: "16:30", note: "гурток триває 1,5 год → забирати о 16:30", completed: false },
+        { id: 7, title: "💪 Фітнес", time: "18:00", note: "тренування вдома або в залі", completed: false },
+        { id: 8, title: "🍲 Приготувати вечерю", time: "19:00", note: "моя черга готувати", completed: false }
+    ];
+
+    let nextId = 9;
+    let editId = null;
+
+    // збереження в localStorage
+    function saveTasks() {
+        localStorage.setItem("daily_planner_tasks", JSON.stringify(tasks));
+    }
+
+    function loadTasks() {
+        const stored = localStorage.getItem("daily_planner_tasks");
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length) {
+                    tasks = parsed;
+                    const maxId = Math.max(...tasks.map(t => t.id), 0);
+                    nextId = maxId + 1;
+                    return;
+                }
+            } catch(e) {}
+        }
+        // якщо немає збережених - залишаємо за замовчуванням
+        nextId = 9;
+    }
+
+    // сортування за часом
+    function sortTasksByTime() {
+        tasks.sort((a,b) => a.time.localeCompare(b.time));
+    }
+
+    function updateProgress() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.completed).length;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+        document.getElementById('completedCount').innerText = completed;
+        document.getElementById('totalCount').innerText = total;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+
+    function renderTasks() {
+        const container = document.getElementById('tasksList');
+        if (!container) return;
+        
+        sortTasksByTime();
+        
+        if (tasks.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="far fa-smile-wink"></i> Немає завдань. Додайте свої справи!</div>`;
+            updateProgress();
+            return;
+        }
+        
+        let html = '';
+        tasks.forEach(task => {
+            const checked = task.completed ? 'checked' : '';
+            const timeDisplay = task.time.substring(0,5);
+            html += `
+                <div class="task-item" data-id="${task.id}">
+                    <div class="task-check">
+                        <input type="checkbox" class="task-checkbox" data-id="${task.id}" ${checked}>
+                    </div>
+                    <div class="task-time">${timeDisplay}</div>
+                    <div class="task-info">
+                        <div class="task-title">${escapeHtml(task.title)}</div>
+                        ${task.note ? `<div class="task-note">${escapeHtml(task.note)}</div>` : ''}
+                    </div>
+                    <div class="task-actions">
+                        <button class="icon-btn edit-task" data-id="${task.id}"><i class="fas fa-pen"></i></button>
+                        <button class="icon-btn delete-task" data-id="${task.id}"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        
+        // чекбокси
+        document.querySelectorAll('.task-checkbox').forEach(cb => {
+            cb.removeEventListener('change', handleCheckChange);
+            cb.addEventListener('change', handleCheckChange);
+        });
+        // редагування
+        document.querySelectorAll('.edit-task').forEach(btn => {
+            btn.removeEventListener('click', handleEditClick);
+            btn.addEventListener('click', handleEditClick);
+        });
+        // видалення
+        document.querySelectorAll('.delete-task').forEach(btn => {
+            btn.removeEventListener('click', handleDeleteClick);
+            btn.addEventListener('click', handleDeleteClick);
+        });
+        
+        updateProgress();
+        saveTasks();
+    }
+    
+    function handleCheckChange(e) {
+        const cb = e.target;
+        const id = parseInt(cb.getAttribute('data-id'));
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+            task.completed = cb.checked;
+            saveTasks();
+            renderTasks(); // перерендер
+        }
+    }
+    
+    function handleEditClick(e) {
+        const btn = e.currentTarget;
+        const id = parseInt(btn.getAttribute('data-id'));
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+            openEditModal(task);
+        }
+    }
+    
+    function handleDeleteClick(e) {
+        const btn = e.currentTarget;
+        const id = parseInt(btn.getAttribute('data-id'));
+        if (confirm('Видалити цю справу?')) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+            renderTasks();
+        }
+    }
+    
+    // модальне вікно
+    const modal = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const taskTitleInput = document.getElementById('taskTitle');
+    const taskTimeInput = document.getElementById('taskTime');
+    const taskNoteInput = document.getElementById('taskNote');
+    
+    function openAddModal() {
+        editId = null;
+        modalTitle.innerText = '➕ Нова справа';
+        taskTitleInput.value = '';
+        taskTimeInput.value = '15:00';
+        taskNoteInput.value = '';
+        modal.classList.add('active');
+    }
+    
+    function openEditModal(task) {
+        editId = task.id;
+        modalTitle.innerText = '✏️ Редагувати';
+        taskTitleInput.value = task.title;
+        taskTimeInput.value = task.time;
+        taskNoteInput.value = task.note || '';
+        modal.classList.add('active');
+    }
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        editId = null;
+    }
+    
+    function saveTaskFromModal() {
+        const title = taskTitleInput.value.trim();
+        if (!title) {
+            alert("Назва справи обов'язкова");
+            return;
+        }
+        const time = taskTimeInput.value;
+        const note = taskNoteInput.value.trim() || "";
+        
+        if (editId !== null) {
+            // редагування
+            const index = tasks.findIndex(t => t.id === editId);
+            if (index !== -1) {
+                tasks[index].title = title;
+                tasks[index].time = time;
+                tasks[index].note = note;
+            }
+        } else {
+            // додавання
+            const newTask = {
+                id: nextId++,
+                title: title,
+                time: time,
+                note: note,
+                completed: false
+            };
+            tasks.push(newTask);
+        }
+        saveTasks();
+        closeModal();
+        renderTasks();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // встановити дату (завтрашній день)
+    function setDate() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const options = { day: 'numeric', month: 'long', weekday: 'long' };
+        const formatted = tomorrow.toLocaleDateString('uk-UA', options);
+        document.getElementById('currentDate').innerHTML = formatted;
+    }
+    
+    // ініціалізація
+    loadTasks();
+    sortTasksByTime();
+    renderTasks();
+    setDate();
+    
+    document.getElementById('addTaskBtn').addEventListener('click', openAddModal);
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    document.getElementById('saveTaskBtn').addEventListener('click', saveTaskFromModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+</script>
+</body>
+</html>
