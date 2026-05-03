@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Піраміда Франкліна · самоменеджмент</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F9F6F0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .franklin-container {
+            max-width: 1200px;
+            width: 100%;
+            background: #FFFFFF;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+        }
+
+        .header-section {
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 2px solid #E9E0D3;
+            background: #FFFFFF;
+        }
+
+        .title-badge {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #3E6B5E, #C47A5C);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .sub {
+            color: #8F7A6B;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .progress-tracker {
+            background: #FEFAF5;
+            border-radius: 1.5rem;
+            padding: 1rem 1.5rem;
+            margin-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .progress-stats {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #3E6B5E;
+        }
+
+        .progress-bar-wrapper {
+            flex: 2;
+            min-width: 180px;
+        }
+
+        .progress-bar-bg {
+            background-color: #E9E0D3;
+            border-radius: 60px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: #C47A5C;
+            width: 0%;
+            height: 100%;
+            border-radius: 60px;
+            transition: width 0.35s ease;
+        }
+
+        .reset-btn {
+            background: none;
+            border: 1px solid #D6CABC;
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: #6C5E52;
+            transition: 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #EFE6DC;
+            border-color: #C47A5C;
+        }
+
+        /* Піраміда — 5 рівнів */
+        .pyramid {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .level {
+            border-radius: 1.2rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        /* Кольори рівнів (від нижнього до верхнього) */
+        .level-1 { background: #E8F0EA; border-left: 6px solid #3E6B5E; } /* щоденні дії */
+        .level-2 { background: #F5EDE4; border-left: 6px solid #C47A5C; } /* тактичні */
+        .level-3 { background: #E9ECF0; border-left: 6px solid #5F7F9E; } /* стратегічні */
+        .level-4 { background: #F3E8DF; border-left: 6px solid #D99E6B; } /* глобальні */
+        .level-5 { background: #E2E9E6; border-left: 6px solid #2C5F4F; } /* місія */
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem 0.5rem 1.5rem;
+            cursor: pointer;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .level-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .level-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #3E6B5E;
+            background: rgba(62, 107, 94, 0.15);
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+        }
+
+        .level-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2C3A2F;
+        }
+
+        .level-sub {
+            font-size: 0.7rem;
+            color: #8F7A6B;
+            font-weight: 400;
+        }
+
+        .level-stats {
+            font-size: 0.75rem;
+            color: #6C5E52;
+            background: white;
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+        }
+
+        .level-content {
+            padding: 0.2rem 1.5rem 1.2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        /* Пункти всередині рівня */
+        .goal-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            transition: 0.15s;
+            border: 1px solid #EFE6DC;
+        }
+
+        .goal-item:hover {
+            border-color: #D6CABC;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .goal-check {
+            margin-top: 2px;
+        }
+
+        .goal-check input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #3E6B5E;
+        }
+
+        .goal-text {
+            flex: 1;
+        }
+
+        .goal-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #2C3A2F;
+            margin-bottom: 0.2rem;
+            word-break: break-word;
+        }
+
+        .goal-desc {
+            font-size: 0.75rem;
+            color: #8F7A6B;
+            margin-top: 0.2rem;
+            word-break: break-word;
+        }
+
+        .goal-link {
+            font-size: 0.7rem;
+            color: #5F7F9E;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 0.3rem;
+        }
+
+        .goal-link:hover {
+            text-decoration: underline;
+        }
+
+        .goal-actions {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #A39282;
+            padding: 0.3rem;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #EFE6DC;
+            color: #3E6B5E;
+        }
+
+        .add-item-btn {
+            background: none;
+            border: 1px dashed #D6CABC;
+            padding: 0.5rem;
+            border-radius: 1rem;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            color: #8F7A6B;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+            margin-top: 0.3rem;
+        }
+
+        .add-item-btn:hover {
+            background: #FEFAF5;
+            border-color: #C47A5C;
+            color: #3E6B5E;
+        }
+
+        footer {
+            background: #FEFAF5;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #B1A187;
+            border-top: 1px solid #EFE3D8;
+        }
+
+        /* модальне вікно */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal {
+            background: white;
+            border-radius: 1.8rem;
+            max-width: 500px;
+            width: 90%;
+            padding: 1.8rem;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.2);
+        }
+        .modal h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #3E6B5E;
+        }
+        .modal input, .modal textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0 1rem;
+            border: 1px solid #E0D6CC;
+            border-radius: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        .modal-buttons button {
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .save-modal-btn { background: #3E6B5E; color: white; }
+        .cancel-modal-btn { background: #EFE6DC; color: #5F4E3E; }
+
+        @media (max-width: 680px) {
+            body { padding: 1rem; }
+            .pyramid { padding: 1rem; }
+            .level-header { padding: 0.8rem 1rem 0.3rem 1rem; }
+            .level-content { padding: 0.2rem 1rem 1rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="franklin-container">
+    <div class="header-section">
+        <div class="title-badge">
+            <div>
+                <h1>🔺 Піраміда Франкліна</h1>
+                <div class="sub">від місії до щоденних кроків · структура цілей</div>
+            </div>
+            <button class="reset-btn" id="resetBtn"><i class="fas fa-undo-alt"></i> скинути приклад</button>
+        </div>
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <span class="stat-number" id="completedGoals">0</span>
+                <span class="stat-label">/ <span id="totalGoals">0</span> цілей виконано</span>
+            </div>
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar-bg"><div class="progress-fill" id="globalProgressFill"></div></div>
+            </div>
+            <div><span id="progressPercent">0</span>%</div>
+        </div>
+    </div>
+
+    <div class="pyramid" id="pyramidContainer"></div>
+
+    <footer>
+        <span><i class="fas fa-layer-group"></i> 5 рівнів піраміди Франкліна</span>
+        <span><i class="fas fa-check-circle"></i> відмічай виконані цілі</span>
+        <span><i class="fas fa-save"></i> все зберігається автоматично</span>
+    </footer>
+</div>
+
+<!-- модальне вікно для додавання/редагування -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+        <h3 id="modalTitle">✏️ ціль / дія</h3>
+        <input type="text" id="goalTitle" placeholder="Назва (наприклад, 'Пробіжка 5 км')" autocomplete="off">
+        <textarea id="goalDesc" rows="2" placeholder="Опис або деталі (необов'язково)"></textarea>
+        <input type="text" id="goalUrl" placeholder="Посилання (https://...)" autocomplete="off">
+        <div class="modal-buttons">
+            <button class="cancel-modal-btn" id="closeModalBtn">Скасувати</button>
+            <button class="save-modal-btn" id="saveGoalBtn">Зберегти</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- СТРУКТУРА ПІРАМІДИ ----------
+    // Рівні знизу вгору: 0 - щоденні дії, 1 - тактичні (рік), 2 - стратегічні (3-5 років), 3 - глобальні (10-20 років), 4 - місія
+    const levelNames = [
+        "📅 Щоденні дії", 
+        "🎯 Тактичні цілі (1 рік)", 
+        "🌳 Стратегічні цілі (3-5 років)", 
+        "🏔️ Глобальні цілі (10-20 років)", 
+        "✨ Місія / головне призначення"
+    ];
+    
+    const levelIcons = ["⚡", "📌", "🌱", "🌟", "🕊️"];
+    
+    // Приклад структури (можна редагувати)
+    const defaultPyramid = [
+        { // рівень 0: щоденні дії
+            items: [
+                { id: 1, title: "Ранкова рутина (медитація + планування)", description: "10 хв медитації, 10 хв планування дня", url: "", completed: false },
+                { id: 2, title: "Навчання / читання 30 хв", description: "Розвиток професійних навичок", url: "", completed: false },
+                { id: 3, title: "Фізична активність", description: "Прогулянка або зарядка", url: "", completed: false }
+            ]
+        },
+        { // рівень 1: тактичні цілі (на рік)
+            items: [
+                { id: 4, title: "Закінчити курс з управління проєктами", description: "Отримати сертифікат PM", url: "https://www.coursera.org/", completed: false },
+                { id: 5, title: "Прочитати 12 книг", description: "Список: 4 з психології, 4 художні, 4 професійні", url: "https://www.goodreads.com/", completed: false }
+            ]
+        },
+        { // рівень 2: стратегічні
+            items: [
+                { id: 6, title: "Підвищення на роботі", description: "Стати Team Lead або Senior", url: "", completed: false },
+                { id: 7, title: "Опанувати нову професію", description: "Data Science або UI/UX дизайн", url: "", completed: false }
+            ]
+        },
+        { // рівень 3: глобальні
+            items: [
+                { id: 8, title: "Купити власне житло", description: "Затишна квартира або будинок", url: "", completed: false },
+                { id: 9, title: "Подорожувати в 10+ країн", description: "Розширення горизонтів", url: "", completed: false }
+            ]
+        },
+        { // рівень 4: місія
+            items: [
+                { id: 10, title: "Жити свідомо і натхненно", description: "Створювати цінність для інших, розвиватися і допомагати", url: "", completed: false },
+                { id: 11, title: "Знайти баланс між кар'єрою, здоров'ям і творчістю", description: "Гармонійне життя", url: "", completed: false }
+            ]
+        }
+    ];
+
+    let pyramidData = [];
+    let nextItemId = 12;
+    let currentEdit = { levelIdx: null, itemIdx: null }; // для редагування
+
+    // localStorage
+    function loadFromStorage() {
+        const stored = localStorage.getItem("franklin_pyramid");
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length === 5) {
+                    pyramidData = parsed;
+                    // оновити nextItemId
+                    let maxId = 0;
+                    pyramidData.forEach(level => {
+                        level.items.forEach(item => { if (item.id > maxId) maxId = item.id; });
+                    });
+                    nextItemId = maxId + 1;
+                    return;
+                }
+            } catch(e) {}
+        }
+        // копія за замовчуванням
+        pyramidData = JSON.parse(JSON.stringify(defaultPyramid));
+        nextItemId = 12;
+    }
+
+    function saveToStorage() {
+        localStorage.setItem("franklin_pyramid", JSON.stringify(pyramidData));
+    }
+
+    // підрахунок прогресу
+    function updateGlobalTracker() {
+        let total = 0;
+        let completed = 0;
+        pyramidData.forEach(level => {
+            level.items.forEach(item => {
+                total++;
+                if (item.completed) completed++;
+            });
+        });
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+        document.getElementById('completedGoals').innerText = completed;
+        document.getElementById('totalGoals').innerText = total;
+        document.getElementById('progressPercent').innerText = percent;
+        const fill = document.getElementById('globalProgressFill');
+        if (fill) fill.style.width = `${percent}%`;
+        return { total, completed, percent };
+    }
+
+    // рендер всієї піраміди
+    function renderPyramid() {
+        const container = document.getElementById('pyramidContainer');
+        if (!container) return;
+        
+        let html = '';
+        for (let i = 0; i < pyramidData.length; i++) {
+            const level = pyramidData[i];
+            const levelIndex = i;
+            const levelName = levelNames[i];
+            const levelIcon = levelIcons[i];
+            const levelClass = `level level-${i+1}`;
+            
+            // підрахувати виконані в рівні
+            const levelTotal = level.items.length;
+            const levelCompleted = level.items.filter(it => it.completed).length;
+            
+            html += `
+                <div class="${levelClass}" data-level="${levelIndex}">
+                    <div class="level-header">
+                        <div class="level-title">
+                            <span class="level-number">${levelIcon}</span>
+                            <div>
+                                <span class="level-name">${levelName}</span>
+                                <div class="level-sub">${levelIndex === 0 ? 'щоденні звички та дії' : (levelIndex === 1 ? 'цілі на найближчий рік' : (levelIndex === 2 ? 'стратегічний план' : (levelIndex === 3 ? 'великі життєві цілі' : 'ваша життєва місія')))}</div>
+                            </div>
+                        </div>
+                        <div class="level-stats">${levelCompleted}/${levelTotal} виконано</div>
+                    </div>
+                    <div class="level-content" id="level-${levelIndex}">
+            `;
+            
+            // відображення пунктів
+            level.items.forEach((item, idx) => {
+                const checkedAttr = item.completed ? 'checked' : '';
+                html += `
+                    <div class="goal-item" data-level="${levelIndex}" data-item-idx="${idx}">
+                        <div class="goal-check">
+                            <input type="checkbox" class="goal-checkbox" data-level="${levelIndex}" data-item-idx="${idx}" ${checkedAttr}>
+                        </div>
+                        <div class="goal-text">
+                            <div class="goal-title">${escapeHtml(item.title)}</div>
+                            ${item.description ? `<div class="goal-desc">${escapeHtml(item.description)}</div>` : ''}
+                            ${item.url && item.url !== "" ? `<a href="${escapeAttr(item.url)}" target="_blank" class="goal-link" onclick="event.stopPropagation()"><i class="fas fa-link"></i> джерело</a>` : ''}
+                        </div>
+                        <div class="goal-actions">
+                            <button class="icon-btn edit-goal" data-level="${levelIndex}" data-item-idx="${idx}" title="редагувати"><i class="fas fa-pen"></i></button>
+                            <button class="icon-btn delete-goal" data-level="${levelIndex}" data-item-idx="${idx}" title="видалити"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // кнопка додати пункт
+            html += `
+                        <button class="add-item-btn" data-level="${levelIndex}"><i class="fas fa-plus-circle"></i> додати ціль / дію</button>
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+        
+        // прив'язати події
+        attachCheckboxEvents();
+        attachEditEvents();
+        attachDeleteEvents();
+        attachAddEvents();
+        
+        updateGlobalTracker();
+    }
+    
+    function attachCheckboxEvents() {
+        document.querySelectorAll('.goal-checkbox').forEach(cb => {
+            cb.removeEventListener('change', handleCheckboxChange);
+            cb.addEventListener('change', handleCheckboxChange);
+        });
+    }
+    
+    function handleCheckboxChange(e) {
+        e.stopPropagation();
+        const checkbox = e.target;
+        const levelIdx = parseInt(checkbox.getAttribute('data-level'));
+        const itemIdx = parseInt(checkbox.getAttribute('data-item-idx'));
+        if (pyramidData[levelIdx] && pyramidData[levelIdx].items[itemIdx]) {
+            pyramidData[levelIdx].items[itemIdx].completed = checkbox.checked;
+            saveToStorage();
+            renderPyramid(); // перерендер
+        }
+    }
+    
+    function attachEditEvents() {
+        document.querySelectorAll('.edit-goal').forEach(btn => {
+            btn.removeEventListener('click', handleEditClick);
+            btn.addEventListener('click', handleEditClick);
+        });
+    }
+    
+    function handleEditClick(e) {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const levelIdx = parseInt(btn.getAttribute('data-level'));
+        const itemIdx = parseInt(btn.getAttribute('data-item-idx'));
+        openEditModal(levelIdx, itemIdx);
+    }
+    
+    function attachDeleteEvents() {
+        document.querySelectorAll('.delete-goal').forEach(btn => {
+            btn.removeEventListener('click', handleDeleteClick);
+            btn.addEventListener('click', handleDeleteClick);
+        });
+    }
+    
+    function handleDeleteClick(e) {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const levelIdx = parseInt(btn.getAttribute('data-level'));
+        const itemIdx = parseInt(btn.getAttribute('data-item-idx'));
+        if (confirm('Видалити цей пункт?')) {
+            pyramidData[levelIdx].items.splice(itemIdx, 1);
+            saveToStorage();
+            renderPyramid();
+        }
+    }
+    
+    function attachAddEvents() {
+        document.querySelectorAll('.add-item-btn').forEach(btn => {
+            btn.removeEventListener('click', handleAddClick);
+            btn.addEventListener('click', handleAddClick);
+        });
+    }
+    
+    function handleAddClick(e) {
+        const btn = e.currentTarget;
+        const levelIdx = parseInt(btn.getAttribute('data-level'));
+        currentEdit = { levelIdx, itemIdx: null };
+        openAddModal(levelIdx);
+    }
+    
+    // модальне вікно
+    const modal = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const goalTitleInput = document.getElementById('goalTitle');
+    const goalDescInput = document.getElementById('goalDesc');
+    const goalUrlInput = document.getElementById('goalUrl');
+    
+    function openAddModal(levelIdx) {
+        currentEdit = { levelIdx, itemIdx: null };
+        modalTitle.innerText = '➕ Нова ціль / дія';
+        goalTitleInput.value = '';
+        goalDescInput.value = '';
+        goalUrlInput.value = '';
+        modal.classList.add('active');
+    }
+    
+    function openEditModal(levelIdx, itemIdx) {
+        const item = pyramidData[levelIdx].items[itemIdx];
+        if (!item) return;
+        currentEdit = { levelIdx, itemIdx };
+        modalTitle.innerText = '✏️ Редагувати';
+        goalTitleInput.value = item.title;
+        goalDescInput.value = item.description || '';
+        goalUrlInput.value = item.url || '';
+        modal.classList.add('active');
+    }
+    
+    function closeModal() {
+        modal.classList.remove('active');
+        currentEdit = { levelIdx: null, itemIdx: null };
+    }
+    
+    function saveGoal() {
+        const title = goalTitleInput.value.trim();
+        if (!title) {
+            alert("Назва обов'язкова");
+            return;
+        }
+        const desc = goalDescInput.value.trim() || "";
+        const url = goalUrlInput.value.trim() || "";
+        
+        if (currentEdit.itemIdx !== null) {
+            // редагування
+            const item = pyramidData[currentEdit.levelIdx].items[currentEdit.itemIdx];
+            if (item) {
+                item.title = title;
+                item.description = desc;
+                item.url = url;
+            }
+        } else {
+            // додавання нового пункту
+            const newItem = {
+                id: nextItemId++,
+                title: title,
+                description: desc,
+                url: url,
+                completed: false
+            };
+            pyramidData[currentEdit.levelIdx].items.push(newItem);
+        }
+        saveToStorage();
+        closeModal();
+        renderPyramid();
+    }
+    
+    // скидання до прикладу
+    function resetToExample() {
+        if (confirm("Скинути всю піраміду до початкового прикладу? Всі зміни будуть втрачені.")) {
+            pyramidData = JSON.parse(JSON.stringify(defaultPyramid));
+            // перерахувати nextItemId
+            let maxId = 0;
+            pyramidData.forEach(level => {
+                level.items.forEach(item => { if (item.id > maxId) maxId = item.id; });
+            });
+            nextItemId = maxId + 1;
+            saveToStorage();
+            renderPyramid();
+        }
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function escapeAttr(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
+    
+    // ініціалізація
+    loadFromStorage();
+    renderPyramid();
+    
+    document.getElementById('resetBtn').addEventListener('click', resetToExample);
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    document.getElementById('saveGoalBtn').addEventListener('click', saveGoal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+</script>
+</body>
+</html>
