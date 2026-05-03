@@ -26,33 +26,70 @@ jobs:
 
       - name: Inject PWA meta tags
         run: |
-          python3 -c "
+          cat > /tmp/inject.py << 'PYEOF'
           import re, pathlib
 
-          SNIPPET = (
+          PWA = (
               '\n<!-- PWA -->\n'
-              '<link rel=\"manifest\" href=\"/notion-templates/manifest.webmanifest\">\n'
-              '<meta name=\"theme-color\" content=\"#2f6feb\">\n'
-              '<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n'
-              '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">\n'
-              '<meta name=\"apple-mobile-web-app-title\" content=\"Шаблони UA\">\n'
-              '<link rel=\"apple-touch-icon\" href=\"/notion-templates/icons/apple-touch-icon.png\">\n'
-              \"<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/notion-templates/service-worker.js');</script>\n\"
+              '<link rel="manifest" href="/notion-templates/manifest.webmanifest">\n'
+              '<meta name="theme-color" content="#2f6feb">\n'
+              '<meta name="apple-mobile-web-app-capable" content="yes">\n'
+              '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n'
+              '<meta name="apple-mobile-web-app-title" content="Шаблони UA">\n'
+              '<link rel="apple-touch-icon" href="/notion-templates/icons/apple-touch-icon.png">\n'
+              "<script>if('serviceWorker' in navigator)"
+              " navigator.serviceWorker.register('/notion-templates/service-worker.js');</script>\n"
               '<!-- /PWA -->'
           )
 
-          def inject(m):
-              return m.group(0) + SNIPPET
+          TOOLBAR = """<!-- TOOLBAR -->
+          <div id="pwa-toolbar">
+            <button onclick="(history.length>1)?history.back():location.href='/notion-templates/'" title="Назад">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <a id="pwa-dl" download title="Завантажити">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </a>
+            <button onclick="window.print()" title="Друк">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            </button>
+            <button onclick="if(navigator.share){navigator.share({title:document.title,url:location.href})}else{navigator.clipboard.writeText(location.href).then(()=>alert('УРЛ скопійовано'))}" title="Поділитись">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+          </div>
+          <!-- /TOOLBAR -->
+          <style>
+          #pwa-toolbar{position:fixed;bottom:0;left:0;right:0;height:44px;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:space-around;z-index:9999;padding:0 8px;box-sizing:border-box}
+          #pwa-toolbar button,#pwa-toolbar a{background:none;border:none;cursor:pointer;padding:8px 14px;color:#444;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:background 0.15s;text-decoration:none}
+          #pwa-toolbar button:hover,#pwa-toolbar a:hover{background:rgba(0,0,0,0.07)}
+          #pwa-toolbar svg{width:20px;height:20px}
+          @media(prefers-color-scheme:dark){#pwa-toolbar{background:rgba(20,20,20,0.92);border-top-color:rgba(255,255,255,0.10)}#pwa-toolbar button,#pwa-toolbar a{color:#ddd}#pwa-toolbar button:hover,#pwa-toolbar a:hover{background:rgba(255,255,255,0.10)}}
+          @media print{#pwa-toolbar{display:none!important}}
+          </style>
+          <script>(function(){var a=document.getElementById('pwa-dl');if(a){a.href=location.href;var m=location.pathname.match(/([^/]+)$/);a.download=m?m[1]:'template.html'}document.body.style.paddingBottom='52px'})();</script>"""
+
+          def inject_pwa(m):
+              return m.group(0) + PWA
 
           for f in pathlib.Path('.').glob('*.html'):
               text = f.read_text(encoding='utf-8')
+              changed = False
+
               if '<!-- PWA -->' not in text:
-                  text = re.sub(r'<head(\s[^>]*)?>',  inject, text, count=1, flags=re.IGNORECASE)
+                  text = re.sub(r'<head(\s[^>]*)?>',  inject_pwa, text, count=1, flags=re.IGNORECASE)
+                  changed = True
+
+              if f.name != 'index.html' and '<!-- TOOLBAR -->' not in text:
+                  text = re.sub(r'</body>', TOOLBAR + '\n</body>', text, count=1, flags=re.IGNORECASE)
+                  changed = True
+
+              if changed:
                   f.write_text(text, encoding='utf-8')
                   print('  injected:', f.name)
               else:
                   print('  skipped:', f.name)
-          "
+          PYEOF
+          python3 /tmp/inject.py
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
