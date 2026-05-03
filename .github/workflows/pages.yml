@@ -24,6 +24,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Inject PWA meta tags
+        run: |
+          python3 -c "
+          import re, pathlib
+
+          SNIPPET = (
+              '\n<!-- PWA -->\n'
+              '<link rel=\"manifest\" href=\"/notion-templates/manifest.webmanifest\">\n'
+              '<meta name=\"theme-color\" content=\"#2f6feb\">\n'
+              '<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n'
+              '<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">\n'
+              '<meta name=\"apple-mobile-web-app-title\" content=\"Шаблони UA\">\n'
+              '<link rel=\"apple-touch-icon\" href=\"/notion-templates/icons/apple-touch-icon.png\">\n'
+              \"<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/notion-templates/service-worker.js');</script>\n\"
+              '<!-- /PWA -->'
+          )
+
+          def inject(m):
+              return m.group(0) + SNIPPET
+
+          for f in pathlib.Path('.').glob('*.html'):
+              text = f.read_text(encoding='utf-8')
+              if '<!-- PWA -->' not in text:
+                  text = re.sub(r'<head(\s[^>]*)?>',  inject, text, count=1, flags=re.IGNORECASE)
+                  f.write_text(text, encoding='utf-8')
+                  print('  injected:', f.name)
+              else:
+                  print('  skipped:', f.name)
+          "
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
