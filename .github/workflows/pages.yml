@@ -47,7 +47,7 @@ jobs:
           for f in pathlib.Path('.').glob('*.html'):
               text = f.read_text(encoding='utf-8')
               if '<!-- PWA -->' not in text:
-                  text = re.sub(r'<head[^>]*>', inject, text, count=1, flags=re.IGNORECASE)
+                  text = re.sub(r'<head(\s[^>]*)?>',  inject, text, count=1, flags=re.IGNORECASE)
                   f.write_text(text, encoding='utf-8')
                   print('  injected:', f.name)
               else:
