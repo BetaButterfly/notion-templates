@@ -53,7 +53,7 @@ jobs:
             <button onclick="window.print()" title="Друк">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
             </button>
-            <button onclick="if(navigator.share){navigator.share({title:document.title,url:location.href})}else{navigator.clipboard.writeText(location.href).then(()=>alert('УРЛ скопійовано'))}" title="Поділитись">
+            <button onclick="if(navigator.share){navigator.share({title:document.title,url:location.href}).catch(function(){})}else{navigator.clipboard.writeText(location.href).then(()=>alert('УРЛ скопійовано'))}" title="Поділитись">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             </button>
           </div>
@@ -76,12 +76,20 @@ jobs:
               changed = False
 
               if '<!-- PWA -->' not in text:
-                  text = re.sub(r'<head(\s[^>]*)?>',  inject_pwa, text, count=1, flags=re.IGNORECASE)
-                  changed = True
+                  new = re.sub(r'<head(\s[^>]*)?>',  inject_pwa, text, count=1, flags=re.IGNORECASE)
+                  if new != text:
+                      text = new
+                      changed = True
+                  else:
+                      print('  WARNING: no <head> in', f.name)
 
               if f.name != 'index.html' and '<!-- TOOLBAR -->' not in text:
-                  text = re.sub(r'</body>', TOOLBAR + '\n</body>', text, count=1, flags=re.IGNORECASE)
-                  changed = True
+                  new = re.sub(r'</body>', TOOLBAR + '\n</body>', text, count=1, flags=re.IGNORECASE)
+                  if new != text:
+                      text = new
+                      changed = True
+                  else:
+                      print('  WARNING: no </body> in', f.name)
 
               if changed:
                   f.write_text(text, encoding='utf-8')
