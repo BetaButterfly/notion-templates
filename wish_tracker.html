@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Карта бажань · самоменеджмент · три кольори</title>
+    <!-- сучасний шрифт -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (безкоштовні іконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F9F6F0;  /* дуже м'який теплий нейтральний (база) */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* головний контейнер – три кольори: м'ятно-зелений, персиковий, пудрово-синій */
+        .dream-container {
+            max-width: 1400px;
+            width: 100%;
+            background: #FFFFFF;
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        /* хедер з легкою рамкою кольору accent 1 */
+        .header-section {
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 2px solid #E9E0D3;
+            background: #FFFFFF;
+        }
+
+        .title-badge {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #3E6B5E, #C47A5C);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .sub {
+            color: #8F7A6B;
+            font-size: 0.85rem;
+            font-weight: 400;
+            margin-top: 0.25rem;
+        }
+
+        /* загальний трекер прогресу */
+        .progress-tracker {
+            background: #FEFAF5;
+            border-radius: 1.5rem;
+            padding: 1.1rem 1.5rem;
+            margin-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .progress-stats {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-number {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #3E6B5E;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #998E82;
+            font-weight: 450;
+        }
+
+        .progress-bar-wrapper {
+            flex: 2;
+            min-width: 160px;
+        }
+
+        .progress-bar-bg {
+            background-color: #E9E0D3;
+            border-radius: 60px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: #C47A5C;
+            width: 0%;
+            height: 100%;
+            border-radius: 60px;
+            transition: width 0.35s ease;
+        }
+
+        .quote-small {
+            font-size: 0.75rem;
+            color: #B9AFA2;
+            background: #FFFFFF;
+            padding: 0.3rem 0.9rem;
+            border-radius: 80px;
+            letter-spacing: -0.2px;
+        }
+
+        /* фільтр по категоріям (функціонально) */
+        .filter-row {
+            padding: 1rem 2rem 0.5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            border-bottom: 1px solid #EFE6DC;
+            background: #FFFFFF;
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            color: #6C5E52;
+        }
+
+        .filter-btn.active {
+            background: #3E6B5E;
+            color: white;
+            box-shadow: 0 2px 8px rgba(62, 107, 94, 0.2);
+        }
+
+        .filter-btn:not(.active):hover {
+            background: #EFE6DC;
+        }
+
+        /* сітка бажань – три кольори у картках: акценти #3E6B5E (dark mint), #C47A5C (персик), #5F7F9E (м'який синій) */
+        .wishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.6rem;
+            padding: 2rem;
+        }
+
+        /* картка – повністю клікабельна, мінімалістичний дизайн */
+        .wish-card {
+            background: white;
+            border-radius: 1.5rem;
+            transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+            border: 1px solid #EDE4DA;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .wish-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 28px -12px rgba(0, 0, 0, 0.12);
+            border-color: #D6CABC;
+        }
+
+        .card-inner {
+            padding: 1.4rem 1.4rem 1.2rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        /* іконка + заголовок рядок */
+        .icon-title {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .wish-icon {
+            font-size: 1.8rem;
+        }
+
+        .wish-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: #2C3A2F;
+        }
+
+        .wish-description {
+            font-size: 0.85rem;
+            color: #6F6256;
+            line-height: 1.4;
+            margin-top: 0.1rem;
+        }
+
+        /* Трекер всередині картки (чекбокс-прогрес) */
+        .card-progress {
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background: #FBF8F3;
+            border-radius: 60px;
+            padding: 0.3rem 0.6rem 0.3rem 0.8rem;
+        }
+
+        .step-check {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #3E6B5E;
+        }
+
+        .check-custom {
+            width: 18px;
+            height: 18px;
+            border-radius: 20px;
+            border: 1.5px solid #C47A5C;
+            background: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+
+        /* чекбокс – клікабельний, але зупиняє подію батьківського лінка */
+        .real-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #3E6B5E;
+            margin: 0;
+        }
+
+        .progress-step-text {
+            font-size: 0.7rem;
+            color: #6C5E52;
+        }
+
+        .wish-link-hint {
+            font-size: 0.7rem;
+            color: #A39282;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.2rem;
+            border-top: 1px solid #F0E8DF;
+            padding-top: 0.65rem;
+            transition: color 0.2s;
+        }
+
+        .wish-card:hover .wish-link-hint {
+            color: #C47A5C;
+        }
+
+        /* кольорові акценти для різних категорій (не обов'язково, але гарно) */
+        [data-category="особистість"] .wish-title { color: #3E6B5E; }
+        [data-category="кар'єра"] .wish-title { color: #5F7F9E; }
+        [data-category="подорожі"] .wish-title { color: #C47A5C; }
+
+        footer {
+            background: #FEFAF5;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #B1A187;
+            border-top: 1px solid #EFE3D8;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 1rem; }
+            .wishes-grid { padding: 1.2rem; gap: 1rem; }
+            .header-section { padding: 1.2rem; }
+            .filter-row { padding: 0.8rem 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dream-container">
+    <div class="header-section">
+        <div class="title-badge">
+            <div>
+                <h1>🌱 карта бажань</h1>
+                <div class="sub">самоменеджмент · візуальний трекер цілей</div>
+            </div>
+            <div class="quote-small">
+                <i class="fas fa-leaf"></i> крок за кроком до мрії
+            </div>
+        </div>
+        <!-- глобальний трекер -->
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <span class="stat-number" id="completedCount">0</span>
+                <span class="stat-label">/ <span id="totalCount">0</span> виконано</span>
+                <span class="stat-label" style="margin-left: 0.5rem;">✨ загальний прогрес</span>
+            </div>
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar-bg">
+                    <div class="progress-fill" id="globalProgressFill" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="quote-small">
+                <i class="fas fa-chart-line"></i> <span id="progressPercent">0</span>%
+            </div>
+        </div>
+    </div>
+
+    <!-- фільтри категорій (акцент на три кольори) -->
+    <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">усі мрії</button>
+        <button class="filter-btn" data-filter="особистість">🌿 особистість</button>
+        <button class="filter-btn" data-filter="кар'єра">📌 кар'єра / навчання</button>
+        <button class="filter-btn" data-filter="подорожі">✈️ подорожі & відпочинок</button>
+    </div>
+
+    <!-- сітка бажань (динамічна) -->
+    <div id="wishesGrid" class="wishes-grid"></div>
+
+    <footer>
+        <span><i class="fas-regular fa-mouse-pointer"></i> кожна картка клікабельна → відкриває ресурс мрії</span>
+        <span><i class="fas fa-check-circle"></i> відмічай прогрес всередині — трекер оновлюється</span>
+        <span style="font-size:0.7rem;">🎨 три кольори: м'ятний | персик | пудрово-синій</span>
+    </footer>
+</div>
+
+<script>
+    // ------------------ МАСИВ БАЖАНЬ із трекером (прогрес кроку: 0 або 1) ------------------
+    // Кожне бажання має: icon, title, description, url, category, completed (0/1)
+    let wishes = [
+        { id: 1, icon: "🧘‍♀️", title: "Ранкова медитація 30 днів", description: "Сформувати звичку усвідомленості, вести щоденник вдячності.", url: "https://www.headspace.com/meditation", category: "особистість", completed: false },
+        { id: 2, icon: "📖", title: "Прочитати 12 книг за рік", description: "Щонайменше 4 з них – з психології та саморозвитку.", url: "https://www.goodreads.com/", category: "особистість", completed: false },
+        { id: 3, icon: "💼", title: "Отримати сертифікат PM", description: "Курс з управління проєктами (Google або Agile)", url: "https://www.coursera.org/project-management", category: "кар'єра", completed: false },
+        { id: 4, icon: "📊", title: "Розвинути LinkedIn-бренд", description: "Публікувати експертний контент раз на тиждень.", url: "https://www.linkedin.com/", category: "кар'єра", completed: false },
+        { id: 5, icon: "🏔️", title: "Похід у Карпати", description: "Вийняти вихідні та підкорити Говерлу з друзями.", url: "https://karpaty.ua/", category: "подорожі", completed: false },
+        { id: 6, icon: "✈️", title: "Відвідати Лісабон", description: "Серфінг, архітектура та пастель де ната.", url: "https://www.visitportugal.com/", category: "подорожі", completed: false },
+        { id: 7, icon: "🎓", title: "Закінчити магістратуру з відзнакою", description: "Дипломна робота на актуальну тему та публікація.", url: "https://www.edx.org/", category: "кар'єра", completed: false },
+        { id: 8, icon: "🏡", title: "Облаштувати робочий куточок мрії", description: "Ергономічне крісло, світлодіодна стрічка, порядок.", url: "https://www.ikea.com/", category: "особистість", completed: false },
+        { id: 9, icon: "🌊", title: "Навчитися серфінгу", description: "Поїздка на море або сквош в басейні.", url: "https://www.surfertoday.com/", category: "подорожі", completed: false }
+    ];
+
+    // Додамо ще кілька для насиченості (дотримуючись 3 кольорів)
+    wishes.push({ id: 10, icon: "🎨", title: "Розвинути креативний скетчинг", description: "Курс з малювання маркерами, 20 скетчів на місяць.", url: "https://www.skillshare.com/", category: "особистість", completed: false });
+    wishes.push({ id: 11, icon: "📈", title: "Збільшити дохід на 30%", description: "Фріланс або підвищення на роботі.", url: "https://www.udemy.com/", category: "кар'єра", completed: false });
+    wishes.push({ id: 12, icon: "🚐", title: "Подорож в Ісландію", description: "Кемпер-тур та північне сяйво.", url: "https://guidetoiceland.is/", category: "подорожі", completed: false });
+
+    // ---- стан фільтрації та рендер ----
+    let currentFilter = "all";
+
+    // Функція збереження прогресу (localStorage для постійності, щоб Notion embed пам'ятав відмітки)
+    function saveProgress() {
+        const completedMap = wishes.map(w => w.completed);
+        localStorage.setItem('wishlistProgress', JSON.stringify(completedMap));
+    }
+
+    function loadProgress() {
+        const saved = localStorage.getItem('wishlistProgress');
+        if (saved) {
+            try {
+                const completedArr = JSON.parse(saved);
+                if (Array.isArray(completedArr) && completedArr.length === wishes.length) {
+                    wishes.forEach((wish, idx) => {
+                        wish.completed = completedArr[idx];
+                    });
+                }
+            } catch(e) {}
+        }
+    }
+
+    // оновлення глобального трекера (процент + кількість)
+    function updateGlobalTracker() {
+        const total = wishes.length;
+        const completedTotal = wishes.filter(w => w.completed === true).length;
+        const percent = total === 0 ? 0 : Math.floor((completedTotal / total) * 100);
+        document.getElementById('completedCount').innerText = completedTotal;
+        document.getElementById('totalCount').innerText = total;
+        document.getElementById('progressPercent').innerText = percent;
+        const fillEl = document.getElementById('globalProgressFill');
+        if (fillEl) fillEl.style.width = `${percent}%`;
+        return { total, completedTotal, percent };
+    }
+
+    // рендер карток з урахуванням фільтра
+    function renderWishes() {
+        const grid = document.getElementById('wishesGrid');
+        if (!grid) return;
+        let filtered = wishes.filter(w => currentFilter === "all" ? true : w.category === currentFilter);
+        // сортуємо для зручності: спочатку невиконані, потім виконані
+        filtered.sort((a,b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1);
+        
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:2rem; color:#B1A187;">✨ додай нові мрії у цій категорії ✨</div>`;
+            updateGlobalTracker();
+            return;
+        }
+        
+        let html = '';
+        filtered.forEach(wish => {
+            // формуємо чекбокс з унікальним id.
+            const isChecked = wish.completed;
+            const categoryAttr = wish.category;
+            // Картка повністю клікабельна, але чекбокс - окрема зона (зупиняє спливання події)
+            html += `
+                <div class="wish-card" data-id="${wish.id}" data-url="${escapeAttr(wish.url)}" data-category="${categoryAttr}">
+                    <div class="card-inner">
+                        <div class="icon-title">
+                            <div class="wish-icon">${wish.icon}</div>
+                            <div class="wish-title">${escapeHtml(wish.title)}</div>
+                        </div>
+                        <div class="wish-description">${escapeHtml(wish.description)}</div>
+                        <div class="card-progress" data-progress-area="true">
+                            <div class="step-check">
+                                <input type="checkbox" class="real-checkbox" data-id="${wish.id}" ${isChecked ? 'checked' : ''}>
+                                <span class="progress-step-text">${isChecked ? '✅ виконано' : '☐ відзначити крок'}</span>
+                            </div>
+                        </div>
+                        <div class="wish-link-hint">
+                            <i class="fas fa-arrow-right"></i> деталі мрії →
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+        
+        // після рендеру прив'язуємо події: клік по картці (перехід за посиланням) + чекбокс
+        document.querySelectorAll('.wish-card').forEach(card => {
+            const cardId = parseInt(card.getAttribute('data-id'));
+            const wishObj = wishes.find(w => w.id === cardId);
+            if (!wishObj) return;
+            // клік по картці (окрім чекбоксу)
+            card.addEventListener('click', (e) => {
+                // якщо клікнули на чекбокс або на область прогрес-бару з чекбоксом, не перенаправляємо
+                if (e.target.classList && e.target.classList.contains('real-checkbox')) return;
+                if (e.target.closest('.card-progress') && e.target.closest('.real-checkbox')) return;
+                if (e.target.closest('.card-progress')) {
+                    // якщо клік саме на div progress але не на чекбокс – все одно не чіпаємо, щоб не заважати
+                    if (!e.target.classList.contains('real-checkbox')) {
+                        // нічого не робимо, але щоб уникнути помилки, перевіримо
+                        if (e.target === e.currentTarget.querySelector('.card-progress')) return;
+                    }
+                }
+                // перехід за посиланням (url)
+                let url = wishObj.url;
+                if (url && url !== "#") {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                } else {
+                    console.log("посилання не задане");
+                }
+            });
+            
+            // обробка чекбоксу (зміна прогресу)
+            const checkbox = card.querySelector('.real-checkbox');
+            if (checkbox) {
+                checkbox.addEventListener('change', (event) => {
+                    event.stopPropagation();
+                    const id = parseInt(checkbox.getAttribute('data-id'));
+                    const targetWish = wishes.find(w => w.id === id);
+                    if (targetWish) {
+                        targetWish.completed = checkbox.checked;
+                        saveProgress();
+                        updateGlobalTracker();
+                        renderWishes();   // перерендер для оновлення тексту та порядку
+                    }
+                });
+            }
+        });
+        
+        updateGlobalTracker();
+    }
+    
+    // допоміжні функції
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function escapeAttr(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
+    
+    // фільтр активних кнопок
+    function initFilters() {
+        const btns = document.querySelectorAll('.filter-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filterValue = btn.getAttribute('data-filter');
+                if (filterValue) {
+                    currentFilter = filterValue;
+                    btns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderWishes();
+                }
+            });
+        });
+    }
+    
+    // Завантаження прогресу та перший рендер
+    loadProgress();
+    renderWishes();
+    initFilters();
+    
+    // Додаткове: оновлення трекера при зовнішніх змінах (наприклад, при ручному сеті)
+    window.updateWishCompletion = function(id, completed) {
+        const w = wishes.find(w => w.id === id);
+        if (w) {
+            w.completed = completed;
+            saveProgress();
+            renderWishes();
+        }
+    };
+    
+    // якщо викладач захоче подивитися прогрес – усі дані зберігаються в localStorage навіть після перезавантаження ембеду
+</script>
+</body>
+</html>
