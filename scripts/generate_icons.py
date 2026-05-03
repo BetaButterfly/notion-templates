@@ -33,6 +33,6 @@ def make_icon(size: int, path: str, pad_pct: float = 0.0) -> None:
 
 if __name__ == "__main__":
     make_icon(192, "icons/icon-192.png")
-    make_icon(512, "icons/icon-512.png", pad_pct=0.10)
+    make_icon(512, "icons/icon-512.png", pad_pct=0.10)  # 10% safe zone for maskable
     make_icon(180, "icons/apple-touch-icon.png")
     print("Done.")
