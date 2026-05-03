@@ -280,7 +280,7 @@
 <div class="planner-container">
     <div class="header-section">
         <h1><i class="fas fa-calendar-day"></i> План на день</h1>
-        <div class="sub">студентський розклад + особисті справи</div>
+        <div class="sub">щоденний розклад + особисті справи</div>
         <div class="date-badge">
             <i class="far fa-calendar-alt"></i> 
             <span id="currentDate"></span>
@@ -322,14 +322,10 @@
 <script>
     // ---------- ЗАВДАННЯ ЗА ПРИКЛАДОМ (пари з 6:30 до 14:00, потім інші справи) ----------
     let tasks = [
-        { id: 1, title: "🎓 Пари в університеті", time: "06:30", note: "6:30 – 14:00 (лекції, семінари)", completed: false },
-        { id: 2, title: "📚 Підготуватися до 2 занять", time: "14:15", note: "повторити матеріал, зробити конспекти", completed: false },
-        { id: 3, title: "👧 Забрати сестричку зі школи", time: "14:45", note: "до 15:00 прийти до школи", completed: false },
-        { id: 4, title: "🎨 Завести на гурток", time: "15:00", note: "гурток о 15:00, відвести дитину", completed: false },
-        { id: 5, title: "🛒 Купити продукти", time: "15:30", note: "список: хліб, молоко, овочі, фрукти", completed: false },
-        { id: 6, title: "👧 Забрати сестричку з гуртка", time: "16:30", note: "гурток триває 1,5 год → забирати о 16:30", completed: false },
-        { id: 7, title: "💪 Фітнес", time: "18:00", note: "тренування вдома або в залі", completed: false },
-        { id: 8, title: "🍲 Приготувати вечерю", time: "19:00", note: "моя черга готувати", completed: false }
+        { id: 1, title: " Назва", time: "06:30", note: "опис", completed: false },
+        { id: 2, title: " Назва", time: "08:00", note: "опис", completed: false },
+        { id: 3, title: " Назва", time: "09:45", note: "опис", completed: false },
+        { id: 4, title: " Назва", time: "12:30", note: "опис, completed: false },
     ];
 
     let nextId = 9;
