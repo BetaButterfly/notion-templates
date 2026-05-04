@@ -11,6 +11,7 @@
 |---|---|---|
 | [clock.html](clock.html) | Аналоговий годинник | [відкрити](https://betabutterfly.github.io/notion-templates/clock.html) |
 | [pomodoro.html](pomodoro.html) | Таймер Pomodoro для фокус-сесій | [відкрити](https://betabutterfly.github.io/notion-templates/pomodoro.html) |
+| [plan_day.html](plan_day.html) | Щоденний планувальник | [відкрити](https://betabutterfly.github.io/notion-templates/plan_day.html) |
 
 ### Нотатки та письмо
 | Шаблон | Опис | Перегляд |
@@ -26,6 +27,8 @@
 | [smart.html](smart.html) | SMART — шаблон постановки цілей | [відкрити](https://betabutterfly.github.io/notion-templates/smart.html) |
 | [okr.html](okr.html) | OKR — цілі та ключові результати | [відкрити](https://betabutterfly.github.io/notion-templates/okr.html) |
 | [kanban.html](kanban.html) | Канбан-дошка для завдань | [відкрити](https://betabutterfly.github.io/notion-templates/kanban.html) |
+| [piramida_franklin.html](piramida_franklin.html) | Піраміда Франкліна — система самоменеджменту від цінностей до задач | [відкрити](https://betabutterfly.github.io/notion-templates/piramida_franklin.html) |
+| [wish_tracker.html](wish_tracker.html) | Карта бажань — трекер мрій з категоріями та статусами | [відкрити](https://betabutterfly.github.io/notion-templates/wish_tracker.html) |
 
 ### Методології та аналіз
 | Шаблон | Опис | Перегляд |
