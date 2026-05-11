@@ -368,9 +368,9 @@
     <div class="filter-row">
         <div class="filter-buttons">
             <button class="filter-btn active" data-filter="all">усі</button>
-            <button class="filter-btn" data-filter="особистість">🌿 особистість</button>
-            <button class="filter-btn" data-filter="кар'єра">📌 кар'єра</button>
-            <button class="filter-btn" data-filter="подорожі">✈️ подорожі</button>
+            <button class="filter-btn" data-filter="особистість"> особистість</button>
+            <button class="filter-btn" data-filter="кар'єра"> кар'єра</button>
+            <button class="filter-btn" data-filter="подорожі"> подорожі</button>
         </div>
         <div class="quote-small" style="font-size:0.7rem; color:#B1A187;"><i class="fas fa-edit"></i> клікай на іконки</div>
     </div>
@@ -386,9 +386,9 @@
         <textarea id="wishDesc" rows="2" placeholder="Опис, деталі, чому це важливо"></textarea>
         <input type="text" id="wishUrl" placeholder="Посилання (https://...)" autocomplete="off">
         <select id="wishCategory">
-            <option value="особистість">🌿 особистість</option>
-            <option value="кар'єра">📌 кар'єра / навчання</option>
-            <option value="подорожі">✈️ подорожі & відпочинок</option>
+            <option value="особистість">особистість</option>
+            <option value="кар'єра">кар'єра / навчання</option>
+            <option value="подорожі"> подорожі / відпочинок</option>
         </select>
         <input type="text" id="wishIcon" placeholder="Емодзі (наприклад 🌊, 💻, 🎓)" value="✨">
         <div class="modal-buttons">
@@ -401,12 +401,7 @@
 <script>
     // ---------- БАЗОВІ ДАНІ ----------
     let wishes = [
-        { id: 1, icon: "🧘‍♀️", title: "Ранкова медитація 30 днів", description: "Сформувати звичку усвідомленості, вести щоденник.", url: "https://www.headspace.com/", category: "особистість", completed: false },
-        { id: 2, icon: "📖", title: "Прочитати 12 книг за рік", description: "Психологія, художня література, саморозвиток.", url: "https://www.goodreads.com/", category: "особистість", completed: false },
-        { id: 3, icon: "💼", title: "Сертифікат PM", description: "Курс з управління проєктами (CAPM або Agile)", url: "https://www.coursera.org/project-management", category: "кар'єра", completed: false },
-        { id: 4, icon: "🏔️", title: "Похід у Карпати", description: "Підкорити Говерлу, відпочинок на природі.", url: "https://karpaty.ua/", category: "подорожі", completed: false },
-        { id: 5, icon: "✈️", title: "Подорож до Лісабона", description: "Серфінг, архітектура та пастель де ната.", url: "https://www.visitportugal.com/", category: "подорожі", completed: false },
-        { id: 6, icon: "🎓", title: "Закінчити магістратуру", description: "Дипломна робота на відмінно.", url: "https://www.edx.org/", category: "кар'єра", completed: false }
+        { id: 1, icon: "🧘‍♀️", title: "Бажання", description: "Опис необхідних дій.", url: "https://www.headspace.com/", category: "особистість", completed: false },
     ];
 
     let nextId = 7;
@@ -474,7 +469,7 @@
                 <div class="wish-card" data-card-id="${wish.id}">
                     <div class="card-inner">
                         <div class="icon-title">
-                            <div class="wish-icon">${escapeHtml(wish.icon) || "🌟"}</div>
+                            <div class="wish-icon">${escapeHtml(wish.icon) || ""}</div>
                             <div class="wish-title">${escapeHtml(wish.title)}</div>
                         </div>
                         <div class="wish-description">${escapeHtml(wish.description)}</div>
