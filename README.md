@@ -11,7 +11,6 @@
 |---|---|---|
 | [clock.html](clock.html) | Аналоговий годинник | [відкрити](https://betabutterfly.github.io/notion-templates/clock.html) |
 | [pomodoro.html](pomodoro.html) | Таймер Pomodoro для фокус-сесій | [відкрити](https://betabutterfly.github.io/notion-templates/pomodoro.html) |
-| [plan_day.html](plan_day.html) | Щоденний планувальник | [відкрити](https://betabutterfly.github.io/notion-templates/plan_day.html) |
 
 ### Нотатки та письмо
 | Шаблон | Опис | Перегляд |
