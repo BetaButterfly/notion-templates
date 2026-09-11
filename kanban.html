@@ -10,14 +10,13 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
-            min-height: 100dvh; /* Виправлено для кращої підтримки iframe та мобільних */
+            min-height: 100dvh;
             padding: 30px 20px;
             color: #44403c;
         }
 
         .container { max-width: 1200px; margin: 0 auto; }
 
-        /* Попередження про проблеми зі сховищем */
         .storage-warning {
             background: #fef3c7;
             border: 1px solid #f59e0b;
@@ -52,10 +51,13 @@
             font-size: 0.85rem;
         }
 
-        /* 🔄 КНОПКА ПЕРЕМИКАННЯ */
         .view-toggle {
             text-align: center;
             margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .toggle-btn {
@@ -302,11 +304,47 @@
             .delete-btn { width: 28px; height: 28px; font-size: 1.1rem; }
             .task-list { max-height: 50vh; }
         }
+
+        /* --- СТИЛІ ДЛЯ ДРУКУ --- */
+        @media print {
+            .add-btn, .delete-btn, .view-toggle, .storage-warning { 
+                display: none !important; 
+            }
+            body { 
+                background: white !important; 
+                color: black !important; 
+                padding: 0; 
+                min-height: auto;
+            }
+            .task-card { 
+                break-inside: avoid; 
+                border: 1px solid #ccc !important; 
+                box-shadow: none !important; 
+                background: white !important;
+            }
+            .column { 
+                background: white !important; 
+                box-shadow: none !important; 
+                border: 1px solid #eee;
+                break-inside: avoid;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0 10px;
+            }
+            .task-list {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Попередження про сховище (з'являється лише за потреби) -->
         <div id="storage-warning" class="storage-warning" style="display: none;">
             ⚠️ Увага: ваш браузер або режим вбудовування (Notion) блокує збереження даних. 
             <a href="#" onclick="window.open(window.location.href, '_blank'); return false;">Відкрийте в новій вкладці</a> для стабільної роботи.
@@ -321,6 +359,11 @@
             <button class="toggle-btn" id="toggleBtn" onclick="toggleView()">
                 <span>📐</span>
                 <span>Компактний вигляд</span>
+            </button>
+            <!-- НОВА КНОПКА ДРУКУ -->
+            <button class="toggle-btn" onclick="window.print()" title="Роздрукувати дошку">
+                <span>🖨️</span>
+                <span>Друк</span>
             </button>
         </div>
 
@@ -379,7 +422,6 @@
     </div>
 
     <script>
-        // 1. ПЕРЕВІРКА ДОСТУПНОСТІ LOCALSTORAGE (Критично для Safari/Notion iframe)
         function isStorageAvailable() {
             try {
                 const test = '__test__';
@@ -466,13 +508,12 @@
             deleteBtn.innerHTML = '×';
             deleteBtn.title = 'Видалити';
             
-            // 2. ВИПРАВЛЕНО: Миттєве оновлення даних перед анімацією
             deleteBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 e.preventDefault();
                 
                 tasks = tasks.filter(t => t.id !== task.id);
-                saveTasks(); // Оновлює лічильник миттєво
+                saveTasks();
                 
                 div.classList.add('deleting');
                 setTimeout(() => {
@@ -485,7 +526,6 @@
             textDiv.contentEditable = true;
             textDiv.innerText = task.text;
             
-            // 3. ВИПРАВЛЕНО: Захист від вставки брудного HTML (форматування з Notion/Word)
             textDiv.addEventListener('paste', function(e) {
                 e.preventDefault();
                 const text = (e.clipboardData || window.clipboardData).getData('text/plain');
@@ -595,7 +635,6 @@
                 }, 100);
             }
             
-            // 4. ВИПРАВЛЕНО: Заміна застарілого document.execCommand на сучасний Selection API
             setTimeout(() => {
                 const textDiv = taskEl.querySelector('.task-text');
                 textDiv.focus();
@@ -609,11 +648,10 @@
             saveTasks();
         }
 
-        // 5. ВИПРАВЛЕНО: Оптимізація перемальовування DOM
         function renderTasks() {
             ['todo', 'progress', 'done'].forEach(status => {
                 const list = document.getElementById(`${status}-list`);
-                list.innerHTML = ''; // Одразу очищаємо
+                list.innerHTML = '';
                 
                 const statusTasks = tasks.filter(t => t.status === status);
                 if (statusTasks.length === 0) {
@@ -655,7 +693,6 @@
         renderTasks();
     </script>
     
-    <!-- 6. ДОДАНО: Поліфіл для підтримки Drag-and-Drop на сенсорних екранах (мобільні пристрої) -->
     <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/drag-drop-touch.min.js"></script>
 </body>
 </html>
