@@ -1,6 +1,7 @@
-name: Auto-update README from index.html
+name: Auto-update README
 
 on:
+  workflow_dispatch:  # Запускається вручну
   push:
     paths:
       - 'index.html'
@@ -10,13 +11,16 @@ permissions:
   contents: write
 
 jobs:
-  update-readme:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       
-      - name: Extract metadata and update README
+      - name: Generate README
         run: |
           # Витягуємо title
           TITLE=$(grep -oP '(?<=<title>).*?(?=</title>)' index.html || echo "Notion Templates")
@@ -24,7 +28,7 @@ jobs:
           # Витягуємо description
           DESC=$(grep -oP '(?<=<meta name="description" content=").*?(?=">)' index.html || echo "HTML templates")
           
-          # Створюємо новий README
+          # Створюємо README
           cat > README.md << EOF
 # $TITLE
 
@@ -38,15 +42,14 @@ $DESC
 - ✅ **Ідеально підходить для:** особистого планування, вбудовування в Notion (через \`/embed\`), локального використання.
 - ⚠️ **Обмеження:** Дані *не синхронізуються* між різними пристроями. Очищення кешу браузера призведе до втрати даних.
 
-## 📋 Шаблони
+##  Шаблони
 
 EOF
           
-          # Додаємо список HTML файлів
+          # Додаємо список шаблонів
           for file in *.html; do
             if [ "$file" != "index.html" ]; then
-              # Прибираємо .html і робимо гарну назву
-              name=$(echo "$file" | sed 's/\.html$//' | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)} 1')
+              name=$(basename "$file" .html | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)} 1')
               echo "- **$name** — [$file]($file)" >> README.md
             fi
           done
@@ -54,13 +57,13 @@ EOF
           # Додаємо footer
           cat >> README.md << EOF
 
-##  Використання
+## 🚀 Використання
 
 1. Відкрийте будь-який шаблон
 2. В Notion: введіть \`/embed\` → вставте URL шаблону
 3. Готово!
 
-##  PWA (Progressive Web App)
+## 📱 PWA (Progressive Web App)
 
 Деякі шаблони підтримують PWA — можна додати на головний екран iPhone/Android:
 1. Відкрийте шаблон в Safari
@@ -74,20 +77,18 @@ EOF
 Ліцензія: MIT
 EOF
 
-          echo "✅ README.md оновлено!"
-          cat README.md
-          
-      - name: Commit and push README
+          echo "✅ README.md згенеровано"
+      
+      - name: Commit and push
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
           git add README.md
           
-          # Перевіряємо чи є зміни
-          if git diff --quiet && git diff --staged --quiet; then
-            echo "ℹ️ README не змінився, пропускаємо коміт"
+          if git diff --staged --quiet; then
+            echo "ℹ️ Змін немає, README не оновлено"
           else
-            git commit -m "docs: auto-update README from index.html"
+            git commit -m "docs: auto-update README from index.html [skip ci]"
             git push
             echo "✅ README.md запушено!"
           fi
