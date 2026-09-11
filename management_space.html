@@ -3,9 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Менеджмент</title>
+    <meta name="description" content="Інтерактивний простір для менеджменту завдань, нотаток та ідей.">
+    <title>Менеджмент | Notion Style</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #FDF6E3;
+            --card-bg: #FFFCF5;
+            --border-color: #D5C4A1;
+            --text-color: #2C3E2F;
+            --muted-color: #8f9b7e;
+            --btn-hover: #D5C4A1;
+            --btn-active: #EBE2D0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,10 +24,11 @@
         }
 
         body {
-            background: #FDF6E3;
+            background: var(--bg-color);
             font-family: 'IBM Plex Mono', monospace;
-            color: #2C3E2F;
+            color: var(--text-color);
             padding: 2rem 1.5rem;
+            min-height: 100dvh;
         }
 
         .container {
@@ -24,34 +36,75 @@
             margin: 0 auto;
         }
 
-        /* тритони */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            border-bottom: 3px solid var(--border-color);
+            display: inline-block;
+            padding-bottom: 0.2rem;
+        }
+
+        .storage-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .storage-warning a {
+            color: #92400e;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
         .card {
-            background: #FFFCF5;
-            border: 2px solid #D5C4A1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 4px 4px 0 rgba(44, 62, 47, 0.05);
+            display: flex;
+            flex-direction: column;
         }
 
-        h2 {
+        .card-title {
             font-size: 1.3rem;
             font-weight: 600;
-            border-bottom: 2px solid #D5C4A1;
+            border-bottom: 2px solid var(--border-color);
             display: inline-block;
             padding-bottom: 0.2rem;
             margin-bottom: 1.2rem;
         }
 
-        /* сітка */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.8rem;
-            margin: 2rem 0;
+            margin-bottom: 2rem;
         }
 
-        /* завдання */
-        .task-item {
+        .task-item, .note-item {
             display: flex;
             align-items: center;
             gap: 0.8rem;
@@ -61,6 +114,7 @@
 
         .task-text {
             flex: 1;
+            word-break: break-word;
         }
 
         .completed {
@@ -71,57 +125,75 @@
         input[type="checkbox"] {
             width: 1.1rem;
             height: 1.1rem;
-            accent-color: #2C3E2F;
+            accent-color: var(--text-color);
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        /* нотатки */
-        .note-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.6rem 0;
-            border-bottom: 1px solid #EBE2D0;
-        }
-
-        /* форма */
-        .row {
+        .input-row {
             display: flex;
             gap: 0.6rem;
-            margin-top: 1rem;
+            margin-top: auto;
+            padding-top: 1rem;
             flex-wrap: wrap;
         }
 
-        input, button {
+        .form-input {
+            flex: 1;
+            min-width: 150px;
             font-family: 'IBM Plex Mono', monospace;
-            background: #FFFCF5;
-            border: 2px solid #D5C4A1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
             padding: 0.5rem 0.8rem;
             font-size: 0.85rem;
             border-radius: 8px;
-            color: #2C3E2F;
+            color: var(--text-color);
         }
 
-        input:focus {
-            border-color: #2C3E2F;
+        .form-input:focus {
+            border-color: var(--text-color);
             outline: none;
         }
 
-        button {
-            background: #EBE2D0;
+        .btn {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--btn-active);
+            border: 2px solid var(--border-color);
+            padding: 0.5rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            color: var(--text-color);
             cursor: pointer;
             font-weight: 500;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
         }
 
-        button:hover {
-            background: #D5C4A1;
+        .btn:hover {
+            background: var(--btn-hover);
         }
 
-        /* чат — просто стрічка */
+        .btn--small {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
         .chat-box {
-            background: #FFFCF5;
-            border: 2px solid #D5C4A1;
-            border-radius: 12px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             padding: 1rem;
             height: 260px;
             overflow-y: auto;
@@ -134,333 +206,381 @@
             font-size: 0.85rem;
         }
 
-        .msg strong {
+        .msg:last-child {
+            border-bottom: none;
+        }
+
+        .msg-author {
             font-weight: 700;
         }
 
-        .time {
+        .msg-time {
             font-size: 0.65rem;
-            color: #8f9b7e;
+            color: var(--muted-color);
             margin-left: 0.5rem;
         }
 
-        .small-btn {
-            background: transparent;
-            border: 1px solid #D5C4A1;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.6rem;
-        }
-
-        .flex-right {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-        }
-
         .export-bar {
-            background: #FFFCF5;
-            border: 2px solid #D5C4A1;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .stats {
-            margin-top: 1.5rem;
             padding-top: 1rem;
-            border-top: 2px solid #D5C4A1;
-            font-size: 0.7rem;
+            border-top: 2px solid var(--border-color);
+            font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
+            color: var(--muted-color);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--text-color);
+            color: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .chat-box { height: 200px; }
+            .export-bar { flex-direction: column; align-items: stretch; text-align: center; }
+        }
+
+        /* --- СТИЛІ ДЛЯ ДРУКУ --- */
+        @media print {
+            body { background: white !important; padding: 0; color: black !important; }
+            .container { max-width: 100%; }
+            .storage-warning, .input-row, .card-actions, .export-bar, .toast { display: none !important; }
+            .card { 
+                break-inside: avoid; 
+                border: 1px solid #ccc !important; 
+                background: white !important; 
+                box-shadow: none !important;
+                margin-bottom: 1rem;
+            }
+            .chat-box { 
+                height: auto !important; 
+                max-height: none !important; 
+                border: 1px solid #ccc !important;
+            }
+            .page-title { border-bottom-color: #000 !important; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 style="font-size: 1.8rem; border-bottom: 3px solid #D5C4A1; display: inline-block;">Менеджер</h1>
-
-    <div class="grid">
-        <!-- ЗАВДАННЯ -->
-        <div class="card">
-            <h2>Завдання</h2>
-            <div id="tasksContainer"></div>
-            <div class="row">
-                <input type="text" id="taskInput" placeholder="нове завдання">
-                <button id="addTaskBtn">+</button>
-            </div>
-            <div class="flex-right">
-                <button id="clearCompletedBtn" class="small-btn">✕ виконані</button>
-            </div>
+    <header class="page-header">
+        <h1 class="page-title">Менеджер</h1>
+        <div id="storage-warning" class="storage-warning" style="display: none;">
+            ⚠️ Увага: ваш браузер або режим вбудовування (Notion) блокує збереження даних. 
+            <a href="#" onclick="window.open(window.location.href, '_blank'); return false;">Відкрийте в новій вкладці</a> для стабільної роботи.
         </div>
+    </header>
+
+    <main class="grid">
+        <!-- ЗАВДАННЯ -->
+        <section class="card">
+            <h2 class="card-title">Завдання</h2>
+            <div id="tasksContainer" role="list"></div>
+            <div class="input-row">
+                <label for="taskInput" class="visually-hidden">Нове завдання</label>
+                <input type="text" id="taskInput" class="form-input" placeholder="нове завдання" autocomplete="off">
+                <button id="addTaskBtn" class="btn" aria-label="Додати завдання">+</button>
+            </div>
+            <div class="card-actions">
+                <button id="clearCompletedBtn" class="btn btn--small" aria-label="Очистити виконані завдання">✕ виконані</button>
+            </div>
+        </section>
 
         <!-- НОТАТКИ -->
-        <div class="card">
-            <h2>Нотатки</h2>
-            <div id="notesContainer"></div>
-            <div class="row">
-                <input type="text" id="noteInput" placeholder="коротка нотатка">
-                <button id="addNoteBtn">+</button>
+        <section class="card">
+            <h2 class="card-title">Нотатки</h2>
+            <div id="notesContainer" role="list"></div>
+            <div class="input-row">
+                <label for="noteInput" class="visually-hidden">Коротка нотатка</label>
+                <input type="text" id="noteInput" class="form-input" placeholder="коротка нотатка" autocomplete="off">
+                <button id="addNoteBtn" class="btn" aria-label="Додати нотатку">+</button>
             </div>
-            <div class="flex-right">
-                <button id="clearNotesBtn" class="small-btn">очистити</button>
+            <div class="card-actions">
+                <button id="clearNotesBtn" class="btn btn--small" aria-label="Очистити всі нотатки">очистити</button>
             </div>
-        </div>
+        </section>
 
-        <!-- КОМУНІКАЦІЯ (без контактів — просто спільний чат) -->
-        <div class="card">
-            <h2>Ідеї</h2>
-            <div class="chat-box" id="chatMessages"></div>
-            <div class="row">
-                <input type="text" id="chatInput" placeholder="текст...">
-                <button id="sendBtn">→</button>
+        <!-- ІДЕЇ / ЧАТ -->
+        <section class="card">
+            <h2 class="card-title">Ідеї</h2>
+            <div class="chat-box" id="chatMessages" role="log" aria-live="polite"></div>
+            <div class="input-row">
+                <label for="chatInput" class="visually-hidden">Текст повідомлення</label>
+                <input type="text" id="chatInput" class="form-input" placeholder="текст..." autocomplete="off">
+                <button id="sendBtn" class="btn" aria-label="Надіслати повідомлення">→</button>
             </div>
-            <div class="flex-right">
-                <button id="clearChatBtn" class="small-btn">очистити</button>
+            <div class="card-actions">
+                <button id="clearChatBtn" class="btn btn--small" aria-label="Очистити чат">очистити</button>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- Експорт для Notion -->
+    <!-- Друк -->
     <div class="export-bar">
         <span>🔗 Інтеграція з Notion (embed)</span>
-        <div style="display: flex; gap: 0.8rem;">
-            <button id="exportJsonBtn">📤 експорт JSON</button>
-            <button id="copyJsonBtn">📋 копіювати</button>
-        </div>
+        <button id="printBtn" class="btn" onclick="window.print()">🖨️ друк / PDF</button>
     </div>
 
-    <div class="stats">
-        <span>завдань: <span id="taskCount">0</span></span>
-        <span>нотаток: <span id="noteCount">0</span></span>
-    </div>
+    <footer class="stats">
+        <span>завдань: <strong id="taskCount">0</strong></span>
+        <span>нотаток: <strong id="noteCount">0</strong></span>
+    </footer>
 </div>
 
+<div class="toast" id="toastNotification"></div>
+
 <script>
-    // ========== ДАНІ ==========
+    function isStorageAvailable() {
+        try {
+            const test = '__test__';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    const storageAvailable = isStorageAvailable();
+    if (!storageAvailable) {
+        document.getElementById('storage-warning').style.display = 'block';
+    }
+
     let tasks = [];
     let notes = [];
     let messages = [];
 
-    // DOM
-    const tasksDiv = document.getElementById('tasksContainer');
-    const notesDiv = document.getElementById('notesContainer');
-    const chatDiv = document.getElementById('chatMessages');
-    const taskInput = document.getElementById('taskInput');
-    const noteInput = document.getElementById('noteInput');
-    const chatInput = document.getElementById('chatInput');
-
-    // ========== ЗБЕРЕЖЕННЯ ==========
-    function saveAll() {
-        localStorage.setItem('retro_tasks', JSON.stringify(tasks));
-        localStorage.setItem('retro_notes', JSON.stringify(notes));
-        localStorage.setItem('retro_chat', JSON.stringify(messages));
-    }
-
     function loadData() {
-        const savedTasks = localStorage.getItem('retro_tasks');
-        const savedNotes = localStorage.getItem('retro_notes');
-        const savedChat = localStorage.getItem('retro_chat');
-
-        tasks = savedTasks ? JSON.parse(savedTasks) : [
-            { text: "Підготувати матеріали", done: false },
-            { text: "Перевірити завдання", done: false }
-        ];
-        notes = savedNotes ? JSON.parse(savedNotes) : [
-            "Зустріч о 14:00",
-            "Оновити Notion базу"
-        ];
-        messages = savedChat ? JSON.parse(savedChat) : [
-            { author: "Учасник", text: "Готовий до роботи", time: new Date().toLocaleTimeString() }
-        ];
+        if (storageAvailable) {
+            tasks = JSON.parse(localStorage.getItem('mgr_tasks')) || [];
+            notes = JSON.parse(localStorage.getItem('mgr_notes')) || [];
+            messages = JSON.parse(localStorage.getItem('mgr_chat')) || [];
+        }
     }
 
-    // ========== ВІДОБРАЖЕННЯ ==========
+    function saveAll() {
+        if (!storageAvailable) return;
+        localStorage.setItem('mgr_tasks', JSON.stringify(tasks));
+        localStorage.setItem('mgr_notes', JSON.stringify(notes));
+        localStorage.setItem('mgr_chat', JSON.stringify(messages));
+    }
+
     function renderTasks() {
-        tasksDiv.innerHTML = '';
+        const container = document.getElementById('tasksContainer');
+        container.innerHTML = '';
+        
+        if (tasks.length === 0) {
+            container.innerHTML = '<div style="color: var(--muted-color); padding: 1rem; text-align: center; font-size: 0.85rem;">Немає завдань</div>';
+            updateStats();
+            return;
+        }
+        
         tasks.forEach((t, idx) => {
             const div = document.createElement('div');
             div.className = 'task-item';
+            
             const cb = document.createElement('input');
             cb.type = 'checkbox';
             cb.checked = t.done;
+            cb.setAttribute('aria-label', `Позначити завдання "${t.text}" як виконане`);
             cb.addEventListener('change', () => {
                 tasks[idx].done = cb.checked;
                 saveAll();
                 renderTasks();
-                updateStats();
             });
+            
             const span = document.createElement('span');
-            span.className = 'task-text';
+            span.className = 'task-text' + (t.done ? ' completed' : '');
             span.textContent = t.text;
-            if (t.done) span.classList.add('completed');
+            
             div.appendChild(cb);
             div.appendChild(span);
-            tasksDiv.appendChild(div);
+            container.appendChild(div);
         });
         updateStats();
     }
 
     function renderNotes() {
-        notesDiv.innerHTML = '';
+        const container = document.getElementById('notesContainer');
+        container.innerHTML = '';
+        
+        if (notes.length === 0) {
+            container.innerHTML = '<div style="color: var(--muted-color); padding: 1rem; text-align: center; font-size: 0.85rem;">Немає нотаток</div>';
+            updateStats();
+            return;
+        }
+        
         notes.forEach((note, idx) => {
             const div = document.createElement('div');
             div.className = 'note-item';
+            
             const span = document.createElement('span');
+            span.className = 'task-text';
             span.textContent = note;
+            
             const delBtn = document.createElement('button');
             delBtn.textContent = '✕';
-            delBtn.className = 'small-btn';
-            delBtn.style.padding = '0.1rem 0.5rem';
+            delBtn.className = 'btn btn--small';
+            delBtn.setAttribute('aria-label', 'Видалити нотатку');
             delBtn.addEventListener('click', () => {
                 notes.splice(idx, 1);
                 saveAll();
                 renderNotes();
-                updateStats();
             });
+            
             div.appendChild(span);
             div.appendChild(delBtn);
-            notesDiv.appendChild(div);
+            container.appendChild(div);
         });
         updateStats();
     }
 
     function renderChat() {
-        chatDiv.innerHTML = '';
+        const container = document.getElementById('chatMessages');
+        container.innerHTML = '';
+        
+        if (messages.length === 0) {
+            container.innerHTML = '<div style="color: var(--muted-color); padding: 1rem; text-align: center; font-size: 0.85rem;">Немає повідомлень</div>';
+            return;
+        }
+        
         messages.forEach(msg => {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'msg';
-            msgDiv.innerHTML = `<strong>${escapeHtml(msg.author)}</strong> ${escapeHtml(msg.text)} <span class="time">${msg.time || ''}</span>`;
-            chatDiv.appendChild(msgDiv);
+            msgDiv.innerHTML = `<span class="msg-author">${escapeHtml(msg.author)}</span> ${escapeHtml(msg.text)} <span class="msg-time">${msg.time || ''}</span>`;
+            container.appendChild(msgDiv);
         });
-        chatDiv.scrollTop = chatDiv.scrollHeight;
+        container.scrollTop = container.scrollHeight;
     }
 
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
     function updateStats() {
-        document.getElementById('taskCount').innerText = tasks.length;
-        document.getElementById('noteCount').innerText = notes.length;
+        document.getElementById('taskCount').textContent = tasks.length;
+        document.getElementById('noteCount').textContent = notes.length;
     }
 
-    // ========== ДІЇ ==========
+    function showToast(message) {
+        const toast = document.getElementById('toastNotification');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
     function addTask() {
-        const text = taskInput.value.trim();
+        const input = document.getElementById('taskInput');
+        const text = input.value.trim();
         if (!text) return;
         tasks.push({ text, done: false });
         saveAll();
         renderTasks();
-        taskInput.value = '';
+        input.value = '';
+        input.focus();
     }
 
     function clearCompleted() {
         tasks = tasks.filter(t => !t.done);
         saveAll();
         renderTasks();
+        showToast('Виконані завдання видалено');
     }
 
     function addNote() {
-        const text = noteInput.value.trim();
+        const input = document.getElementById('noteInput');
+        const text = input.value.trim();
         if (!text) return;
         notes.push(text);
         saveAll();
         renderNotes();
-        noteInput.value = '';
+        input.value = '';
+        input.focus();
     }
 
     function clearNotes() {
-        notes = [];
-        saveAll();
-        renderNotes();
-    }
-
-    function sendMessage() {
-        const text = chatInput.value.trim();
-        if (!text) return;
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        messages.push({ author: 'Ви', text: text, time: timeStr });
-        saveAll();
-        renderChat();
-        chatInput.value = '';
-    }
-
-    function clearChat() {
-        messages = [];
-        saveAll();
-        renderChat();
-    }
-
-    // ========== ЕКСПОРТ ДЛЯ NOTION ==========
-    function getExportData() {
-        return {
-            tasks: tasks,
-            notes: notes,
-            chat: messages
-        };
-    }
-
-    function exportJSON() {
-        const data = getExportData();
-        const jsonStr = JSON.stringify(data, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `manager_${new Date().toISOString().slice(0,19)}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    async function copyJSON() {
-        const data = getExportData();
-        const jsonStr = JSON.stringify(data, null, 2);
-        try {
-            await navigator.clipboard.writeText(jsonStr);
-            alert('JSON скопійовано — можна вставити в Notion як код або базу');
-        } catch(e) {
-            alert('Не вдалося скопіювати');
+        if (notes.length === 0) return;
+        if (confirm('Видалити всі нотатки?')) {
+            notes = [];
+            saveAll();
+            renderNotes();
+            showToast('Нотатки очищено');
         }
     }
 
-    // ========== ІНІЦІАЛІЗАЦІЯ ==========
-    function init() {
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        const timeStr = new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+        messages.push({ author: 'Ви', text: text, time: timeStr });
+        saveAll();
+        renderChat();
+        input.value = '';
+        input.focus();
+    }
+
+    function clearChat() {
+        if (messages.length === 0) return;
+        if (confirm('Очистити всю історію ідей?')) {
+            messages = [];
+            saveAll();
+            renderChat();
+            showToast('Чат очищено');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
         loadData();
         renderTasks();
         renderNotes();
         renderChat();
-        updateStats();
 
-        document.getElementById('addTaskBtn').onclick = addTask;
-        document.getElementById('clearCompletedBtn').onclick = clearCompleted;
-        document.getElementById('addNoteBtn').onclick = addNote;
-        document.getElementById('clearNotesBtn').onclick = clearNotes;
-        document.getElementById('sendBtn').onclick = sendMessage;
-        document.getElementById('clearChatBtn').onclick = clearChat;
-        document.getElementById('exportJsonBtn').onclick = exportJSON;
-        document.getElementById('copyJsonBtn').onclick = copyJSON;
+        document.getElementById('addTaskBtn').addEventListener('click', addTask);
+        document.getElementById('clearCompletedBtn').addEventListener('click', clearCompleted);
+        document.getElementById('addNoteBtn').addEventListener('click', addNote);
+        document.getElementById('clearNotesBtn').addEventListener('click', clearNotes);
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('clearChatBtn').addEventListener('click', clearChat);
+        document.getElementById('printBtn').addEventListener('click', () => window.print());
 
-        taskInput.addEventListener('keypress', (e) => e.key === 'Enter' && addTask());
-        noteInput.addEventListener('keypress', (e) => e.key === 'Enter' && addNote());
-        chatInput.addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
-    }
-
-    init();
+        document.getElementById('taskInput').addEventListener('keypress', (e) => e.key === 'Enter' && addTask());
+        document.getElementById('noteInput').addEventListener('keypress', (e) => e.key === 'Enter' && addNote());
+        document.getElementById('chatInput').addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
+    });
 </script>
 </body>
 </html>
