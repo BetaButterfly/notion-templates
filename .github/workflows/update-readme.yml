@@ -1,0 +1,93 @@
+name: Auto-update README from index.html
+
+on:
+  push:
+    paths:
+      - 'index.html'
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Extract metadata and update README
+        run: |
+          # Витягуємо title
+          TITLE=$(grep -oP '(?<=<title>).*?(?=</title>)' index.html || echo "Notion Templates")
+          
+          # Витягуємо description
+          DESC=$(grep -oP '(?<=<meta name="description" content=").*?(?=">)' index.html || echo "HTML templates")
+          
+          # Створюємо новий README
+          cat > README.md << EOF
+# $TITLE
+
+$DESC
+
+## ⚙️ Як це працює
+
+Усі шаблони в цьому репозиторії є **повністю автономними (client-side only)**. Вони не використовують зовнішні сервери чи бази даних.
+
+- 💾 **Зберігання:** Усі введені дані зберігаються виключно в \`localStorage\` вашого поточного браузера.
+- ✅ **Ідеально підходить для:** особистого планування, вбудовування в Notion (через \`/embed\`), локального використання.
+- ⚠️ **Обмеження:** Дані *не синхронізуються* між різними пристроями. Очищення кешу браузера призведе до втрати даних.
+
+## 📋 Шаблони
+
+EOF
+          
+          # Додаємо список HTML файлів
+          for file in *.html; do
+            if [ "$file" != "index.html" ]; then
+              # Прибираємо .html і робимо гарну назву
+              name=$(echo "$file" | sed 's/\.html$//' | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)} 1')
+              echo "- **$name** — [$file]($file)" >> README.md
+            fi
+          done
+          
+          # Додаємо footer
+          cat >> README.md << EOF
+
+##  Використання
+
+1. Відкрийте будь-який шаблон
+2. В Notion: введіть \`/embed\` → вставте URL шаблону
+3. Готово!
+
+##  PWA (Progressive Web App)
+
+Деякі шаблони підтримують PWA — можна додати на головний екран iPhone/Android:
+1. Відкрийте шаблон в Safari
+2. Натисніть **Share** (квадрат зі стрілкою)
+3. Оберіть **"Add to Home Screen"**
+
+---
+
+*Автоматично оновлено з index.html*
+
+Ліцензія: MIT
+EOF
+
+          echo "✅ README.md оновлено!"
+          cat README.md
+          
+      - name: Commit and push README
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          
+          # Перевіряємо чи є зміни
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "ℹ️ README не змінився, пропускаємо коміт"
+          else
+            git commit -m "docs: auto-update README from index.html"
+            git push
+            echo "✅ README.md запушено!"
+          fi
