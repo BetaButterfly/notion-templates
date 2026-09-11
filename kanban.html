@@ -10,12 +10,30 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
-            min-height: 100vh;
+            min-height: 100dvh; /* Виправлено для кращої підтримки iframe та мобільних */
             padding: 30px 20px;
             color: #44403c;
         }
 
         .container { max-width: 1200px; margin: 0 auto; }
+
+        /* Попередження про проблеми зі сховищем */
+        .storage-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .storage-warning a {
+            color: #92400e;
+            text-decoration: underline;
+            font-weight: 600;
+        }
 
         .header {
             text-align: center;
@@ -143,33 +161,21 @@
             flex-direction: column;
             gap: 10px;
             min-height: 80px;
-            max-height: 55vh; /* ЗАМОВЧУВАННЯ: зі скролом */
+            max-height: 55vh;
             overflow-y: auto;
             padding-right: 6px;
             transition: max-height 0.3s ease;
         }
 
-        /* Коли розширений режим */
         .task-list.expanded {
             max-height: none;
             overflow-y: visible;
         }
 
-        /* Скролбар */
-        .task-list::-webkit-scrollbar {
-            width: 5px;
-        }
-        .task-list::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.02);
-            border-radius: 10px;
-        }
-        .task-list::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.15);
-            border-radius: 10px;
-        }
-        .task-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(0,0,0,0.25);
-        }
+        .task-list::-webkit-scrollbar { width: 5px; }
+        .task-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
+        .task-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+        .task-list::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 
         .task-card {
             background: white;
@@ -213,15 +219,8 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .delete-btn:hover {
-            background: #ef4444;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .delete-btn:active {
-            transform: scale(0.95);
-        }
+        .delete-btn:hover { background: #ef4444; color: white; transform: scale(1.1); }
+        .delete-btn:active { transform: scale(0.95); }
 
         .task-text {
             font-size: 0.9rem;
@@ -235,11 +234,10 @@
             padding: 4px;
             margin: -4px;
             border-radius: 4px;
+            word-wrap: break-word;
         }
 
-        .task-text:focus {
-            background: rgba(0, 0, 0, 0.03);
-        }
+        .task-text:focus { background: rgba(0, 0, 0, 0.03); }
 
         .task-footer {
             display: flex;
@@ -258,10 +256,7 @@
             transition: all 0.2s ease;
         }
 
-        .task-date:hover {
-            background: rgba(0, 0, 0, 0.05);
-            color: #78716c;
-        }
+        .task-date:hover { background: rgba(0, 0, 0, 0.05); color: #78716c; }
 
         .date-input {
             font-size: 0.75rem;
@@ -304,25 +299,24 @@
         @media (max-width: 768px) {
             .board { grid-template-columns: 1fr; }
             body { padding: 20px 10px; }
-            .delete-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 1.1rem;
-            }
-            .task-list {
-                max-height: 50vh; /* Менше на телефоні */
-            }
+            .delete-btn { width: 28px; height: 28px; font-size: 1.1rem; }
+            .task-list { max-height: 50vh; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Попередження про сховище (з'являється лише за потреби) -->
+        <div id="storage-warning" class="storage-warning" style="display: none;">
+            ⚠️ Увага: ваш браузер або режим вбудовування (Notion) блокує збереження даних. 
+            <a href="#" onclick="window.open(window.location.href, '_blank'); return false;">Відкрийте в новій вкладці</a> для стабільної роботи.
+        </div>
+
         <div class="header">
             <h1>Мої завдання</h1>
             <p>🗑️ Натисніть × щоб видалити • Перетягуйте між колонками</p>
         </div>
 
-        <!-- 🔄 КНОПКА ПЕРЕМИКАННЯ -->
         <div class="view-toggle">
             <button class="toggle-btn" id="toggleBtn" onclick="toggleView()">
                 <span>📐</span>
@@ -385,15 +379,41 @@
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('kanban-tasks')) || [];
+        // 1. ПЕРЕВІРКА ДОСТУПНОСТІ LOCALSTORAGE (Критично для Safari/Notion iframe)
+        function isStorageAvailable() {
+            try {
+                const test = '__test__';
+                localStorage.setItem(test, test);
+                localStorage.removeItem(test);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        const storageAvailable = isStorageAvailable();
+        if (!storageAvailable) {
+            document.getElementById('storage-warning').style.display = 'block';
+        }
+
+        let tasks = [];
+        if (storageAvailable) {
+            try {
+                tasks = JSON.parse(localStorage.getItem('kanban-tasks')) || [];
+            } catch (e) {
+                tasks = [];
+            }
+        }
+        
         let expanded = false;
 
         function saveTasks() {
-            localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+            if (storageAvailable) {
+                localStorage.setItem('kanban-tasks', JSON.stringify(tasks));
+            }
             updateCounts();
         }
 
-        // 🔄 ПЕРЕМИКАННЯ ВИГЛЯДУ
         function toggleView() {
             expanded = !expanded;
             const lists = document.querySelectorAll('.task-list');
@@ -446,16 +466,17 @@
             deleteBtn.innerHTML = '×';
             deleteBtn.title = 'Видалити';
             
+            // 2. ВИПРАВЛЕНО: Миттєве оновлення даних перед анімацією
             deleteBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 e.preventDefault();
                 
-                div.classList.add('deleting');
+                tasks = tasks.filter(t => t.id !== task.id);
+                saveTasks(); // Оновлює лічильник миттєво
                 
+                div.classList.add('deleting');
                 setTimeout(() => {
-                    tasks = tasks.filter(t => t.id !== task.id);
                     div.remove();
-                    saveTasks();
                 }, 300);
             });
 
@@ -463,6 +484,17 @@
             textDiv.className = 'task-text';
             textDiv.contentEditable = true;
             textDiv.innerText = task.text;
+            
+            // 3. ВИПРАВЛЕНО: Захист від вставки брудного HTML (форматування з Notion/Word)
+            textDiv.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+                const selection = window.getSelection();
+                if (!selection.rangeCount) return;
+                selection.deleteFromDocument();
+                selection.getRangeAt(0).insertNode(document.createTextNode(text));
+                selection.collapseToEnd();
+            });
             
             textDiv.addEventListener('blur', function() {
                 const newText = this.innerText.trim();
@@ -557,30 +589,36 @@
             const taskEl = createTaskElement(task);
             list.appendChild(taskEl);
             
-            // Якщо компактний режим — скролимо до нової задачі
             if (!expanded) {
                 setTimeout(() => {
                     taskEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }, 100);
             }
             
+            // 4. ВИПРАВЛЕНО: Заміна застарілого document.execCommand на сучасний Selection API
             setTimeout(() => {
                 const textDiv = taskEl.querySelector('.task-text');
                 textDiv.focus();
-                document.execCommand('selectAll', false, null);
+                const range = document.createRange();
+                range.selectNodeContents(textDiv);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
             }, 100);
             
             saveTasks();
         }
 
+        // 5. ВИПРАВЛЕНО: Оптимізація перемальовування DOM
         function renderTasks() {
             ['todo', 'progress', 'done'].forEach(status => {
                 const list = document.getElementById(`${status}-list`);
-                list.innerHTML = '<div class="empty-state">Немає завдань</div>';
+                list.innerHTML = ''; // Одразу очищаємо
                 
                 const statusTasks = tasks.filter(t => t.status === status);
-                if (statusTasks.length > 0) {
-                    list.innerHTML = '';
+                if (statusTasks.length === 0) {
+                    list.innerHTML = '<div class="empty-state">Немає завдань</div>';
+                } else {
                     statusTasks.forEach(task => {
                         list.appendChild(createTaskElement(task));
                     });
@@ -616,5 +654,8 @@
 
         renderTasks();
     </script>
+    
+    <!-- 6. ДОДАНО: Поліфіл для підтримки Drag-and-Drop на сенсорних екранах (мобільні пристрої) -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/drag-drop-touch.min.js"></script>
 </body>
 </html>
