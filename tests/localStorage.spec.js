@@ -14,6 +14,7 @@ const storageMap = {
   'okr.html': ['okrData'],
   'pdca.html': ['pdca-data'],
   'piramida_franklin.html': ['franklin_pyramid'],
+  'pomodoro.html': ['pomodoro-settings'],
   'swot_analysis.html': ['swotAnalysisData'],
   'wish_tracker.html': ['wishlist_full_fixed'],
   'writer.html': ['writer-sections', 'writer-current'],

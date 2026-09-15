@@ -66,6 +66,45 @@
 			margin-bottom: 40px;
 		}
 
+		.settings {
+			display: flex;
+			gap: 24px;
+			justify-content: center;
+			margin-bottom: 30px;
+			font-size: 13px;
+			color: #6b7280;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+
+		.settings label {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.settings input {
+			width: 60px;
+			padding: 6px 10px;
+			border: 1px solid #d1d5db;
+			border-radius: 8px;
+			font-family: inherit;
+			font-size: 14px;
+			text-align: center;
+			color: #5c6b73;
+			background: transparent;
+			transition: border-color 0.3s ease;
+		}
+
+		.settings input:focus {
+			outline: none;
+			border-color: #9db4c0;
+		}
+
+		body.break .settings input:focus {
+			border-color: #d4a373;
+		}
+
 		.mode-btn {
 			padding: 10px 20px;
 			border: 1px solid #d1d5db;
@@ -218,8 +257,19 @@
 		</div>
 
 		<div class="mode-selector">
-			<button class="mode-btn active" onclick="setMode('focus')">Фокус 25</button>
-			<button class="mode-btn" onclick="setMode('break')">Перерва 5</button>
+			<button class="mode-btn active" onclick="setMode('focus')">Фокус</button>
+			<button class="mode-btn" onclick="setMode('break')">Перерва</button>
+		</div>
+
+		<div class="settings">
+			<label>
+				Фокус
+				<input type="number" id="focusInput" min="1" max="120" value="25"> хв
+			</label>
+			<label>
+				Перерва
+				<input type="number" id="breakInput" min="1" max="60" value="5"> хв
+			</label>
 		</div>
 
 		<div class="controls">
@@ -229,8 +279,33 @@
 	</div>
 
 	<script>
-		let timeLeft = 25 * 60;
-		let totalTime = 25 * 60;
+		const STORAGE_KEY = 'pomodoro-settings';
+
+		function loadSettings() {
+			try {
+				const raw = localStorage.getItem(STORAGE_KEY);
+				if (!raw) return { focus: 25, break: 5 };
+				const data = JSON.parse(raw);
+				return {
+					focus: Number(data.focus) || 25,
+					break: Number(data.break) || 5,
+				};
+			} catch (e) {
+				return { focus: 25, break: 5 };
+			}
+		}
+
+		function saveSettings(focus, breakMin) {
+			try {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify({ focus, break: breakMin }));
+			} catch (e) {
+				// localStorage недоступний — ігноруємо
+			}
+		}
+
+		const settings = loadSettings();
+		let timeLeft = settings.focus * 60;
+		let totalTime = settings.focus * 60;
 		let isRunning = false;
 		let isBreak = false;
 		let interval;
@@ -261,15 +336,15 @@
 			if (mode === 'focus') {
 				isBreak = false;
 				document.body.classList.remove('break');
-				timeLeft = 25 * 60;
-				totalTime = 25 * 60;
+				timeLeft = settings.focus * 60;
+				totalTime = settings.focus * 60;
 				modeDisplay.textContent = 'Фокус';
 				document.querySelectorAll('.mode-btn')[0].classList.add('active');
 			} else {
 				isBreak = true;
 				document.body.classList.add('break');
-				timeLeft = 5 * 60;
-				totalTime = 5 * 60;
+				timeLeft = settings.break * 60;
+				totalTime = settings.break * 60;
 				modeDisplay.textContent = 'Перерва';
 				document.querySelectorAll('.mode-btn')[1].classList.add('active');
 			}
@@ -307,8 +382,8 @@
 
 		function resetTimer() {
 			pauseTimer();
-			timeLeft = isBreak ? 5 * 60 : 25 * 60;
-			totalTime = isBreak ? 5 * 60 : 25 * 60;
+			timeLeft = isBreak ? settings.break * 60 : settings.focus * 60;
+			totalTime = isBreak ? settings.break * 60 : settings.focus * 60;
 			toggleBtn.textContent = 'Старт';
 			updateDisplay();
 		}
@@ -325,6 +400,42 @@
 				toggleTimer();
 			}
 		});
+
+		// === Налаштування (focus / break) ===
+		const focusInput = document.getElementById('focusInput');
+		const breakInput = document.getElementById('breakInput');
+
+		focusInput.value = settings.focus;
+		breakInput.value = settings.break;
+
+		function onSettingsChange() {
+			const focus = Math.max(1, Math.min(120, Number(focusInput.value) || 25));
+			const breakMin = Math.max(1, Math.min(60, Number(breakInput.value) || 5));
+
+			settings.focus = focus;
+			settings.break = breakMin;
+
+			focusInput.value = focus;
+			breakInput.value = breakMin;
+
+			saveSettings(focus, breakMin);
+
+			if (!isRunning) {
+				timeLeft = isBreak ? breakMin * 60 : focus * 60;
+				totalTime = timeLeft;
+				updateDisplay();
+			}
+
+			document.querySelectorAll('.mode-btn')[0].textContent = `Фокус ${focus}`;
+			document.querySelectorAll('.mode-btn')[1].textContent = `Перерва ${breakMin}`;
+		}
+
+		focusInput.addEventListener('change', onSettingsChange);
+		breakInput.addEventListener('change', onSettingsChange);
+
+		// Ініціалізація тексту кнопок
+		document.querySelectorAll('.mode-btn')[0].textContent = `Фокус ${settings.focus}`;
+		document.querySelectorAll('.mode-btn')[1].textContent = `Перерва ${settings.break}`;
 
 		updateDisplay();
 	</script>
