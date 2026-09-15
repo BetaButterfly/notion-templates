@@ -1,0 +1,24 @@
+{
+  "name": "notion-templates",
+  "version": "1.0.0",
+  "description": "Колекція HTML-шаблонів українською для вбудовування в Notion: тайм-менеджмент, нотатки, цілі, методології.",
+  "main": "service-worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BetaButterfly/notion-templates.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BetaButterfly/notion-templates/issues"
+  },
+  "homepage": "https://github.com/BetaButterfly/notion-templates#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}
