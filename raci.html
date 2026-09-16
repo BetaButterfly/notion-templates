@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RACI матриця | Notion Style</title>
+    <title>RACI матриця</title>
     <style>
         * {
             margin: 0;
@@ -40,46 +40,6 @@
         .header p {
             color: #a8a29e;
             font-size: 0.85rem;
-            margin-bottom: 12px;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #78716c;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn:hover {
-            background: white;
-            color: #57534e;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .btn.primary {
-            background: #57534e;
-            color: white;
-            border-color: #57534e;
-        }
-
-        .btn.primary:hover {
-            background: #6d6763;
         }
 
         .legend {
@@ -124,13 +84,168 @@
             background: #10b981;
         }
 
-        .table-wrapper {
+        /* ====== ДВІ ПАНЕЛІ ====== */
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .panel h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #57534e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .panel-input-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #d4d4ce;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            background: rgba(255, 255, 255, 0.7);
+            transition: border-color 0.2s ease;
+        }
+
+        .panel-input-row input:focus {
+            border-color: #57534e;
+            background: #fff;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #57534e;
+            color: #fff;
+        }
+
+        .btn:hover {
+            background: #6d6763;
+        }
+
+        .btn-sm {
+            padding: 10px 14px;
+            font-size: 0.8rem;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #57534e;
+            transition: background 0.2s ease;
+        }
+
+        .item:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .item-text {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .item-text:hover {
+            color: #292524;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #fecaca;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #a8a29e;
+            font-size: 0.85rem;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* ====== МАТРИЦЯ ====== */
+        .matrix-section {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
             overflow-x: auto;
+        }
+
+        .matrix-section h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #57534e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .matrix-section.hidden {
+            display: none;
+        }
+
+        .matrix-empty {
+            text-align: center;
+            color: #a8a29e;
+            padding: 40px 20px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
         }
 
         table {
@@ -150,13 +265,15 @@
             background: rgba(0, 0, 0, 0.03);
             font-weight: 600;
             color: #57534e;
-            position: sticky;
-            top: 0;
+            text-align: center;
+        }
+
+        th:first-child {
+            text-align: left;
         }
 
         td {
             color: #78716c;
-            position: relative;
         }
 
         .task-cell {
@@ -165,26 +282,16 @@
             min-width: 150px;
         }
 
-        .editable {
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .editable:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
         .raci-cell {
             min-width: 60px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            padding: 8px 4px;
+            padding: 10px 4px;
             border-radius: 6px;
             transition: all 0.2s ease;
             user-select: none;
+            font-size: 1rem;
         }
 
         .raci-cell:hover {
@@ -194,7 +301,6 @@
         .raci-cell.empty {
             background: rgba(0, 0, 0, 0.03);
             color: #a8a29e;
-            font-size: 0.75rem;
         }
 
         .raci-cell.r {
@@ -217,35 +323,6 @@
             color: #166534;
         }
 
-        .delete-btn {
-            background: #fee2e2;
-            border: 1px solid #fca5a5;
-            color: #991b1b;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.2s ease;
-        }
-
-        .delete-btn:hover {
-            background: #fecaca;
-        }
-
-        .add-row {
-            margin-top: 15px;
-        }
-
-        .add-row input {
-            width: 200px;
-            padding: 8px 12px;
-            border: 1px solid #d4d4ce;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-family: inherit;
-            margin-right: 8px;
-        }
-
         @media (max-width: 768px) {
             .legend {
                 grid-template-columns: 1fr 1fr;
@@ -259,7 +336,6 @@
 
             .raci-cell {
                 min-width: 45px;
-                font-size: 0.75rem;
             }
         }
     </style>
@@ -270,12 +346,6 @@
         <div class="header">
             <h1>RACI матриця</h1>
             <p>Визначте ролі та відповідальність у проектах</p>
-        </div>
-
-        <div class="controls">
-            <button class="btn primary" id="addTaskBtn">+ Додати завдання</button>
-            <button class="btn primary" id="addPersonBtn">+ Додати учасника</button>
-            <button class="btn" id="clearBtn">🔄 Очистити все</button>
         </div>
 
         <div class="legend">
@@ -297,60 +367,81 @@
             </div>
         </div>
 
-        <div class="table-wrapper">
-            <table id="raciTable">
-                <thead>
-                    <tr id="headerRow">
-                        <th style="min-width: 150px;">Завдання / Учасники</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                </tbody>
-            </table>
+        <!-- Дві панелі -->
+        <div class="panels">
+            <div class="panel">
+                <h2>📋 Завдання</h2>
+                <div class="panel-input-row">
+                    <input type="text" id="taskInput" placeholder="Назва завдання...">
+                    <button class="btn btn-sm" id="taskAddBtn">Додати</button>
+                </div>
+                <div class="item-list" id="taskList"></div>
+            </div>
+
+            <div class="panel">
+                <h2>👥 Учасники</h2>
+                <div class="panel-input-row">
+                    <input type="text" id="personInput" placeholder="Ім'я учасника...">
+                    <button class="btn btn-sm" id="personAddBtn">Додати</button>
+                </div>
+                <div class="item-list" id="personList"></div>
+            </div>
         </div>
 
-        <div class="add-row">
-            <input type="text" id="newTaskInput" placeholder="Назва нового завдання">
-            <button class="btn primary" onclick="addTaskFromInput()">Додати</button>
+        <!-- Матриця -->
+        <div class="matrix-section" id="matrixSection">
+            <h2>📊 Матриця RACI</h2>
+            <div id="matrixContent"></div>
         </div>
     </div>
 
     <script>
         const STORAGE_KEY = 'raci-data';
 
-        const DEFAULT_DATA = {
-            tasks: ['Планування', 'Розробка', 'Тестування', 'Розгортання'],
-            people: ['Менеджер', 'Розробник', 'Тестувальник', 'DevOps'],
+        let data = {
+            tasks: [],
+            people: [],
             matrix: {}
         };
 
-        let data;
-
+        // ====== СХОВИЩЕ ======
         function loadData() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (parsed && Array.isArray(parsed.tasks) && Array.isArray(parsed.people)) {
-                        return parsed;
-                    }
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                if (parsed && Array.isArray(parsed.tasks) && Array.isArray(parsed.people)) {
+                    data = {
+                        tasks: parsed.tasks || [],
+                        people: parsed.people || [],
+                        matrix: parsed.matrix || {}
+                    };
                 }
             } catch (e) {
-                // localStorage недоступний або дані зламані
+                console.warn('Помилка завантаження:', e);
             }
-            return JSON.parse(JSON.stringify(DEFAULT_DATA));
         }
 
         function saveData() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
             } catch (e) {
-                // localStorage недоступний — ігноруємо
+                console.warn('Помилка збереження:', e);
             }
         }
 
-        function initData() {
-            data = loadData();
+        // ====== СИНХРОНІЗАЦІЯ МАТРИЦІ ======
+        function syncMatrix() {
+            if (!data.matrix) data.matrix = {};
+
+            // Видаляємо завдання, яких більше немає
+            Object.keys(data.matrix).forEach(task => {
+                if (!data.tasks.includes(task)) {
+                    delete data.matrix[task];
+                }
+            });
+
+            // Створюємо/оновлюємо matrix
             data.tasks.forEach(task => {
                 if (!data.matrix[task]) data.matrix[task] = {};
                 data.people.forEach(person => {
@@ -358,167 +449,179 @@
                         data.matrix[task][person] = '';
                     }
                 });
+                // Видаляємо зайвих учасників
+                Object.keys(data.matrix[task]).forEach(person => {
+                    if (!data.people.includes(person)) {
+                        delete data.matrix[task][person];
+                    }
+                });
             });
         }
 
-        function renderTable() {
-            const headerRow = document.getElementById('headerRow');
-            const tableBody = document.getElementById('tableBody');
+        // ====== ЕКРАНУВАННЯ ======
+        function esc(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
-            headerRow.innerHTML = '<th style="min-width: 150px;">Завдання / Учасники</th>';
+        // ====== ДІЇ ======
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const name = input.value.trim();
+            if (!name) return;
+            if (data.tasks.includes(name)) {
+                alert('Таке завдання вже є');
+                return;
+            }
+            data.tasks.push(name);
+            input.value = '';
+            syncMatrix();
+            saveData();
+            render();
+        }
 
-            data.people.forEach(person => {
-                const th = document.createElement('th');
-                th.style.minWidth = '80px';
-                th.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-                        <span class="editable" onclick="editPerson('${person}')">${person}</span>
-                        <button class="delete-btn" onclick="deletePerson('${person}')">×</button>
-                    </div>
-                `;
-                headerRow.appendChild(th);
-            });
+        function addPerson() {
+            const input = document.getElementById('personInput');
+            const name = input.value.trim();
+            if (!name) return;
+            if (data.people.includes(name)) {
+                alert('Такий учасник вже є');
+                return;
+            }
+            data.people.push(name);
+            input.value = '';
+            syncMatrix();
+            saveData();
+            render();
+        }
 
-            tableBody.innerHTML = '';
+        function removeTask(name) {
+            data.tasks = data.tasks.filter(t => t !== name);
+            syncMatrix();
+            saveData();
+            render();
+        }
 
-            data.tasks.forEach(task => {
-                const tr = document.createElement('tr');
+        function removePerson(name) {
+            data.people = data.people.filter(p => p !== name);
+            syncMatrix();
+            saveData();
+            render();
+        }
 
-                const tdTask = document.createElement('td');
-                tdTask.className = 'task-cell';
-                tdTask.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
-                        <span class="editable" onclick="editTask('${task}')">${task}</span>
-                        <button class="delete-btn" onclick="deleteTask('${task}')">×</button>
-                    </div>
-                `;
-                tr.appendChild(tdTask);
+        function editTask(oldName) {
+            const newName = prompt('Редагувати завдання:', oldName);
+            if (!newName) return;
+            const clean = newName.trim();
+            if (!clean || clean === oldName || data.tasks.includes(clean)) return;
+            const idx = data.tasks.indexOf(oldName);
+            if (idx > -1) data.tasks[idx] = clean;
+            syncMatrix();
+            saveData();
+            render();
+        }
 
-                data.people.forEach(person => {
-                    const td = document.createElement('td');
-                    const value = data.matrix[task][person] || '';
-                    const cellClass = value ? value.toLowerCase() : 'empty';
-                    const cellText = value ? value.toUpperCase() : '—';
-
-                    td.innerHTML = `<div class="raci-cell ${cellClass}" onclick="toggleRaci('${task}', '${person}')">${cellText}</div>`;
-                    tr.appendChild(td);
-                });
-
-                tableBody.appendChild(tr);
-            });
+        function editPerson(oldName) {
+            const newName = prompt('Редагувати учасника:', oldName);
+            if (!newName) return;
+            const clean = newName.trim();
+            if (!clean || clean === oldName || data.people.includes(clean)) return;
+            const idx = data.people.indexOf(oldName);
+            if (idx > -1) data.people[idx] = clean;
+            syncMatrix();
+            saveData();
+            render();
         }
 
         function toggleRaci(task, person) {
+            if (!data.matrix[task]) data.matrix[task] = {};
             const current = data.matrix[task][person] || '';
             const options = ['r', 'a', 'c', 'i'];
             const currentIndex = options.indexOf(current.toLowerCase());
             const nextIndex = (currentIndex + 1) % (options.length + 1);
-
             data.matrix[task][person] = nextIndex < options.length ? options[nextIndex] : '';
             saveData();
-            renderTable();
+            render();
         }
 
-        function editTask(oldTask) {
-            const newTask = prompt('Редагувати завдання:', oldTask);
-            if (newTask && newTask !== oldTask && !data.tasks.includes(newTask)) {
-                data.matrix[newTask] = data.matrix[oldTask];
-                delete data.matrix[oldTask];
-                const idx = data.tasks.indexOf(oldTask);
-                if (idx > -1) data.tasks[idx] = newTask;
-                saveData();
-                renderTable();
+        // ====== РЕНДЕР ======
+        function render() {
+            // === Завдання ===
+            const taskList = document.getElementById('taskList');
+            if (data.tasks.length === 0) {
+                taskList.innerHTML = '<div class="empty-msg">Ще немає завдань</div>';
+            } else {
+                taskList.innerHTML = data.tasks.map(task => `
+                    <div class="item">
+                        <span class="item-text" onclick="editTask('${esc(task).replace(/'/g, "\\'")}')">${esc(task)}</span>
+                        <button class="remove-btn" onclick="removeTask('${esc(task).replace(/'/g, "\\'")}')">×</button>
+                    </div>
+                `).join('');
             }
-        }
 
-        function deleteTask(task) {
-            if (confirm(`Видалити завдання "${task}"?`)) {
-                delete data.matrix[task];
-                data.tasks = data.tasks.filter(t => t !== task);
-                saveData();
-                renderTable();
+            // === Учасники ===
+            const personList = document.getElementById('personList');
+            if (data.people.length === 0) {
+                personList.innerHTML = '<div class="empty-msg">Ще немає учасників</div>';
+            } else {
+                personList.innerHTML = data.people.map(person => `
+                    <div class="item">
+                        <span class="item-text" onclick="editPerson('${esc(person).replace(/'/g, "\\'")}')">${esc(person)}</span>
+                        <button class="remove-btn" onclick="removePerson('${esc(person).replace(/'/g, "\\'")}')">×</button>
+                    </div>
+                `).join('');
             }
-        }
 
-        function editPerson(oldPerson) {
-            const newPerson = prompt('Редагувати учасника:', oldPerson);
-            if (newPerson && newPerson !== oldPerson && !data.people.includes(newPerson)) {
-                data.tasks.forEach(task => {
-                    data.matrix[task][newPerson] = data.matrix[task][oldPerson];
-                    delete data.matrix[task][oldPerson];
-                });
-                const idx = data.people.indexOf(oldPerson);
-                if (idx > -1) data.people[idx] = newPerson;
-                saveData();
-                renderTable();
+            // === Матриця ===
+            const matrixContent = document.getElementById('matrixContent');
+            const hasBoth = data.tasks.length > 0 && data.people.length > 0;
+
+            if (!hasBoth) {
+                matrixContent.innerHTML = '<div class="matrix-empty">Додайте хоча б одне завдання і одного учасника, щоб побачити матрицю</div>';
+                return;
             }
-        }
 
-        function deletePerson(person) {
-            if (confirm(`Видалити учасника "${person}"?`)) {
-                data.people = data.people.filter(p => p !== person);
-                data.tasks.forEach(task => {
-                    delete data.matrix[task][person];
-                });
-                saveData();
-                renderTable();
-            }
-        }
+            let html = '<table><thead><tr><th>Завдання / Учасники</th>';
+            data.people.forEach(person => {
+                html += `<th>${esc(person)}</th>`;
+            });
+            html += '</tr></thead><tbody>';
 
-        function addTaskFromInput() {
-            const input = document.getElementById('newTaskInput');
-            const task = input.value.trim();
-            if (task && !data.tasks.includes(task)) {
-                data.tasks.push(task);
-                data.matrix[task] = {};
+            data.tasks.forEach(task => {
+                html += '<tr>';
+                html += `<td class="task-cell">${esc(task)}</td>`;
                 data.people.forEach(person => {
-                    data.matrix[task][person] = '';
+                    const value = (data.matrix[task] && data.matrix[task][person]) || '';
+                    const cellClass = value ? value.toLowerCase() : 'empty';
+                    const cellText = value ? value.toUpperCase() : '—';
+                    html += `<td><div class="raci-cell ${cellClass}" onclick="toggleRaci('${esc(task).replace(/'/g, "\\'")}', '${esc(person).replace(/'/g, "\\'")}')">${cellText}</div></td>`;
                 });
-                input.value = '';
-                saveData();
-                renderTable();
-            }
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            matrixContent.innerHTML = html;
         }
 
-        document.getElementById('addTaskBtn').onclick = () => {
-            const task = prompt('Назва нового завдання:');
-            if (task && !data.tasks.includes(task)) {
-                data.tasks.push(task);
-                data.matrix[task] = {};
-                data.people.forEach(person => {
-                    data.matrix[task][person] = '';
-                });
-                saveData();
-                renderTable();
-            }
-        };
+        // ====== ПРИВ'ЯЗКА КНОПОК ======
+        document.getElementById('taskAddBtn').addEventListener('click', addTask);
+        document.getElementById('personAddBtn').addEventListener('click', addPerson);
 
-        document.getElementById('addPersonBtn').onclick = () => {
-            const person = prompt('Ім\'я учасника:');
-            if (person && !data.people.includes(person)) {
-                data.people.push(person);
-                data.tasks.forEach(task => {
-                    data.matrix[task][person] = '';
-                });
-                saveData();
-                renderTable();
-            }
-        };
+        document.getElementById('taskInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+        document.getElementById('personInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addPerson();
+        });
 
-        document.getElementById('clearBtn').onclick = () => {
-            if (confirm('Очистити всю матрицю?')) {
-                data.tasks.forEach(task => {
-                    data.people.forEach(person => {
-                        data.matrix[task][person] = '';
-                    });
-                });
-                saveData();
-                renderTable();
-            }
-        };
-
-        initData();
-        renderTable();
+        // ====== СТАРТ ======
+        loadData();
+        syncMatrix();
+        render();
     </script>
 </body>
 
