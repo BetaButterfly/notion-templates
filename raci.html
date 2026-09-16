@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RACI матриця | Notion Style</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -64,7 +69,7 @@
         .btn:hover {
             background: white;
             color: #57534e;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .btn.primary {
@@ -103,10 +108,21 @@
             flex-shrink: 0;
         }
 
-        .color-r { background: #ef4444; }
-        .color-a { background: #f59e0b; }
-        .color-c { background: #3b82f6; }
-        .color-i { background: #10b981; }
+        .color-r {
+            background: #ef4444;
+        }
+
+        .color-a {
+            background: #f59e0b;
+        }
+
+        .color-c {
+            background: #3b82f6;
+        }
+
+        .color-i {
+            background: #10b981;
+        }
 
         .table-wrapper {
             background: rgba(255, 255, 255, 0.6);
@@ -122,7 +138,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px 8px;
             text-align: left;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -171,7 +188,7 @@
         }
 
         .raci-cell:hover {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .raci-cell.empty {
@@ -234,7 +251,8 @@
                 grid-template-columns: 1fr 1fr;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 8px 4px;
                 font-size: 0.75rem;
             }
@@ -246,6 +264,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -297,17 +316,47 @@
     </div>
 
     <script>
-        let data = {
+        const STORAGE_KEY = 'raci-data';
+
+        const DEFAULT_DATA = {
             tasks: ['Планування', 'Розробка', 'Тестування', 'Розгортання'],
             people: ['Менеджер', 'Розробник', 'Тестувальник', 'DevOps'],
             matrix: {}
         };
 
+        let data;
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && Array.isArray(parsed.tasks) && Array.isArray(parsed.people)) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                // localStorage недоступний або дані зламані
+            }
+            return JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch (e) {
+                // localStorage недоступний — ігноруємо
+            }
+        }
+
         function initData() {
+            data = loadData();
             data.tasks.forEach(task => {
-                data.matrix[task] = {};
+                if (!data.matrix[task]) data.matrix[task] = {};
                 data.people.forEach(person => {
-                    data.matrix[task][person] = '';
+                    if (data.matrix[task][person] === undefined) {
+                        data.matrix[task][person] = '';
+                    }
                 });
             });
         }
@@ -366,6 +415,7 @@
             const nextIndex = (currentIndex + 1) % (options.length + 1);
 
             data.matrix[task][person] = nextIndex < options.length ? options[nextIndex] : '';
+            saveData();
             renderTable();
         }
 
@@ -376,6 +426,7 @@
                 delete data.matrix[oldTask];
                 const idx = data.tasks.indexOf(oldTask);
                 if (idx > -1) data.tasks[idx] = newTask;
+                saveData();
                 renderTable();
             }
         }
@@ -384,6 +435,7 @@
             if (confirm(`Видалити завдання "${task}"?`)) {
                 delete data.matrix[task];
                 data.tasks = data.tasks.filter(t => t !== task);
+                saveData();
                 renderTable();
             }
         }
@@ -397,6 +449,7 @@
                 });
                 const idx = data.people.indexOf(oldPerson);
                 if (idx > -1) data.people[idx] = newPerson;
+                saveData();
                 renderTable();
             }
         }
@@ -407,6 +460,7 @@
                 data.tasks.forEach(task => {
                     delete data.matrix[task][person];
                 });
+                saveData();
                 renderTable();
             }
         }
@@ -421,6 +475,7 @@
                     data.matrix[task][person] = '';
                 });
                 input.value = '';
+                saveData();
                 renderTable();
             }
         }
@@ -433,6 +488,7 @@
                 data.people.forEach(person => {
                     data.matrix[task][person] = '';
                 });
+                saveData();
                 renderTable();
             }
         };
@@ -444,6 +500,7 @@
                 data.tasks.forEach(task => {
                     data.matrix[task][person] = '';
                 });
+                saveData();
                 renderTable();
             }
         };
@@ -455,6 +512,7 @@
                         data.matrix[task][person] = '';
                     });
                 });
+                saveData();
                 renderTable();
             }
         };
@@ -463,4 +521,5 @@
         renderTable();
     </script>
 </body>
+
 </html>

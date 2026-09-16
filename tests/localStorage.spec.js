@@ -15,6 +15,7 @@ const storageMap = {
   'pdca.html': ['pdca-data'],
   'piramida_franklin.html': ['franklin_pyramid'],
   'pomodoro.html': ['pomodoro-settings'],
+  'raci.html': ['raci-data'],
   'smart.html': ['smart-goal'],
   'swot_analysis.html': ['swotAnalysisData'],
   'wish_tracker.html': ['wishlist_full_fixed'],
