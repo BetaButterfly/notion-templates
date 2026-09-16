@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -49,11 +50,11 @@
         .top-card {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
         }
 
         .form-row {
@@ -64,7 +65,9 @@
         }
 
         @media (max-width: 600px) {
-            .form-row { grid-template-columns: 1fr; }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         .field {
@@ -82,12 +85,12 @@
         }
 
         .field input {
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 10px;
             padding: 10px 12px;
             font-size: 15px;
             font-family: inherit;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
             color: #44403c;
             outline: none;
             width: 100%;
@@ -142,11 +145,11 @@
         .smart-card {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
             position: relative;
             overflow: hidden;
         }
@@ -161,11 +164,25 @@
             border-radius: 20px 0 0 20px;
         }
 
-        .card-s::before { background: #86efac; }
-        .card-m::before { background: #93c5fd; }
-        .card-a::before { background: #fcd34d; }
-        .card-r::before { background: #c4b5fd; }
-        .card-t::before { background: #fca5a5; }
+        .card-s::before {
+            background: #86efac;
+        }
+
+        .card-m::before {
+            background: #93c5fd;
+        }
+
+        .card-a::before {
+            background: #fcd34d;
+        }
+
+        .card-r::before {
+            background: #c4b5fd;
+        }
+
+        .card-t::before {
+            background: #fca5a5;
+        }
 
         .card-header {
             display: flex;
@@ -186,11 +203,30 @@
             flex-shrink: 0;
         }
 
-        .badge-s { background: rgba(134, 239, 172, 0.2); color: #166534; }
-        .badge-m { background: rgba(147, 197, 253, 0.2); color: #1e40af; }
-        .badge-a { background: rgba(252, 211, 77, 0.2); color: #92400e; }
-        .badge-r { background: rgba(196, 181, 253, 0.2); color: #5b21b6; }
-        .badge-t { background: rgba(252, 165, 165, 0.2); color: #991b1b; }
+        .badge-s {
+            background: rgba(134, 239, 172, 0.2);
+            color: #166534;
+        }
+
+        .badge-m {
+            background: rgba(147, 197, 253, 0.2);
+            color: #1e40af;
+        }
+
+        .badge-a {
+            background: rgba(252, 211, 77, 0.2);
+            color: #92400e;
+        }
+
+        .badge-r {
+            background: rgba(196, 181, 253, 0.2);
+            color: #5b21b6;
+        }
+
+        .badge-t {
+            background: rgba(252, 165, 165, 0.2);
+            color: #991b1b;
+        }
 
         .card-title {
             font-size: 1.1rem;
@@ -222,14 +258,14 @@
 
         textarea {
             width: 100%;
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 10px;
             padding: 12px;
             font-size: 15px;
             font-family: inherit;
             min-height: 60px;
             resize: vertical;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
             color: #44403c;
             outline: none;
         }
@@ -243,11 +279,11 @@
         .checklist {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
         }
 
         .checklist h3 {
@@ -265,7 +301,7 @@
             align-items: flex-start;
             gap: 10px;
             padding: 10px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         .check-item:last-child {
@@ -295,16 +331,18 @@
         }
 
         @media (max-width: 600px) {
-            .two-col { grid-template-columns: 1fr; }
+            .two-col {
+                grid-template-columns: 1fr;
+            }
         }
 
         .result-card {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(0, 0, 0, 0.04);
             border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
         }
 
         .result-card h3 {
@@ -358,7 +396,7 @@
         .btn-primary {
             background: #94a3b8;
             color: white;
-            box-shadow: 0 2px 8px rgba(148,163,184,0.25);
+            box-shadow: 0 2px 8px rgba(148, 163, 184, 0.25);
         }
 
         .btn-primary:hover {
@@ -369,11 +407,11 @@
         .btn-secondary {
             background: transparent;
             color: #a8a29e;
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         .btn-secondary:hover {
-            background: rgba(0,0,0,0.03);
+            background: rgba(0, 0, 0, 0.03);
             color: #57534e;
         }
 
@@ -398,6 +436,40 @@
             opacity: 1;
         }
 
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #292524;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .check-item input[type="checkbox"]:checked+label {
+            color: #a8a29e;
+            text-decoration: line-through;
+        }
+
         .footer-hint {
             text-align: center;
             font-size: 0.75rem;
@@ -406,6 +478,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrap">
         <div class="header">
@@ -439,7 +512,9 @@
             <div class="blueprint">
                 <div class="blueprint-label">Формулювання цілі (одним реченням):</div>
                 <div class="blueprint-inputs">
-                    Я досягну <input type="text" id="bpResult" placeholder="результат"> до <input type="text" id="bpDate" placeholder="дата"> вимірюючи це через <input type="text" id="bpMetric" placeholder="метрика">
+                    Я досягну <input type="text" id="bpResult" placeholder="результат"> до <input type="text"
+                        id="bpDate" placeholder="дата"> вимірюючи це через <input type="text" id="bpMetric"
+                        placeholder="метрика">
                 </div>
             </div>
         </div>
@@ -553,7 +628,8 @@
                 <div class="radio-group">
                     <label class="radio-item"><input type="radio" name="rPriority" value="yes"> Так</label>
                     <label class="radio-item"><input type="radio" name="rPriority" value="partial"> Частково</label>
-                    <label class="radio-item"><input type="radio" name="rPriority" value="no"> Ні — переформулювати</label>
+                    <label class="radio-item"><input type="radio" name="rPriority" value="no"> Ні —
+                        переформулювати</label>
                 </div>
             </div>
         </div>
@@ -569,19 +645,22 @@
             </div>
             <div class="question">
                 <div class="question-text">Кінцевий дедлайн:</div>
-                <input type="date" id="tDeadline" style="width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
+                <input type="date" id="tDeadline"
+                    style="width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
             </div>
             <div class="question">
                 <div class="question-text">Контрольна точка 1:</div>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <input type="date" id="tCheck1Date" style="flex: 1; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
+                    <input type="date" id="tCheck1Date"
+                        style="flex: 1; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
                 </div>
                 <textarea id="tCheck1Result" placeholder="Очікуваний результат..."></textarea>
             </div>
             <div class="question">
                 <div class="question-text">Контрольна точка 2:</div>
                 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                    <input type="date" id="tCheck2Date" style="flex: 1; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
+                    <input type="date" id="tCheck2Date"
+                        style="flex: 1; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; font-size: 15px; font-family: inherit; background: rgba(255,255,255,0.5);">
                 </div>
                 <textarea id="tCheck2Result" placeholder="Очікуваний результат..."></textarea>
             </div>
@@ -589,7 +668,8 @@
                 <div class="question-text">Як часто переглядаємо прогрес?</div>
                 <div class="radio-group">
                     <label class="radio-item"><input type="radio" name="tReview" value="weekly"> Щотижня</label>
-                    <label class="radio-item"><input type="radio" name="tReview" value="biweekly"> Раз на 2 тижні</label>
+                    <label class="radio-item"><input type="radio" name="tReview" value="biweekly"> Раз на 2
+                        тижні</label>
                     <label class="radio-item"><input type="radio" name="tReview" value="monthly"> Щомісяця</label>
                 </div>
             </div>
@@ -599,4 +679,158 @@
         <div class="checklist">
             <h3>☑ Фінальна перевірка SMART-цілі</h3>
             <div class="check-item">
-                <input type="checkbox" id="c1"><label for="c1">Ціль сформульована конкретно — без розмитих слів типу «покращити
+                <input type="checkbox" id="c1"><label for="c1">Ціль сформульована конкретно — без розмитих слів типу
+                    «покращити ситуацію»</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c2"><label for="c2">Є чіткі метрики: числа, відсотки, дедлайни</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c3"><label for="c3">Ціль реалістична з наявними ресурсами</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c4"><label for="c4">Ціль узгоджена зі стратегією та пріоритетами</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c5"><label for="c5">Встановлено чіткий дедлайн</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c6"><label for="c6">Визначено, як і коли вимірюємо прогрес</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c7"><label for="c7">Ціль не залежить від зовнішніх факторів, які я не
+                    контролюю</label>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="saveGoal()">Зберегти</button>
+            <button class="btn btn-secondary" onclick="clearGoal()">Очистити</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Збережено ✓</div>
+
+    <script>
+        const STORAGE_KEY = 'smart-goal';
+
+        // Усі поля, які треба зберігати
+        const FIELDS = [
+            'goalName', 'goalOwner', 'startDate', 'endDate',
+            'bpResult', 'bpDate', 'bpMetric',
+            'sWhat', 'sWho', 'sWhere', 'sWhy',
+            'mMetric', 'mCurrent', 'mTarget', 'mHow',
+            'aResources', 'aPros', 'aCons', 'aHistory',
+            'rStrategy', 'rWhyNow', 'rIfNot',
+            'tDeadline', 'tCheck1Date', 'tCheck1Result', 'tCheck2Date', 'tCheck2Result',
+            'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7'
+        ];
+
+        function collectData() {
+            const data = {};
+            for (const id of FIELDS) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                if (el.type === 'checkbox') {
+                    data[id] = el.checked;
+                } else {
+                    data[id] = el.value;
+                }
+            }
+            // Радіокнопки
+            data.rPriority = document.querySelector('input[name="rPriority"]:checked')?.value || '';
+            data.tReview = document.querySelector('input[name="tReview"]:checked')?.value || '';
+            return data;
+        }
+
+        function applyData(data) {
+            if (!data) return;
+            for (const id of FIELDS) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                if (el.type === 'checkbox') {
+                    el.checked = !!data[id];
+                } else if (data[id] !== undefined) {
+                    el.value = data[id];
+                }
+            }
+            if (data.rPriority) {
+                const radio = document.querySelector(`input[name="rPriority"][value="${data.rPriority}"]`);
+                if (radio) radio.checked = true;
+            }
+            if (data.tReview) {
+                const radio = document.querySelector(`input[name="tReview"][value="${data.tReview}"]`);
+                if (radio) radio.checked = true;
+            }
+        }
+
+        function saveGoal(showToast = true) {
+            try {
+                const data = collectData();
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                if (showToast) showToastMsg('Збережено ✓');
+            } catch (e) {
+                if (showToast) showToastMsg('Помилка збереження');
+            }
+        }
+
+        function clearGoal() {
+            if (!confirm('Очистити всі поля? Це не можна скасувати.')) return;
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) { }
+            for (const id of FIELDS) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+                if (el.type === 'checkbox') {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            }
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            showToastMsg('Очищено');
+        }
+
+        let toastTimer;
+        function showToastMsg(text) {
+            const toast = document.getElementById('toast');
+            toast.textContent = text;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Завантаження при відкритті
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) applyData(JSON.parse(raw));
+        } catch (e) { }
+
+        // Автозбереження з debounce (щоб не смикати localStorage на кожен символ)
+        let saveTimer;
+        function autoSave() {
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => saveGoal(false), 500);
+        }
+
+        for (const id of FIELDS) {
+            const el = document.getElementById(id);
+            if (!el) continue;
+            el.addEventListener('input', autoSave);    // для input/textarea — на кожен символ
+            el.addEventListener('change', autoSave);   // для date/checkbox — при зміні
+        }
+        document.querySelectorAll('input[type="radio"]').forEach(r => {
+            r.addEventListener('change', autoSave);
+        });
+
+        // Зберігаємо при закритті сторінки (про всяк випадок)
+        window.addEventListener('beforeunload', () => {
+            clearTimeout(saveTimer);
+            saveGoal(false);
+        });
+    </script>
+</body>
+
+</html>
